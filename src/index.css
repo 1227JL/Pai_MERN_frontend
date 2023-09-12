@@ -1,3 +1,26 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    h1 {
+        @apply text-3xl font-bold mb-3
+    }
+
+    hr {
+        @apply border-2 border-white-200
+    }
+}
+
+@layer components {
+    .checkbox {
+      @apply appearance-none w-5 h-5 border border-white-300 rounded-full hover:cursor-pointer relative checked:before:content-[""] checked:before:absolute checked:before:top-1/2 checked:before:left-1/2 checked:before:w-3 checked:before:h-3 checked:before:-translate-x-1/2 checked:before:-translate-y-1/2 checked:before:bg-primary-100 checked:before:rounded-full;
+    }
+
+    .button-primary-block{
+        @apply bg-primary-100 text-center text-sm text-white font-bold w-full p-2
+        rounded-full uppercase mt-5
+    }
+}
+
+/* className='appearance-none w-5 h-5 border border-white-300 rounded-full hover:cursor-pointer relative checked:before:content-[""] checked:before:absolute checked:before:top-1/2 checked:before:left-1/2 checked:before:w-3 checked:before:h-3 checked:before:-translate-x-1/2 checked:before:-translate-y-1/2 checked:before:bg-primary-100 checked:before:rounded-full'  */

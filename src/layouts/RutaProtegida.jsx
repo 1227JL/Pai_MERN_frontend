@@ -11,8 +11,8 @@ export default function RutaProtegida() {
             {auth?._id ? (
                 <div className="p-8">
                     <Header/>
-                    <div className="lg:flex md:min-h-screen">
-                        <main className="flex-1">
+                    <div className="lg:flex">
+                        <main className="flex-1 mt-5">
                             <Outlet/>
                         </main>
                     </div>

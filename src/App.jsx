@@ -6,14 +6,17 @@ import OlvidePassword from './pages/OlvidePassword'
 import NuevoPassword from './pages/NuevoPassword'
 import ConfirmarCuenta from './pages/ConfirmarCuenta'
 import { AuthProvider } from './context/AuthProvider'
+import { TituladaProvider } from './context/TituladaProvider'
 import Home from './pages/Home'
 import RutaProtegida from './layouts/RutaProtegida'
+import Tituladas from './pages/Tituladas'
 
 function App() {
 
   return (
     <BrowserRouter>
       <AuthProvider>
+        <TituladaProvider>
           <Routes>
             <Route path='/' element={<AuthLayout/>}>
               <Route index element={<Login/>}></Route>
@@ -26,7 +29,12 @@ function App() {
             <Route path='/inicio' element={<RutaProtegida/>}>
               <Route index element={<Home/>}/>
             </Route>
+
+            <Route path='/consultar' element={<RutaProtegida/>}>
+              <Route path='tituladas' element={<Tituladas/>}/>
+            </Route>
           </Routes>
+        </TituladaProvider>
       </AuthProvider>
     </BrowserRouter>
   )
