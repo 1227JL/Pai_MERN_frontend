@@ -19,7 +19,12 @@
 
     .button-primary-block{
         @apply bg-primary-100 text-center text-sm text-white font-bold w-full p-2
-        rounded-full uppercase mt-5
+        rounded-full uppercase mt-5 hover:cursor-pointer hover:bg-primary-200 transition-colors
+    }
+
+    .button-more{
+        @apply bg-more-100 text-center text-xs text-white font-bold p-2
+        rounded-md uppercase hover:cursor-pointer hover:bg-more-200 transition-colors
     }
 }
 

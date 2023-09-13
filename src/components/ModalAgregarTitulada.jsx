@@ -1,14 +1,45 @@
 import { Dialog, Transition } from '@headlessui/react'
-import { Fragment } from 'react'
+import { Fragment, useState } from 'react'
 import useTitulada from '../hooks/useTitulada'
+import Alerta from './Alerta'
+
+const PROGRAMAS = ['Tecnologo', 'Técnico', 'Curso Corto']
+const JORNADAS = ['Mañana', 'Tarde', 'Noche']
+const MODALIDADES = ['Presencial', 'Virtual']
 
 export default function ModalAgregarTitulada() {
 
+    const { alerta, setAlerta, submitTitulada } = useTitulada()
     const { modalAgregarTitulada, handleModalAgregarTitulada } = useTitulada()
 
-    const handleSubmit = () => {
-    
+    const [id, setId] = useState('')
+    const [programa, setPrograma] = useState('')
+    const [ficha, setFicha] = useState('')
+    const [tipo, setTipo] = useState('')
+    const [jornada, setJornada] = useState('')
+    const [estado, setEstado] = useState('')
+    const [modalidad, setModalidad] = useState('')
+    const [instructor, setIntructor] = useState([])
+    const [ambiente, setAmbiente] = useState([])
+    const [duracion, setDuracion] = useState(0)
+
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+
+        if([programa, ficha, tipo, jornada, modalidad, duracion].includes('')){
+            setAlerta({
+                msg: 'Todos los campos son obligatorios',
+                error: true
+            })
+            return
+        }
+
+        setAlerta({})
+
+        await submitTitulada({programa, ficha, tipo, jornada, modalidad, duracion})
     }
+
+    const { msg } = alerta
 
     return (
         <>
@@ -43,9 +74,7 @@ export default function ModalAgregarTitulada() {
                         leaveFrom="opacity-100 translate-y-0 sm:scale-100"
                         leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                     >
-                            <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
-
-
+                        <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
                             <div className="hidden sm:block absolute top-0 right-0 pt-4 pr-4">
                                 <button
                                     type="button"
@@ -62,95 +91,127 @@ export default function ModalAgregarTitulada() {
 
                             <div className="sm:flex sm:items-start">
                                 <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
-                                    <Dialog.Title as="h3" className="text-lg leading-6 font-bold text-gray-900">
-                                        {/* {id ? 'Editar Tarea': 'Crear Tarea'} */}
+                                    <Dialog.Title as="h3" className="text-lg leading-6 font-bold text-gray-900 mb-5">
+                                        {id ? 'Editar Titulada': 'Crear Titulada'}
                                     </Dialog.Title>
 
-                                    {/* {msg && <Alerta alerta={alerta} />} */}
+                                    {msg && <Alerta alerta={alerta} />}
 
                                     <form 
                                         onSubmit={handleSubmit}
-                                        className='my-10'
+                                        className='my-5'
                                     >
                                         <div className='mb-5'>
                                             <label
                                                 className='text-gray-700 uppercase font-bold text-sm' 
-                                                htmlFor='nombre'
+                                                htmlFor='programa'
                                             >
-                                                Nombre Tarea
+                                                Programa Formación
                                             </label>
                                             <input
                                                 type="text"
-                                                id="nombre"
-                                                placeholder='Nombre de la Tarea'
+                                                id="programa"
+                                                placeholder='Programa de Formación'
                                                 className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md'
-                                                // value={nombre}
-                                                // onChange={e => setNombre(e.target.value)}
+                                                value={programa}
+                                                onChange={e => setPrograma(e.target.value)}
                                             />
                                         </div>
-
                                         <div className='mb-5'>
                                             <label
                                                 className='text-gray-700 uppercase font-bold text-sm' 
-                                                htmlFor='descripcion'
+                                                htmlFor='ficha'
                                             >
-                                                Descripción Tarea
-                                            </label>
-                                            <textarea
-                                                id="descripcion"
-                                                placeholder='Descripción de la Tarea'
-                                                className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md'
-                                                // value={descripcion}
-                                                // onChange={e => setDescripcion(e.target.value)}
-                                            />
-                                        </div>
-
-                                        <div className='mb-5'>
-                                            <label
-                                                className='text-gray-700 uppercase font-bold text-sm' 
-                                                htmlFor='fecha-entrega'
-                                            >
-                                               Fecha Entrega
+                                                Número Ficha
                                             </label>
                                             <input
-                                                type="date"
-                                                id="fecha-entrega"
+                                                type='number'
+                                                id="ficha"
+                                                placeholder='Número de Ficha'
                                                 className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md'
-                                                // value={fechaEntrega}
-                                                // onChange={e => setFechaEntrega(e.target.value)}
+                                                value={ficha}
+                                                onChange={e => setFicha(e.target.value)}
                                             />
                                         </div>
-
-                                        {/* <div className='mb-5'>
+                                        <div className='mb-5'>
                                             <label
                                                 className='text-gray-700 uppercase font-bold text-sm' 
-                                                htmlFor='prioridad'
+                                                htmlFor='tipo'
                                             >
-                                               Prioridad
+                                               Tipo Programa
                                             </label>
                                             <select
-                                                id="prioridad"
+                                                id="tipo"
                                                 className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md'
-                                                value={prioridad}
-                                                onChange={e => setPrioridad(e.target.value)}
+                                                value={tipo}
+                                                onChange={e => setTipo(e.target.value)}
                                             >
-                                                <option value="">-- Seleccionar --</option>
-
-                                                {PRIORIDAD.map( opcion => (
-                                                    <option key={opcion}>{opcion}</option>
+                                                <option value="">- Selecciona el tipo de Programa -</option>
+                                                {PROGRAMAS?.map(programa => (
+                                                    <option key={programa} value={programa}>{programa}</option>
                                                 ))}
-
                                             </select>
-                                        </div> */}
-
+                                        </div>
+                                        <div className='mb-5'>
+                                            <label
+                                                className='text-gray-700 uppercase font-bold text-sm' 
+                                                htmlFor='jornada'
+                                            >
+                                               Jornada
+                                            </label>
+                                            <select
+                                                id="jornada"
+                                                className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md'
+                                                value={jornada}
+                                                onChange={e => setJornada(e.target.value)}
+                                            >
+                                                <option value="">- Selecciona la Jornada -</option>
+                                                {JORNADAS?.map(jornada => (
+                                                    <option key={jornada} value={jornada}>{jornada}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                        <div className='mb-5'>
+                                            <label
+                                                className='text-gray-700 uppercase font-bold text-sm' 
+                                                htmlFor='modalidad'
+                                            >
+                                               Modalidad
+                                            </label>
+                                            <select
+                                                id="modalidad"
+                                                className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md'
+                                                value={modalidad}
+                                                onChange={e => setModalidad(e.target.value)}
+                                            >
+                                                <option value="">- Selecciona la Modalidad -</option>
+                                                {MODALIDADES?.map(modalidad => (
+                                                    <option key={modalidad} value={modalidad}>{modalidad}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                        <div className='mb-5'>
+                                            <label
+                                                className='text-gray-700 uppercase font-bold text-sm' 
+                                                htmlFor='ficha'
+                                            >
+                                                Duración Formación
+                                            </label>
+                                            <input
+                                                type='number'
+                                                id="ficha"
+                                                placeholder='Duración en Horas'
+                                                className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md'
+                                                value={duracion}
+                                                onChange={e => setDuracion(e.target.value)}
+                                            />
+                                        </div>
                                         <input
                                             type="submit"
                                             className='button-primary-block'
-                                            // value={ id ? 'Guardar Cambios': 'Crear Tarea'}
+                                            value={ id ? 'Guardar Cambios': 'Crear Titulada'}
                                         />
-
                                     </form>
-
                                 </div>
                             </div>
                         </div>

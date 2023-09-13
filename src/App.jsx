@@ -10,6 +10,7 @@ import { TituladaProvider } from './context/TituladaProvider'
 import Home from './pages/Home'
 import RutaProtegida from './layouts/RutaProtegida'
 import Tituladas from './pages/Tituladas'
+import Instructores from './pages/Instructores'
 
 function App() {
 
@@ -32,6 +33,7 @@ function App() {
 
             <Route path='/consultar' element={<RutaProtegida/>}>
               <Route path='tituladas' element={<Tituladas/>}/>
+              <Route path='instructores' element={<Instructores/>}/>
             </Route>
           </Routes>
         </TituladaProvider>

@@ -12,7 +12,7 @@ export default function RutaProtegida() {
                 <div className="p-8">
                     <Header/>
                     <div className="lg:flex">
-                        <main className="flex-1 mt-5">
+                        <main className="flex-1 mt-8">
                             <Outlet/>
                         </main>
                     </div>
