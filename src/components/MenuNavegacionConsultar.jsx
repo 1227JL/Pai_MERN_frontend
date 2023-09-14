@@ -1,24 +1,15 @@
 import { Menu, Transition } from '@headlessui/react'
 import { Fragment, useEffect, useRef, useState } from 'react'
-import useAuth from '../hooks/useAuth'
+import { Link } from 'react-router-dom'
 
-export default function MenuOpcionesPerfil() {
-
-    const { cerrarSesionAuth } = useAuth()      
-
-    const handleCerrarSesion = () => {
-        cerrarSesionAuth()
-        localStorage.removeItem('token')
-    }
+export default function MenuNavegacionConsultar() {
  
     return (
         <div className="flex items-center">
-            <Menu as="div" className="relative text-left">
+            <Menu as="div" className="relative text-left bg-white z-20">
             <div className='flex'>
-                <Menu.Button className="rounded-md hover:bg-white-200 rotate-90">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM12.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM18.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
-                  </svg>
+                <Menu.Button className="rounded-md text-sm font-bold hover:bg-white-200">
+                    Consultar
                 </Menu.Button>
             </div>
             <Transition
@@ -30,32 +21,43 @@ export default function MenuOpcionesPerfil() {
                 leaveFrom="transform opacity-100 scale-100"
                 leaveTo="transform opacity-0 scale-95"
             >
-                <Menu.Items className="absolute right-0 mt-3 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                <div className="px-1 py-1 ">
-                    
+                <Menu.Items className="absolute mt-3 w-96 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                <div className="p-2">
                     <Menu.Item>
                     {({ active }) => (
-                        <button
-                            className={`${
-                                active && 'bg-white-200'
-                            } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
-                        >
-                        Ver perfil
-                        </button>
+                        <Link to={'/consultar/tituladas'} className="flex items-center gap-5 p-3 rounded-lg hover:bg-white-200 hover:cursor-pointer transition-colors">
+                            <img src="/src/assets/cap.png" alt="icono tituladas" height={40} width={40}/>
+                            <div>
+                                <p className="font-bold text-black-100 text-sm">Consultar Tituladas</p>
+                                <p className="text-default-400 text-sm">Consulta información de las distintas tituladas</p>
+                            </div>
+                        </Link>
                     )}
                     </Menu.Item>
                 </div>
-                <div className="px-1 py-1">
+                <div className="p-2">
                     <Menu.Item>
                     {({ active }) => (
-                        <button
-                            className={`${
-                                active && 'bg-white-200'
-                            } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
-                            onClick={handleCerrarSesion}
-                        >
-                        Cerrar sesión
-                        </button>
+                        <Link to={'/consultar/tituladas'} className="flex items-center gap-5 p-3 rounded-lg hover:bg-white-200 hover:cursor-pointer transition-colors">
+                            <img src="/src/assets/cap.png" alt="icono tituladas" height={40} width={40}/>
+                            <div>
+                                <p className="font-bold text-black-100 text-sm">Consultar Tituladas</p>
+                                <p className="text-default-400 text-sm">Consulta información de las distintas tituladas</p>
+                            </div>
+                        </Link>
+                    )}
+                    </Menu.Item>
+                </div>
+                <div className="p-2">
+                    <Menu.Item>
+                    {({ active }) => (
+                        <Link to={'/consultar/tituladas'} className="flex items-center gap-5 p-3 rounded-lg hover:bg-white-200 hover:cursor-pointer transition-colors">
+                            <img src="/src/assets/cap.png" alt="icono tituladas" height={40} width={40}/>
+                            <div>
+                                <p className="font-bold text-black-100 text-sm">Consultar Tituladas</p>
+                                <p className="text-default-400 text-sm">Consulta información de las distintas tituladas</p>
+                            </div>
+                        </Link>
                     )}
                     </Menu.Item>
                 </div>

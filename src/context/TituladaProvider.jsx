@@ -9,6 +9,7 @@ const TituladaProvider = ({children}) => {
     const { auth } = useAuth()
 
     const [tituladas, setTituladas] = useState([])
+    const [titulada, setTitulada] = useState({})
     const [alerta, setAlerta] = useState({})
     const [cargando, setCargando] = useState(false)
     const [buscador, setBuscador] = useState(false)
@@ -51,6 +52,7 @@ const TituladaProvider = ({children}) => {
     }
 
     const crearTitulada = async (titulada) => {
+
         setCargando(true)
         try {
             const token = localStorage.getItem('token')
@@ -68,7 +70,7 @@ const TituladaProvider = ({children}) => {
 
             const { data } = await clienteAxios.post('/tituladas', titulada, config)
             const tituladaActualizada = [...tituladas, data]
-            
+
             setTituladas(tituladaActualizada)
             setAlerta({
                 msg: 'Titulada Creada Exitosamente',
@@ -78,6 +80,35 @@ const TituladaProvider = ({children}) => {
                 setAlerta({})
                 setModalAgregarTitulada(false)
             }, 2000);
+        } catch (error) {
+            setAlerta({
+                msg: error.response.data.msg,
+                error: true
+            })
+        }finally {
+            setCargando(false)
+        }
+    }
+
+    const obtenerTitulada = async (ficha) => {
+        setCargando(true)
+        try {
+            const token = localStorage.getItem('token')
+
+            if(!token){
+                return
+            }
+
+            const config = {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                }
+            }
+
+            const { data } = await clienteAxios(`/tituladas/${ficha}`, config)
+            setTitulada(data)
+
         } catch (error) {
             setAlerta({
                 msg: error.response.data.msg,
@@ -99,12 +130,16 @@ const TituladaProvider = ({children}) => {
     return (
         <TituladaContext.Provider
             value={{
+                cargando,
                 tituladas,
+                setTituladas,
+                titulada,
                 alerta,
                 setAlerta,
                 buscador,
                 handleBuscador,
                 submitTitulada,
+                obtenerTitulada,
                 modalAgregarTitulada,
                 handleModalAgregarTitulada,
             }}

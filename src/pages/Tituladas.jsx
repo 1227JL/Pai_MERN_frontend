@@ -1,16 +1,63 @@
-import { useState } from "react"
-import { Link } from "react-router-dom"
+import { useState, useEffect } from "react"
 import ModalAgregarTitulada from "../components/ModalAgregarTitulada"
 import useTitulada from "../hooks/useTitulada"
-import Busqueda from "../components/Busqueda"
+import Busqueda from "../components/BusquedaTituladas"
+import Titulada from "../components/Titulada"
+import Spinner from "../components/Spinner"
+import quitarTildes from "../helpers/quitarTildes"
 
 export default function Tituladas() {
 
-    const { tituladas, handleBuscador, handleModalAgregarTitulada } = useTitulada()
+    const { cargando, tituladas, setTituladas, handleBuscador, handleModalAgregarTitulada } = useTitulada()
+    const [filtros, setFiltros] = useState([]);
+    const [tituladasFiltradas, setTituladasFiltradas] = useState([]);
+
+    const filtrarTituladas = (data, filtros) => {
+        if (!Array.isArray(data) || filtros.length === 0) {
+          return data;
+        }
+      
+        const lowerCaseFilters = filtros.map((filtro) => filtro.toLowerCase());
+      
+        return data.filter((titulada) => {
+          if (!titulada) {
+            return false; // Evitar errores si titulada es null o undefined.
+          }
+      
+          return lowerCaseFilters.every((filtro) => {
+            return (
+              quitarTildes(titulada.tipo.toLowerCase()).includes(filtro) ||
+              quitarTildes(titulada.jornada.toLowerCase()).includes(filtro) ||
+              quitarTildes(titulada.estado.toLowerCase()).includes(filtro) ||
+              quitarTildes(titulada.modalidad.toLowerCase()).includes(filtro)
+              // Agrega aquí más atributos según sea necesario
+            );
+          });
+        });
+    };      
+      
+
+    useEffect(() => {
+        const tituladasFiltradas = filtrarTituladas(tituladas, filtros);
+        setTituladasFiltradas(tituladasFiltradas);
+        console.log(tituladasFiltradas);
+    }, [filtros]);
+    
+    const handleCheckboxChange = (event) => { 
+        const checkboxId = event.target.id;
+        if (event.target.checked) {
+          // Agregar el valor del id al estado filtros si el checkbox está marcado
+          setFiltros((prevFiltros) => [...prevFiltros, checkboxId]);
+        } else {
+          // Eliminar el valor del id del estado filtros si el checkbox está desmarcado
+          setFiltros((prevFiltros) => prevFiltros.filter((filtro) => filtro !== checkboxId));
+        }
+    };
+
     return (
         <>
-            <div className='flex gap-7'>
-                <div className='flex flex-col lg:w-1/3 shadow-200 p-5 rounded-xl h-[45rem] max-h-[45rem]'>
+            <div className='lg:flex lg:gap-7'>
+                <div className='mb-6 lg:mb-0 flex flex-col lg:w-1/3 shadow-small p-5 rounded-xl h-[40rem]'>
                     <h1>Filtros de busqueda</h1>
                     <hr/>
                     <div className='mt-4 relative'>
@@ -18,31 +65,34 @@ export default function Tituladas() {
                         <div className='flex items-center gap-2'>
                             <input 
                                 type="checkbox" 
-                                id="tecnologos"
-                                className='checkbox' 
+                                id="tecnologo"
+                                className='checkbox'
+                                onChange={handleCheckboxChange}
                             />
                             <label 
-                                htmlFor="tecnologos" 
+                                htmlFor="tecnologo" 
                             >Tecnologos</label>
                         </div>
                         <div className='flex items-center gap-2'>
                             <input 
                                 type="checkbox" 
-                                id="tecnicos"
-                                className='checkbox' 
+                                id="tecnico"
+                                className='checkbox'
+                                onChange={handleCheckboxChange} 
                             />
                             <label 
-                                htmlFor="tecnicos" 
+                                htmlFor="tecnico" 
                             >Técnicos</label>
                         </div>
                         <div className='flex items-center gap-2'>
                             <input 
                                 type="checkbox" 
-                                id="cursos"
-                                className='checkbox' 
+                                id="curso corto"
+                                className='checkbox'
+                                onChange={handleCheckboxChange} 
                             />
                             <label 
-                                htmlFor="cursos" 
+                                htmlFor="curso corto" 
                             >Cursos Cortos</label>
                         </div>
                     </div>
@@ -51,41 +101,45 @@ export default function Tituladas() {
                         <div className='flex items-center gap-2'>
                             <input 
                                 type="checkbox" 
-                                id="convocatorias"
-                                className='checkbox' 
+                                id="convocatoria"
+                                className='checkbox'
+                                onChange={handleCheckboxChange} 
                             />
                             <label 
-                                htmlFor="convocatorias" 
+                                htmlFor="convocatoria" 
                             >Convocatorias</label>
                         </div>
                         <div className='flex items-center gap-2'>
                             <input 
                                 type="checkbox" 
-                                id="formacion"
-                                className='checkbox' 
+                                id="etapa lectiva"
+                                className='checkbox'
+                                onChange={handleCheckboxChange} 
                             />
                             <label 
-                                htmlFor="formacion" 
+                                htmlFor="etapa lectiva" 
                             >En Formación</label>
                         </div>
                         <div className='flex items-center gap-2'>
                             <input 
                                 type="checkbox" 
-                                id="productiva"
-                                className='checkbox' 
+                                id="etapa productiva"
+                                className='checkbox'
+                                onChange={handleCheckboxChange} 
                             />
                             <label 
-                                htmlFor="productiva" 
+                                htmlFor="etapa productiva" 
                             >En Etapa Productiva</label>
                         </div>
                         <div className='flex items-center gap-2'>
                             <input 
                                 type="checkbox" 
-                                id="finalizada"
-                                className='checkbox' 
+                                id="formacion finalizada"
+                                className='checkbox'
+                                onChange={handleCheckboxChange} 
                             />
                             <label 
-                                htmlFor="finalizada" 
+                                htmlFor="formacion finalizada" 
                             >Formación Finalizada</label>
                         </div>
                     </div>
@@ -95,7 +149,8 @@ export default function Tituladas() {
                             <input 
                                 type="checkbox" 
                                 id="mañana"
-                                className='checkbox' 
+                                className='checkbox'
+                                onChange={handleCheckboxChange} 
                             />
                             <label 
                                 htmlFor="mañana" 
@@ -105,7 +160,8 @@ export default function Tituladas() {
                             <input 
                                 type="checkbox" 
                                 id="tarde"
-                                className='checkbox' 
+                                className='checkbox'
+                                onChange={handleCheckboxChange} 
                             />
                             <label 
                                 htmlFor="tarde" 
@@ -115,7 +171,8 @@ export default function Tituladas() {
                             <input 
                                 type="checkbox" 
                                 id="noche"
-                                className='checkbox' 
+                                className='checkbox'
+                                onChange={handleCheckboxChange} 
                             />
                             <label 
                                 htmlFor="noche" 
@@ -128,7 +185,8 @@ export default function Tituladas() {
                             <input 
                                 type="checkbox" 
                                 id="presencial"
-                                className='checkbox' 
+                                className='checkbox'
+                                onChange={handleCheckboxChange} 
                             />
                             <label 
                                 htmlFor="presencial" 
@@ -138,7 +196,8 @@ export default function Tituladas() {
                             <input 
                                 type="checkbox" 
                                 id="virtual"
-                                className='checkbox' 
+                                className='checkbox'
+                                onChange={handleCheckboxChange} 
                             />
                             <label 
                                 htmlFor="virtual" 
@@ -161,30 +220,27 @@ export default function Tituladas() {
                         >Buscar titulada</button>
                     </div>
                     <hr />
-
-                        {tituladas?.length > 0 ? (
+                    {cargando ? (
+                        <Spinner>Obteniendo Tituladas...</Spinner>
+                    ) : (
+                        (filtros?.length > 0) ? (
                             <div className='flex flex-col gap-4 overflow-y-scroll p-2 pr-4 mt-2 max-h-[42rem]'>
-                                {tituladas?.map(titulada => (
-                                    <div key={titulada._id} className='flex flex-col shadow-200 p-5 rounded-xl'>
-                                        <div className='flex justify-between'>
-                                            <p className='font-semibold'>{titulada?.programa}</p>
-                                            <p className='text-black-300 font-semibold'>{titulada?.ficha}</p>
-                                        </div>
-                                        <div className="flex justify-between">
-                                            <p className='text-black-300 font-semibold'>{titulada?.tipo}</p>
-                                            <p className='text-black-100 font-semibold'>Jornada: <span className='font-normal'>{titulada?.jornada}</span></p>
-                                        </div>
-                                        <div className="flex justify-between">
-                                            <p className='text-black-100 font-semibold'>Ambiente: <span className='font-normal'>{titulada?.ambiente}</span></p>
-                                            <p className='text-primary-100 font-semibold'>{titulada?.estado}</p>
-                                        </div>
-                                        <Link className='text-more-100 text-center text-sm font-semibold hover:text-more-200 transition-colors' to={`${titulada?.ficha}`}>Más información</Link>
-                                    </div>
+                                {tituladasFiltradas.map(titulada => (
+                                    <Titulada key={titulada._id} titulada={titulada} />
                                 ))}
-                            </div> 
+                            </div>
                         ) : (
-                            <h3 className="mt-5 text-center font-bold text-3xl">No hay Tituladas aun</h3>
-                        )}
+                            (tituladas?.length > 0 && filtros.length === 0) ? (
+                                <div className='flex flex-col gap-4 overflow-y-scroll p-2 pr-4 mt-2 max-h-[42rem]'>
+                                    {tituladas?.map(titulada => (
+                                        <Titulada key={titulada._id} titulada={titulada} />
+                                    ))}
+                                </div>
+                            ) : (
+                                <h3 className="mt-5 text-center font-bold text-3xl">No hay Tituladas aún</h3>
+                            )
+                        )
+                    )}
                 </div>
             </div>
             <ModalAgregarTitulada/>

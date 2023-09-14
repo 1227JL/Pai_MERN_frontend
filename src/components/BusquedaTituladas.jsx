@@ -7,7 +7,7 @@ function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 
-const Busqueda = () => {
+const BusquedaTituladas = () => {
     const { buscador, handleBuscador, tituladas } = useTitulada()
 
     const [ busqueda, setBusqueda] = useState('')
@@ -15,7 +15,7 @@ const Busqueda = () => {
     const tituladasFiltradas = busqueda === '' ? [] : tituladas.filter(titulada => {
         const programaSinTildes = quitarTildes(titulada.programa).toLowerCase();
         const busquedaSinTildes = quitarTildes(busqueda).toLowerCase();
-        return programaSinTildes.includes(busquedaSinTildes);
+        return programaSinTildes.includes(busquedaSinTildes) || titulada.ficha.toString().includes(busquedaSinTildes);
     });
 
     return (
@@ -63,7 +63,10 @@ const Busqueda = () => {
                                     value={titulada}
                                     className={({active}) => classNames('cursor-default select-none px-4 py-2', active && 'bg-primary-100 text-white hover:cursor-pointer transition-color') }
                                 >
-                                    {titulada.programa}
+                                    <div className='flex justify-between'>
+                                        <p>{titulada.programa}</p>
+                                        <p>{titulada.ficha}</p>
+                                    </div>
                                 </Combobox.Option>
                             ))}
                         </Combobox.Options>
@@ -75,5 +78,5 @@ const Busqueda = () => {
     )
 }
 
-export default Busqueda
+export default BusquedaTituladas
   

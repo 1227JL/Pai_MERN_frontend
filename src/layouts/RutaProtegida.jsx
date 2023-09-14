@@ -1,15 +1,16 @@
 import { Outlet, Navigate } from "react-router-dom"
 import useAuth from "../hooks/useAuth"
 import Header from "../components/Header"
+import Spinner from "../components/Spinner"
 
 export default function RutaProtegida() {
     const { auth, cargando } = useAuth()
     
-    if(cargando) return 'Cargando'
+    if(cargando) return <div className="mt-56"><Spinner>Autenticando...</Spinner></div>
     return (
         <>
             {auth?._id ? (
-                <div className="p-8">
+                <div className="px-8 py-5">
                     <Header/>
                     <div className="lg:flex">
                         <main className="flex-1 mt-8">

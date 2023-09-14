@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Table,
   TableHeader,
@@ -14,7 +14,6 @@ import {
   DropdownItem,
   Chip,
   User,
-  Pagination,
   Tooltip
 } from "@nextui-org/react";
 import {columns, users, statusOptions} from "../components/data";
@@ -27,6 +26,8 @@ import { EditIcon } from "../components/EditIcon";
 import { DeleteIcon } from "../components/DeleteIcon";
 import useInstructor from "../hooks/useIntructor"
 import ModalAgregarInstructor from "../components/ModalAgregarInstructor"
+import useTitulada from "../hooks/useTitulada";
+import { useParams } from "react-router-dom";
 
 const statusColorMap = {
   activo: "success",
@@ -36,7 +37,14 @@ const statusColorMap = {
 
 const INITIAL_VISIBLE_COLUMNS = ["name", "role", "status", "actions"];
 
-export default function Instructores() {
+export default function Titulada() {
+  
+  const params = useParams()
+  const { cargando, titulada, obtenerTitulada } = useTitulada()
+
+  useEffect(() => {
+    return ()=>obtenerTitulada(params.ficha)
+  }, [cargando])
 
   const { handleModalAgregarInstructor } = useInstructor()
   const [filterValue, setFilterValue] = React.useState("");
@@ -51,7 +59,7 @@ export default function Instructores() {
   const [page, setPage] = React.useState(1);
 
   const hasSearchFilter = Boolean(filterValue);
-
+  
   const headerColumns = React.useMemo(() => {
     if (visibleColumns === "all") return columns;
 
@@ -63,27 +71,25 @@ export default function Instructores() {
 
     if (hasSearchFilter) {
       filteredUsers = filteredUsers.filter((user) =>
-        user.name.toLowerCase().includes(filterValue.toLowerCase()),
+      user.name.toLowerCase().includes(filterValue.toLowerCase()),
       );
     }
     if (statusFilter !== "all" && Array.from(statusFilter).length !== statusOptions.length) {
       filteredUsers = filteredUsers.filter((user) =>
-        Array.from(statusFilter).includes(user.status),
+      Array.from(statusFilter).includes(user.status),
       );
     }
-
+    
     return filteredUsers;
   }, [users, filterValue, statusFilter]);
-
-  const pages = Math.ceil(filteredItems.length / rowsPerPage);
-
+  
   const items = React.useMemo(() => {
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
 
     return filteredItems.slice(start, end);
   }, [page, filteredItems, rowsPerPage]);
-
+  
   const sortedItems = React.useMemo(() => {
     return [...items].sort((a, b) => {
       const first = a[sortDescriptor.column];
@@ -93,18 +99,18 @@ export default function Instructores() {
       return sortDescriptor.direction === "descending" ? -cmp : cmp;
     });
   }, [sortDescriptor, items]);
-
+  
   const renderCell = React.useCallback((user, columnKey) => {
     const cellValue = user[columnKey];
-
+    
     switch (columnKey) {
       case "name":
         return (
           <User
-            avatarProps={{radius: "lg", src: user.avatar}}
+          avatarProps={{radius: "lg", src: user.avatar}}
             description={user.email}
             name={cellValue}
-          >
+            >
             {user.email}
           </User>
         );
@@ -146,18 +152,6 @@ export default function Instructores() {
     }
   }, []);
 
-  const onNextPage = React.useCallback(() => {
-    if (page < pages) {
-      setPage(page + 1);
-    }
-  }, [page, pages]);
-
-  const onPreviousPage = React.useCallback(() => {
-    if (page > 1) {
-      setPage(page - 1);
-    }
-  }, [page]);
-
   const onRowsPerPageChange = React.useCallback((e) => {
     setRowsPerPage(Number(e.target.value));
     setPage(1);
@@ -180,7 +174,7 @@ export default function Instructores() {
   const topContent = React.useMemo(() => {
     return (
       <>
-        <h1 className="text-center mb-5 uppercase">Instructores</h1>
+      <h1 className="text-center mb-5 uppercase">{cargando ? 'hola' : titulada.programa}</h1>
         <div className="flex flex-col gap-4">
           <div className="flex justify-between gap-3 items-end">
             <Input
@@ -241,18 +235,7 @@ export default function Instructores() {
             </div>
           </div>
           <div className="flex justify-between items-center">
-            <span className="text-default-400 text-small">Total {users.length} Instructores</span>
-            <label className="flex items-center text-default-400 text-small">
-              Instructores por página:
-              <select
-                className="bg-transparent outline-none text-default-400 text-small"
-                onChange={onRowsPerPageChange}
-              >
-                <option value="5">5</option>
-                <option value="10">10</option>
-                <option value="15">15</option>
-              </select>
-            </label>
+            <span className="text-default-400 text-small">Total {users.length} Aprendices</span>
           </div>
         </div>
         <ModalAgregarInstructor/>
@@ -268,40 +251,10 @@ export default function Instructores() {
     hasSearchFilter,
   ]);
 
-  const bottomContent = React.useMemo(() => {
-    return (
-      <div className="py-2 px-2 flex justify-between items-center">
-        <span className="w-[30%] text-small text-default-400">
-          {selectedKeys === "all"
-            ? "Todos seleccionados"
-            : `${selectedKeys.size} de ${filteredItems.length} seleccionados`}
-        </span>
-        <Pagination
-          isCompact
-          showControls
-          showShadow
-          color="secondary"
-          page={page}
-          total={pages}
-          onChange={setPage}
-        />
-        <div className="hidden sm:flex w-[30%] justify-end gap-2">
-          <Button isDisabled={pages === 1} size="sm" variant="flat" onPress={onPreviousPage}>
-            Previo
-          </Button>
-          <Button isDisabled={pages === 1} size="sm" variant="flat" onPress={onNextPage}>
-            Siguiente
-          </Button>
-        </div>
-      </div>
-    );
-  }, [selectedKeys, items.length, page, pages, hasSearchFilter]);
-
   return (
     <Table
       aria-label="Example table with custom cells, pagination and sorting"
       isHeaderSticky
-      bottomContent={bottomContent}
       bottomContentPlacement="outside"
       classNames={{
         wrapper: "max-h-[382px]",
@@ -325,7 +278,7 @@ export default function Instructores() {
           </TableColumn>
         )}
       </TableHeader>
-      <TableBody emptyContent={"Instructor no encontrado"} items={sortedItems}>
+      <TableBody emptyContent={"Aprendiz no encontrado"} items={sortedItems}>
         {(item) => (
           <TableRow key={item.id}>
             {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
