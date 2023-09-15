@@ -1,11 +1,42 @@
 import { Dialog, Transition } from '@headlessui/react'
 import { Fragment, useState } from 'react'
-import Alerta from './Alerta'
 import useIntructor from '../hooks/useIntructor'
+import Alerta from './Alerta'
+
+const CONTRATOS = ['Término Indefinido', 'Termino Fijo']
 
 export default function ModalAgregarInstructor() {
 
-    const { modalAgregarInstructor, handleModalAgregarInstructor } = useIntructor()
+    const { alerta, setAlerta, modalAgregarInstructor, handleModalAgregarInstructor } = useIntructor()
+
+    const [nombre, setNombre] = useState('')
+    const [identificacion, setIdentificacion] = useState('')
+    const [email, setEmail] = useState('')
+    const [telefono, setTelefono] = useState('')
+    const [contrato, setContrato] = useState('')
+
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        if([nombre, identificacion, email, telefono, contrato].includes('')){
+            setAlerta({
+                msg: 'Todos los campos son obligatorios',
+                error: true
+            })
+            return
+        }
+
+        setAlerta({})
+
+        await submitInstructor({nombre, identificacion, email, telefono, contrato})
+        
+        setNombre('')
+        setIdentificacion('')
+        setEmail('')
+        setTelefono('')
+        setContrato('')
+    }
+
+    const { msg } = alerta
 
     return (
         <>
@@ -40,7 +71,7 @@ export default function ModalAgregarInstructor() {
                         leaveFrom="opacity-100 translate-y-0 sm:scale-100"
                         leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                     >
-                        <div className="inline-block align-middle bg-white rounded-lg px-4 pt-5 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:max-w-5xl w-full sm:p-6">
+                        <div className="inline-block align-middle bg-white rounded-lg px-4 pt-5 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:max-w-2xl w-full sm:p-6">
                             <div className="block absolute top-0 right-0 pt-4 pr-4">
                                 <button
                                     type="button"
@@ -62,134 +93,99 @@ export default function ModalAgregarInstructor() {
                                     </Dialog.Title>
 
                                     <form 
-                                        className='my-5 grid md:grid-cols-2 lg:grid-cols-3 gap-x-3'
+                                        className='my-5'
+                                        onSubmit={handleSubmit}
                                     >
-                                        {/* <div className='mb-5'>
+                                        {msg && <Alerta alerta={alerta}/>}
+                                        <div className='mb-5'>
                                             <label
                                                 className='text-gray-700 uppercase font-bold text-sm' 
-                                                htmlFor='programa'
+                                                htmlFor='nombre'
                                             >
-                                                Programa Formación
+                                                Nombre
                                             </label>
                                             <input
                                                 type="text"
-                                                id="programa"
-                                                placeholder='Programa de Formación'
+                                                id="nombre"
+                                                placeholder='Nombre Completo'
                                                 className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md'
-                                                value={programa}
-                                                onChange={e => setPrograma(e.target.value)}
+                                                value={nombre}
+                                                onChange={e => setNombre(e.target.value)}
                                             />
                                         </div>
                                         <div className='mb-5'>
                                             <label
                                                 className='text-gray-700 uppercase font-bold text-sm' 
-                                                htmlFor='ficha'
+                                                htmlFor='identificacion'
                                             >
-                                                Número Ficha
+                                                Documento Identidad
                                             </label>
                                             <input
-                                                type='number'
-                                                id="ficha"
-                                                placeholder='Número de Ficha'
+                                                type="number"
+                                                id="identificacion"
+                                                placeholder='Cédula de Ciudadania'
                                                 className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md'
-                                                value={ficha}
-                                                onChange={e => setFicha(e.target.value)}
+                                                value={identificacion}
+                                                onChange={e => setIdentificacion(e.target.value)}
                                             />
                                         </div>
                                         <div className='mb-5'>
                                             <label
                                                 className='text-gray-700 uppercase font-bold text-sm' 
-                                                htmlFor='tipo'
+                                                htmlFor='email'
                                             >
-                                               Tipo Programa
+                                                Email
+                                            </label>
+                                            <input
+                                                type="email"
+                                                id="email"
+                                                placeholder='Dirección de correo electrónico'
+                                                className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md'
+                                                value={email}
+                                                onChange={e => setEmail(e.target.value)}
+                                            />
+                                        </div>
+                                        <div className='mb-5'>
+                                            <label
+                                                className='text-gray-700 uppercase font-bold text-sm' 
+                                                htmlFor='telefono'
+                                            >
+                                                Teléfono
+                                            </label>
+                                            <input
+                                                type="number"
+                                                id="telefono"
+                                                placeholder='Teléfono de contacto'
+                                                className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md'
+                                                value={telefono}
+                                                onChange={e => setTelefono(e.target.value)}
+                                            />
+                                        </div>
+                                        <div className='mb-5'>
+                                            <label
+                                                className='text-gray-700 uppercase font-bold text-sm' 
+                                                htmlFor='contrato'
+                                            >
+                                                Tipo de Contrato
                                             </label>
                                             <select
-                                                id="tipo"
+                                                id="contrato"
                                                 className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md'
-                                                value={tipo}
-                                                onChange={e => setTipo(e.target.value)}
+                                                value={contrato}
+                                                onChange={e => setContrato(e.target.value)}
                                             >
-                                                <option value="">- Selecciona el tipo de Programa -</option>
-                                                {PROGRAMAS?.map(programa => (
-                                                    <option key={programa} value={programa}>{programa}</option>
+                                                <option value="">- Seleccione el tipo de contrato -</option>
+                                                {CONTRATOS?.map(contrato => (
+                                                    <option key={contrato} value={contrato}>{contrato}</option>
                                                 ))}
                                             </select>
                                         </div>
-                                        <div className='mb-5'>
-                                            <label
-                                                className='text-gray-700 uppercase font-bold text-sm' 
-                                                htmlFor='jornada'
-                                            >
-                                               Jornada
-                                            </label>
-                                            <select
-                                                id="jornada"
-                                                className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md'
-                                                value={jornada}
-                                                onChange={e => setJornada(e.target.value)}
-                                            >
-                                                <option value="">- Selecciona la Jornada -</option>
-                                                {JORNADAS?.map(jornada => (
-                                                    <option key={jornada} value={jornada}>{jornada}</option>
-                                                ))}
-                                            </select>
-                                        </div>
-                                        <div className='mb-5'>
-                                            <label
-                                                className='text-gray-700 uppercase font-bold text-sm' 
-                                                htmlFor='modalidad'
-                                            >
-                                               Modalidad
-                                            </label>
-                                            <select
-                                                id="modalidad"
-                                                className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md'
-                                                value={modalidad}
-                                                onChange={e => setModalidad(e.target.value)}
-                                            >
-                                                <option value="">- Selecciona la Modalidad -</option>
-                                                {MODALIDADES?.map(modalidad => (
-                                                    <option key={modalidad} value={modalidad}>{modalidad}</option>
-                                                ))}
-                                            </select>
-                                        </div>
-                                        <div className='mb-5'>
-                                            <label
-                                                className='text-gray-700 uppercase font-bold text-sm' 
-                                                htmlFor='duracion'
-                                            >
-                                                Duración Formación
-                                            </label>
-                                            <input
-                                                type='number'
-                                                id="duracion"
-                                                placeholder='Duración en Horas'
-                                                className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md'
-                                                value={duracion}
-                                                onChange={e => setDuracion(e.target.value)}
-                                            />
-                                        </div>
-                                        <div className='mb-5 col-span-3'>
-                                            <label
-                                                className='text-gray-700 uppercase font-bold text-sm' 
-                                                htmlFor='archivo'
-                                            >
-                                                Duración Formación
-                                            </label>
-                                            <input
-                                                type='file'
-                                                id="archivo"
-                                                placeholder='Duración en Horas'
-                                                className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md'
-                                                value={archivoAdjunto}
-                                                onChange={e => setArchivoAdjunto(e.target.value)}
-                                            />
-                                        </div>
+                                
                                         <input
                                             type="submit"
-                                            className='button-primary-block md:col-span-2 lg:col-span-3'
-                                            value={ id ? 'Guardar Cambios': 'Crear Titulada'}
-                                        /> */}
+                                            className='button-primary-block rounded md:col-span-2 lg:col-span-3'
+                                            value={'Agregar Instructor'}
+                                        />
                                     </form>
                                 </div>
                             </div>

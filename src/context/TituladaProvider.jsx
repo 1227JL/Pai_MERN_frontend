@@ -13,7 +13,9 @@ const TituladaProvider = ({children}) => {
     const [alerta, setAlerta] = useState({})
     const [cargando, setCargando] = useState(false)
     const [buscador, setBuscador] = useState(false)
-    const [modalAgregarTitulada, setModalAgregarTitulada] = useState(false)
+    const [modalTitulada, setModalTitulada] = useState(false)
+    const [modalAprendiz, setModalAprendiz] = useState(false)
+
 
     useEffect(() => {
         const obtenerTituladas = async () => {
@@ -48,6 +50,10 @@ const TituladaProvider = ({children}) => {
     }
     
     const submitTitulada = async (titulada) => {
+        if(titulada?.id){
+            await actualizarTitulada(titulada)
+            return
+        }
         await crearTitulada(titulada)
     }
 
@@ -78,7 +84,7 @@ const TituladaProvider = ({children}) => {
             })
             setTimeout(() => {
                 setAlerta({})
-                setModalAgregarTitulada(false)
+                setModalTitulada(false)
             }, 2000);
         } catch (error) {
             setAlerta({
@@ -120,11 +126,17 @@ const TituladaProvider = ({children}) => {
     }
 
     const actualizarTitulada = async (titulada) => {
-    
+        console.log('Actualizando', titulada);
     }
 
-    const handleModalAgregarTitulada = () => {
-        setModalAgregarTitulada(!modalAgregarTitulada)
+    const handleModalTitulada = () => {
+        setModalTitulada(!modalTitulada)
+        setAlerta({})
+    }
+  
+    const handleModalAprendiz = () => {
+        setModalAprendiz(!modalAprendiz)
+        setAlerta({})
     }
 
     return (
@@ -140,8 +152,10 @@ const TituladaProvider = ({children}) => {
                 handleBuscador,
                 submitTitulada,
                 obtenerTitulada,
-                modalAgregarTitulada,
-                handleModalAgregarTitulada,
+                modalTitulada,
+                handleModalTitulada,
+                modalAprendiz,
+                handleModalAprendiz
             }}
         >
             {children}

@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react"
-import ModalAgregarTitulada from "../components/ModalAgregarTitulada"
 import useTitulada from "../hooks/useTitulada"
 import Busqueda from "../components/BusquedaTituladas"
 import Titulada from "../components/Titulada"
 import Spinner from "../components/Spinner"
 import quitarTildes from "../helpers/quitarTildes"
+import ModalTitulada from "../components/ModalTitulada"
 
 export default function Tituladas() {
 
-    const { cargando, tituladas, setTituladas, handleBuscador, handleModalAgregarTitulada } = useTitulada()
+    const { cargando, tituladas, handleBuscador, handleModalTitulada } = useTitulada()
     const [filtros, setFiltros] = useState([]);
     const [tituladasFiltradas, setTituladasFiltradas] = useState([]);
 
@@ -40,7 +40,6 @@ export default function Tituladas() {
     useEffect(() => {
         const tituladasFiltradas = filtrarTituladas(tituladas, filtros);
         setTituladasFiltradas(tituladasFiltradas);
-        console.log(tituladasFiltradas);
     }, [filtros]);
     
     const handleCheckboxChange = (event) => { 
@@ -207,7 +206,7 @@ export default function Tituladas() {
                     <button
                         type='button' 
                         className='button-primary-block mt-auto'
-                        onClick={handleModalAgregarTitulada}
+                        onClick={handleModalTitulada}
                     >Agregar Nueva Titulada</button>
                 </div>
                 <div className='lg:w-2/3 flex-2'>
@@ -243,7 +242,7 @@ export default function Tituladas() {
                     )}
                 </div>
             </div>
-            <ModalAgregarTitulada/>
+            <ModalTitulada/>
             <Busqueda/>
         </>
     )

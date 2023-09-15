@@ -1,51 +1,19 @@
 import { Dialog, Transition } from '@headlessui/react'
 import { Fragment, useState } from 'react'
-import useTitulada from '../hooks/useTitulada'
 import Alerta from './Alerta'
+import useTitulada from '../hooks/useTitulada'
 
-const PROGRAMAS = ['Tecnologo', 'Técnico', 'Curso Corto']
-const JORNADAS = ['Mañana', 'Tarde', 'Noche']
-const MODALIDADES = ['Presencial', 'Virtual']
+export default function ModalAprendiz() {
 
-export default function ModalAgregarTitulada() {
+    const { modalAprendiz, handleModalAprendiz } = useTitulada()
 
-    const { alerta, setAlerta, submitTitulada } = useTitulada()
-    const { modalAgregarTitulada, handleModalAgregarTitulada } = useTitulada()
-
-    const [id, setId] = useState('')
-    const [programa, setPrograma] = useState('')
-    const [ficha, setFicha] = useState('')
-    const [tipo, setTipo] = useState('')
-    const [jornada, setJornada] = useState('')
-    const [estado, setEstado] = useState('')
-    const [modalidad, setModalidad] = useState('')
-    const [instructor, setIntructor] = useState([])
-    const [ambiente, setAmbiente] = useState([])
-    const [duracion, setDuracion] = useState(0)
-    const [archivoAdjunto, setArchivoAdjunto] = useState('')
-
-    const handleSubmit = async (e) => {
-        e.preventDefault()
-
-        if([programa, ficha, tipo, jornada, modalidad, duracion].includes('')){
-            setAlerta({
-                msg: 'Todos los campos son obligatorios',
-                error: true
-            })
-            return
-        }
-
-        setAlerta({})
-
-        await submitTitulada({programa, ficha, tipo, jornada, modalidad, duracion})
-    }
-
-    const { msg } = alerta
+    const [nombre, setNombre] = useState('')
+    const [, set] = useState('')
 
     return (
         <>
-            <Transition.Root show={ modalAgregarTitulada } as={Fragment}>
-            <Dialog as="div" className="fixed z-10 inset-0 overflow-y-auto" onClose={ handleModalAgregarTitulada }>
+            <Transition.Root className={'z-20'} show={ modalAprendiz } as={Fragment}>
+            <Dialog as="div" className="fixed inset-0 overflow-y-auto" onClose={ handleModalAprendiz }>
                 <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block">
                     <Transition.Child
                         as={Fragment}
@@ -80,7 +48,7 @@ export default function ModalAgregarTitulada() {
                                 <button
                                     type="button"
                                     className="bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                                    onClick={ handleModalAgregarTitulada }
+                                    onClick={ handleModalAprendiz }
                                 >
                                 <span className="sr-only">Cerrar</span>
                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
@@ -93,16 +61,29 @@ export default function ModalAgregarTitulada() {
                             <div className="sm:flex sm:items-start">
                                 <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
                                     <Dialog.Title as="h3" className="text-lg leading-6 font-bold text-gray-900 mb-5">
-                                        {id ? 'Editar Titulada': 'Crear Titulada'}
+                                        Agregar Aprendiz
                                     </Dialog.Title>
 
-                                    {msg && <Alerta alerta={alerta} />}
-
                                     <form 
-                                        onSubmit={handleSubmit}
                                         className='my-5 grid md:grid-cols-2 lg:grid-cols-3 gap-x-3'
                                     >
-                                        <div className='mb-5'>
+                                         <div className='mb-5'>
+                                            <label
+                                                className='text-gray-700 uppercase font-bold text-sm' 
+                                                htmlFor='programa'
+                                            >
+                                                Programa Formación
+                                            </label>
+                                            <input
+                                                type="text"
+                                                id="programa"
+                                                placeholder='Programa de Formación'
+                                                className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md'
+                                                value={nombre}
+                                                onChange={e => setNombre(e.target.value)}
+                                            />
+                                        </div>
+                                        {/* <div className='mb-5'>
                                             <label
                                                 className='text-gray-700 uppercase font-bold text-sm' 
                                                 htmlFor='programa'
@@ -227,7 +208,7 @@ export default function ModalAgregarTitulada() {
                                             type="submit"
                                             className='button-primary-block md:col-span-2 lg:col-span-3'
                                             value={ id ? 'Guardar Cambios': 'Crear Titulada'}
-                                        />
+                                        /> */}
                                     </form>
                                 </div>
                             </div>

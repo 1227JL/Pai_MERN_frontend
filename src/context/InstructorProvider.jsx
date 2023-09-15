@@ -4,21 +4,25 @@ const InstructorContext = createContext()
 
 const InstructorProvider = ({children}) => {
 
+  const [alerta, setAlerta] = useState({})
   const [modalAgregarInstructor, setModalAgregarInstructor] = useState(false)
   
   const handleModalAgregarInstructor = () => {
     setModalAgregarInstructor(!modalAgregarInstructor)
+    setAlerta({})
   }
 
   return (
-      <InstructorContext.Provider
-          value={{
-            modalAgregarInstructor,
-            handleModalAgregarInstructor
-          }}
-      >
-          {children}
-      </InstructorContext.Provider>
+    <InstructorContext.Provider
+      value={{
+        alerta,
+        setAlerta,
+        modalAgregarInstructor,
+        handleModalAgregarInstructor
+      }}
+    >
+      {children}
+    </InstructorContext.Provider>
   )
 }
 

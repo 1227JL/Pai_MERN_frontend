@@ -1,4 +1,27 @@
-import React from "react";
+const programas = [
+  { name: "Tecnologo"},
+  { name: "Técnico"},
+  { name: "Curso Corto"}
+];
+
+const jornadas = [
+  { name: "Mañana"},
+  { name: "Tarde"},
+  { name: "Noche"}
+];
+
+const modalidades = [
+  { name: "Presencial"},
+  { name: "Virtual"}
+];
+
+const estadosTitulada = [
+  "Convocatoria",
+  "Etapa Lectiva",
+  "Etapa Productiva",
+  "Formación Finalizada",
+];
+
 const columns = [
   {name: "ID", uid: "id", sortable: true},
   {name: "NOMBRE", uid: "name", sortable: true},
@@ -217,4 +240,4 @@ const users = [
   },
 ];
 
-export {columns, users, statusOptions};
+export {columns, users, statusOptions, programas, jornadas, modalidades, estadosTitulada};

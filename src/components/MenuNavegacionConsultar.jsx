@@ -6,9 +6,9 @@ export default function MenuNavegacionConsultar() {
  
     return (
         <div className="flex items-center">
-            <Menu as="div" className="relative text-left bg-white z-20">
+            <Menu as="div" className="relative z-20 text-left bg-white">
             <div className='flex'>
-                <Menu.Button className="rounded-md text-sm font-bold hover:bg-white-200">
+                <Menu.Button className="rounded-md p-2 text-sm font-bold hover:bg-white-200">
                     Consultar
                 </Menu.Button>
             </div>
@@ -21,7 +21,7 @@ export default function MenuNavegacionConsultar() {
                 leaveFrom="transform opacity-100 scale-100"
                 leaveTo="transform opacity-0 scale-95"
             >
-                <Menu.Items className="absolute mt-3 w-96 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                <Menu.Items className="absolute mt-3 w-[27rem] origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                 <div className="p-2">
                     <Menu.Item>
                     {({ active }) => (
@@ -38,11 +38,11 @@ export default function MenuNavegacionConsultar() {
                 <div className="p-2">
                     <Menu.Item>
                     {({ active }) => (
-                        <Link to={'/consultar/tituladas'} className="flex items-center gap-5 p-3 rounded-lg hover:bg-white-200 hover:cursor-pointer transition-colors">
-                            <img src="/src/assets/cap.png" alt="icono tituladas" height={40} width={40}/>
+                        <Link to={'/consultar/instructores'} className="flex items-center gap-5 p-3 rounded-lg hover:bg-white-200 hover:cursor-pointer transition-colors">
+                            <img src="/src/assets/instructor.png" alt="icono instructores" height={40} width={40}/>
                             <div>
-                                <p className="font-bold text-black-100 text-sm">Consultar Tituladas</p>
-                                <p className="text-default-400 text-sm">Consulta información de las distintas tituladas</p>
+                                <p className="font-bold text-black-100 text-sm">Consultar Intructores</p>
+                                <p className="text-default-400 text-sm">Consulta información de los distintos instructores</p>
                             </div>
                         </Link>
                     )}
@@ -51,11 +51,11 @@ export default function MenuNavegacionConsultar() {
                 <div className="p-2">
                     <Menu.Item>
                     {({ active }) => (
-                        <Link to={'/consultar/tituladas'} className="flex items-center gap-5 p-3 rounded-lg hover:bg-white-200 hover:cursor-pointer transition-colors">
-                            <img src="/src/assets/cap.png" alt="icono tituladas" height={40} width={40}/>
+                        <Link to={'/consultar/ambientes'} className="flex items-center gap-5 p-3 rounded-lg hover:bg-white-200 hover:cursor-pointer transition-colors">
+                            <img src="/src/assets/ambiente.png" alt="icono ambientes" height={40} width={40}/>
                             <div>
-                                <p className="font-bold text-black-100 text-sm">Consultar Tituladas</p>
-                                <p className="text-default-400 text-sm">Consulta información de las distintas tituladas</p>
+                                <p className="font-bold text-black-100 text-sm">Consultar Ambientes</p>
+                                <p className="text-default-400 text-sm">Consulta información de los distintos ambientes</p>
                             </div>
                         </Link>
                     )}
