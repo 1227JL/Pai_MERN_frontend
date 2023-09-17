@@ -58,7 +58,6 @@ const TituladaProvider = ({children}) => {
     }
 
     const crearTitulada = async (titulada) => {
-
         setCargando(true)
         try {
             const token = localStorage.getItem('token')
@@ -114,7 +113,6 @@ const TituladaProvider = ({children}) => {
 
             const { data } = await clienteAxios(`/tituladas/${ficha}`, config)
             setTitulada(data)
-
         } catch (error) {
             setAlerta({
                 msg: error.response.data.msg,
@@ -126,7 +124,40 @@ const TituladaProvider = ({children}) => {
     }
 
     const actualizarTitulada = async (titulada) => {
-        console.log('Actualizando', titulada);
+        try {
+            const token = localStorage.getItem('token')
+
+            if(!token){
+                return
+            }
+
+            const config = {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`
+                }
+            }
+
+            const { data } = await clienteAxios.put(`/tituladas/${titulada?.id}`, titulada, config)
+            setTitulada(data)
+            
+            const tituladasActualizadas = tituladas.map(tituladaState => tituladaState._id === data._id ? data : tituladaState)
+            setTituladas(tituladasActualizadas)
+
+            setAlerta({
+                msg: 'Titulada Actualizada Exitosamente',
+                error: false
+            })
+            setTimeout(() => {
+                setAlerta({})
+                setModalTitulada(false)
+            }, 2000);
+        } catch (error) {
+            setAlerta({
+                msg: error.response.data.msg,
+                error: true
+            })
+        }
     }
 
     const handleModalTitulada = () => {

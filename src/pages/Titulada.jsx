@@ -4,17 +4,22 @@ import TableAprendices from "./TableAprendices"
 import useTitulada from "../hooks/useTitulada"
 import Spinner from "../components/Spinner"
 import ModalTitulada from "../components/ModalTitulada"
+import Alerta from "../components/Alerta"
 
 export default function Titulada() {
       
   const params = useParams()
-  const { cargando, titulada, obtenerTitulada, handleModalTitulada } = useTitulada()
+  const { cargando, alerta, titulada, obtenerTitulada, handleModalTitulada } = useTitulada()
 
   useEffect(() => {
     return ()=>obtenerTitulada(params.ficha)
   }, [])
 
   if(cargando) return <Spinner>Obteniendo Titulada...</Spinner>
+
+  const { error } = alerta
+
+  if(error) return <Alerta alerta={alerta}/>
 
   return (
     <>

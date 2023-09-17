@@ -17,7 +17,7 @@ import {
   Pagination,
   Tooltip
 } from "@nextui-org/react";
-import {columns, users, statusOptions} from "../components/data";
+import {columns, statusOptions} from "../components/data";
 import { PlusIcon } from "../components/PlusIcon";
 import { ChevronDownIcon } from "../components/ChevronDownIcon";
 import { SearchIcon } from "../components/SerchIcon";
@@ -26,19 +26,20 @@ import { EditIcon } from "../components/EditIcon";
 import { DeleteIcon } from "../components/DeleteIcon";
 import { capitalize } from "../helpers/Utils";
 import useInstructor from "../hooks/useIntructor"
-import ModalAgregarInstructor from "../components/ModalAgregarInstructor"
+import ModalInstructor from "../components/ModalInstructor"
+import quitarTildes from "../helpers/QuitarTildes";
 
 const statusColorMap = {
-  activo: "success",
-  inactivo: "danger",
-  vacaciones: "warning",
+  Activo: "success",
+  Inactivo: "danger",
+  Vacaciones: "warning",
 };
 
-const INITIAL_VISIBLE_COLUMNS = ["name", "role", "status", "actions"];
+const INITIAL_VISIBLE_COLUMNS = ["nombre", "area", "estado", "actions"];
 
 export default function TableInstructores() {
 
-  const { handleModalAgregarInstructor } = useInstructor()
+  const { instructores, handleModalInstructor } = useInstructor()
   const [filterValue, setFilterValue] = React.useState("");
   const [selectedKeys, setSelectedKeys] = React.useState(new Set([]));
   const [visibleColumns, setVisibleColumns] = React.useState(new Set(INITIAL_VISIBLE_COLUMNS));
@@ -59,21 +60,21 @@ export default function TableInstructores() {
   }, [visibleColumns]);
 
   const filteredItems = React.useMemo(() => {
-    let filteredUsers = [...users];
+    let filteredInstructores = [...instructores];
 
     if (hasSearchFilter) {
-      filteredUsers = filteredUsers.filter((user) =>
-        user.name.toLowerCase().includes(filterValue.toLowerCase()),
+      filteredInstructores = filteredInstructores.filter((instructor) =>
+        quitarTildes(instructor.nombre.toLowerCase()).includes(quitarTildes(filterValue.toLowerCase())),
       );
     }
     if (statusFilter !== "all" && Array.from(statusFilter).length !== statusOptions.length) {
-      filteredUsers = filteredUsers.filter((user) =>
-        Array.from(statusFilter).includes(user.status),
+      filteredInstructores = filteredInstructores.filter((instructor) =>
+        Array.from(statusFilter).includes(instructor.estado.toLowerCase()),
       );
     }
 
-    return filteredUsers;
-  }, [users, filterValue, statusFilter]);
+    return filteredInstructores;
+  }, [instructores, filterValue, statusFilter]);
 
   const pages = Math.ceil(filteredItems.length / rowsPerPage);
 
@@ -94,30 +95,30 @@ export default function TableInstructores() {
     });
   }, [sortDescriptor, items]);
 
-  const renderCell = React.useCallback((user, columnKey) => {
-    const cellValue = user[columnKey];
+  const renderCell = React.useCallback((instructor, columnKey) => {
+    const cellValue = instructor[columnKey];
 
     switch (columnKey) {
-      case "name":
+      case "nombre":
         return (
           <User
-            avatarProps={{radius: "lg", src: user.avatar}}
-            description={user.email}
+            avatarProps={{radius: "full", src: instructor.avatar}}
+            description={instructor.nombre}
             name={cellValue}
           >
-            {user.email}
+            {instructor.email}
           </User>
         );
-      case "role":
+      case "area":
         return (
           <div className="flex flex-col">
             <p className="text-bold text-small capitalize">{cellValue}</p>
-            <p className="text-bold text-tiny capitalize text-default-400">{user.team}</p>
+            {/* <p className="text-bold text-tiny capitalize text-default-400">{instructor.nombre}</p> */}
           </div>
         );
-      case "status":
+      case "estado":
         return (
-          <Chip className="capitalize" color={statusColorMap[user.status]} size="sm" variant="flat">
+          <Chip className="capitalize" color={statusColorMap[instructor.estado]} size="sm" variant="flat">
             {cellValue}
           </Chip>
         );
@@ -131,7 +132,7 @@ export default function TableInstructores() {
               </Tooltip>
               <Tooltip content="Edit user">
                 <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-                  <EditIcon />
+                  <EditIcon onClick={()=>handleModalInstructor(instructor)} />
                 </span>
               </Tooltip>
               <Tooltip color="danger" content="Delete user">
@@ -234,13 +235,13 @@ export default function TableInstructores() {
                   ))}
                 </DropdownMenu>
               </Dropdown>
-              <Button onClick={handleModalAgregarInstructor} color="success" endContent={<PlusIcon color={'white'} />}>
+              <Button onClick={handleModalInstructor} color="success" endContent={<PlusIcon color={'white'} />}>
                 <p className="text-white">Agregar</p>
               </Button>
             </div>
           </div>
           <div className="flex justify-between items-center">
-            <span className="text-default-400 text-small">Total {users.length} Instructores</span>
+            <span className="text-default-400 text-small">Total {instructores.length} Instructores</span>
             <label className="flex items-center text-default-400 text-small">
               Instructores por página:
               <select
@@ -254,7 +255,7 @@ export default function TableInstructores() {
             </label>
           </div>
         </div>
-        <ModalAgregarInstructor/>
+        <ModalInstructor/>
       </>
     );
   }, [
@@ -262,7 +263,7 @@ export default function TableInstructores() {
     statusFilter,
     visibleColumns,
     onRowsPerPageChange,
-    users.length,
+    instructores.length,
     onSearchChange,
     hasSearchFilter,
   ]);
@@ -326,7 +327,7 @@ export default function TableInstructores() {
       </TableHeader>
       <TableBody emptyContent={"Instructor no encontrado"} items={sortedItems}>
         {(item) => (
-          <TableRow key={item.id}>
+          <TableRow key={item._id}>
             {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
           </TableRow>
         )}

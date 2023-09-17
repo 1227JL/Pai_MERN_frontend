@@ -8,7 +8,7 @@ import {
     SelectItem,
     Input
 } from '@nextui-org/react'
-import {jornadas, modalidades, programas, estadosTitulada} from "../components/data";
+import {PROGRAMAS, JORNADAS, MODALIDADES, ESTADOSTITULADAS} from "../components/data";
 
 export default function ModalTitulada() {
 
@@ -35,9 +35,9 @@ export default function ModalTitulada() {
     ]
 
     const selectsTitulada = [
-        {label: 'Programa', stateSet: setTipo, defaultOption: tipo, options: programas, placeholder: 'Seleccione un tipo de programa'},
-        {label: 'Jornada', stateSet: setJornada, defaultOption: jornada, options: jornadas, placeholder: 'Seleccione una jornada'},
-        {label: 'Modalidades', stateSet: setModalidad, defaultOption: modalidad, options: modalidades, placeholder: 'Seleccione una modalidad'},
+        {label: 'Programa', stateSet: setTipo, defaultOption: tipo, options: PROGRAMAS, placeholder: 'Seleccione un tipo de programa'},
+        {label: 'Jornada', stateSet: setJornada, defaultOption: jornada, options: JORNADAS, placeholder: 'Seleccione una jornada'},
+        {label: 'Modalidades', stateSet: setModalidad, defaultOption: modalidad, options: MODALIDADES, placeholder: 'Seleccione una modalidad'},
     ]
 
     useEffect(() => {
@@ -66,7 +66,7 @@ export default function ModalTitulada() {
 
         setAlerta({})
 
-        await submitTitulada({id, programa, ficha, tipo, jornada, modalidad, duracion})
+        await submitTitulada({id, programa, ficha, tipo, jornada, modalidad, duracion, estado})
     }
 
     const { msg } = alerta
@@ -143,23 +143,29 @@ export default function ModalTitulada() {
                                                 />
                                             </div>
                                         ))}
-                                        {selectsTitulada.map(select => (
-                                            <Select 
-                                                key={select.label}
-                                                className='mb-5'
-                                                label={select.label} 
-                                                onChange={e=> select.stateSet(e.target.value)}
-                                                defaultSelectedKeys={[select?.defaultOption]}
-                                                placeholder={select.placeholder}
-                                            >
-                                                {select.options.map((option) => (
-                                                    <SelectItem key={option.name} value={option.name}>
-                                                        {option.name}
-                                                    </SelectItem>
-                                                ))}
-                                            </Select>
-                                        ))}
+                                        {selectsTitulada.map(select => {
+                                            const selectProps = {
+                                                key: select.label,
+                                                className: 'mb-5',
+                                                label: select.label,
+                                                onChange: e => select.stateSet(e.target.value),
+                                                placeholder: select.placeholder,
+                                            };
 
+                                            if (id) {
+                                                selectProps.defaultSelectedKeys = [select?.defaultOption];
+                                            }
+
+                                            return (
+                                                <Select {...selectProps}>
+                                                    {select.options.map(option => (
+                                                        <SelectItem key={option.name} value={option.name}>
+                                                            {option.name}
+                                                        </SelectItem>
+                                                    ))}
+                                                </Select>
+                                            );
+                                        })}
                                         {id && (
                                             <div className="w-full flex flex-col justify-center gap-4">
                                                 <div className="flex w-full flex-wrap md:flex-nowrap mb-6 md:mb-0 gap-4">
@@ -174,7 +180,7 @@ export default function ModalTitulada() {
                                                         onChange={e=> setEstado(e.target.value)}
                                                         defaultSelectedKeys={[estado]}
                                                     >
-                                                        {estadosTitulada.map((estado) => (
+                                                        {ESTADOSTITULADAS.map((estado) => (
                                                             <SelectItem key={estado} value={estado}>
                                                                 {estado}
                                                             </SelectItem>
