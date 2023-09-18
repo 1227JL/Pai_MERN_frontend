@@ -1,12 +1,15 @@
 import { useState, createContext, useEffect } from "react";
 import useAuth from "../hooks/useAuth";
 import clienteAxios from "../../config/clienteAxios";
+import { useNavigate } from "react-router-dom";
 
 const TituladaContext = createContext()
 
 const TituladaProvider = ({children}) => {
 
     const { auth } = useAuth()
+
+    const navigate = useNavigate()
 
     const [tituladas, setTituladas] = useState([])
     const [titulada, setTitulada] = useState({})
@@ -15,6 +18,7 @@ const TituladaProvider = ({children}) => {
     const [buscador, setBuscador] = useState(false)
     const [modalTitulada, setModalTitulada] = useState(false)
     const [modalDetallesTitulada, setModalDetallesTitulada] = useState(false)
+    const [modalEliminarTitulada, setModalEliminarTitulada] = useState(false)
     const [modalAprendiz, setModalAprendiz] = useState(false)
 
 
@@ -59,6 +63,8 @@ const TituladaProvider = ({children}) => {
     }
 
     const crearTitulada = async (titulada) => {
+        console.log(titulada);
+
         setCargando(true)
         try {
             const token = localStorage.getItem('token')
@@ -82,10 +88,7 @@ const TituladaProvider = ({children}) => {
                 msg: 'Titulada Creada Exitosamente',
                 error: false
             })
-            setTimeout(() => {
-                setAlerta({})
-                setModalTitulada(false)
-            }, 2000);
+
         } catch (error) {
             setAlerta({
                 msg: error.response.data.msg,
@@ -161,6 +164,46 @@ const TituladaProvider = ({children}) => {
         }
     }
 
+    const eliminarTitulada = async (id) => {
+        try {
+            const token = localStorage.getItem('token')
+
+            if(!token){
+                return
+            }
+
+            const config = {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`
+                }
+            }
+
+            const { data } = await clienteAxios.delete(`/tituladas/${id}`, config)
+
+            const tituladasActualizadas = tituladas.filter(tituladaState => tituladaState._id !== id)
+            setTituladas(tituladasActualizadas)
+            
+            navigate('/consultar/tituladas')
+
+            setAlerta({
+                msg: data.msg,
+                error : true
+            })
+
+            setTimeout(() => {
+                setAlerta({})
+            }, 2000);
+        } catch (error) {
+            setAlerta({
+                msg: error.response.data.msg,
+                error: true
+            })
+        }finally{
+            setModalEliminarTitulada(false)
+        }
+    }
+
     const handleModalTitulada = () => {
         setModalTitulada(!modalTitulada)
         setAlerta({})
@@ -168,7 +211,10 @@ const TituladaProvider = ({children}) => {
 
     const handleModaDetalleslTitulada = () => {
         setModalDetallesTitulada(!modalDetallesTitulada)
-        setAlerta({})
+    }
+
+    const handleModalEliminarTitulada = () => {
+        setModalEliminarTitulada(!modalEliminarTitulada)
     }
   
     const handleModalAprendiz = () => {
@@ -189,10 +235,13 @@ const TituladaProvider = ({children}) => {
                 handleBuscador,
                 submitTitulada,
                 obtenerTitulada,
+                eliminarTitulada,
                 modalTitulada,
                 handleModalTitulada,
                 modalDetallesTitulada,
                 handleModaDetalleslTitulada,
+                modalEliminarTitulada,
+                handleModalEliminarTitulada,
                 modalAprendiz,
                 handleModalAprendiz
             }}

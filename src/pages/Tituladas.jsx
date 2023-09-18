@@ -4,11 +4,13 @@ import Busqueda from "../components/BusquedaTituladas"
 import Titulada from "../components/Titulada"
 import Spinner from "../components/Spinner"
 import ModalTitulada from "../components/ModalTitulada"
-import quitarTildes from "../helpers/QuitarTildes"
+import Boton from "../components/Boton"
+import QuitarTildes from "../helpers/QuitarTildes"
+import Alerta from "../components/Alerta"
 
 export default function Tituladas() {
 
-    const { cargando, tituladas, handleBuscador, handleModalTitulada } = useTitulada()
+    const { cargando, alerta, tituladas, handleBuscador, handleModalTitulada } = useTitulada()
     const [filtros, setFiltros] = useState([]);
     const [tituladasFiltradas, setTituladasFiltradas] = useState([]);
 
@@ -26,10 +28,10 @@ export default function Tituladas() {
       
           return lowerCaseFilters.every((filtro) => {
             return (
-              quitarTildes(titulada.tipo.toLowerCase()).includes(filtro) ||
-              quitarTildes(titulada.jornada.toLowerCase()).includes(filtro) ||
-              quitarTildes(titulada.estado.toLowerCase()).includes(filtro) ||
-              quitarTildes(titulada.modalidad.toLowerCase()).includes(filtro)
+              QuitarTildes(titulada.tipo.toLowerCase()).includes(filtro) ||
+              QuitarTildes(titulada.jornada.toLowerCase()).includes(filtro) ||
+              QuitarTildes(titulada.estado.toLowerCase()).includes(filtro) ||
+              QuitarTildes(titulada.modalidad.toLowerCase()).includes(filtro)
               // Agrega aquí más atributos según sea necesario
             );
           });
@@ -52,6 +54,8 @@ export default function Tituladas() {
           setFiltros((prevFiltros) => prevFiltros.filter((filtro) => filtro !== checkboxId));
         }
     };
+
+    const { msg } = alerta
 
     return (
         <>
@@ -203,36 +207,29 @@ export default function Tituladas() {
                             >Virtual</label>
                         </div>
                     </div>
-                    <button
-                        type='button' 
-                        className='button-primary-block mt-auto'
-                        onClick={handleModalTitulada}
-                    >Agregar Nueva Titulada</button>
+                    <Boton classes={'bg-primary-100 mt-auto'} onClick={handleModalTitulada}>Agregar Nueva Titulada</Boton>
                 </div>
                 <div className='lg:w-2/3 flex-2'>
                     <div className="flex justify-between items-center">
                         <h1>Tituladas</h1>
-                        <button
-                            type="button"
-                            className="button-more"
-                            onClick={handleBuscador}
-                        >Buscar titulada</button>
+                        <Boton classes={'bg-more-100'} onClick={handleBuscador}>Buscar Titulada</Boton>
                     </div>
                     <hr />
+                    {msg && <Alerta alerta={alerta}/>}
                     {cargando ? (
                         <Spinner>Obteniendo Tituladas...</Spinner>
                     ) : (
                         (filtros?.length > 0) ? (
                             <div className='flex flex-col gap-4 overflow-y-scroll p-2 pr-4 mt-2 max-h-[42rem]'>
                                 {tituladasFiltradas.map(titulada => (
-                                    <Titulada key={titulada._id} titulada={titulada} />
+                                    <Titulada key={titulada?._id} titulada={titulada} />
                                 ))}
                             </div>
                         ) : (
                             (tituladas?.length > 0 && filtros.length === 0) ? (
                                 <div className='flex flex-col gap-4 overflow-y-scroll p-2 pr-4 mt-2 max-h-[42rem]'>
                                     {tituladas?.map(titulada => (
-                                        <Titulada key={titulada._id} titulada={titulada} />
+                                        <Titulada key={titulada?._id} titulada={titulada} />
                                     ))}
                                 </div>
                             ) : (

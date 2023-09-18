@@ -1,6 +1,7 @@
 import { Dialog, Transition } from '@headlessui/react'
 import { Fragment, useEffect, useState } from 'react'
 import useTitulada from '../hooks/useTitulada'
+import { User } from '@nextui-org/react'
 
 export default function ModalDetallesTitulada() {
     
@@ -71,7 +72,14 @@ export default function ModalDetallesTitulada() {
                                         </div>
                                         <div className='mb-2'>
                                             <p className='font-bold'>Instructor a Cargo</p>
-                                            <p className=''>{titulada?.instructores[0]?.nombre}</p>
+                                            <User   
+                                                name={titulada?.instructores[0]?.nombre}
+                                                className='mt-2'
+                                                description={titulada?.instructores[0]?.email}
+                                                avatarProps={{
+                                                    src: titulada?.instructores[0]?.imagen
+                                                }}
+                                            />
                                         </div>
                                         <div className='mb-2'>
                                             <p className='font-bold'>Ambiente</p>
@@ -92,6 +100,17 @@ export default function ModalDetallesTitulada() {
                                         <div className='mb-2'>
                                             <p className='font-bold'>Cantidad de Aprendices</p>
                                             <p className=''>{titulada?.aprendices?.length || 25}</p>
+                                        </div>
+                                        <div className='mb-2'>
+                                            <p className='font-bold'>Creada por</p>
+                                            <User   
+                                                name={titulada?.creador?.nombre}
+                                                className='mt-2'
+                                                description={titulada?.creador?.email}
+                                                avatarProps={{
+                                                    src: titulada?.creador?.imagen
+                                                }}
+                                            />
                                         </div>
                                     </div>
                                 </div>

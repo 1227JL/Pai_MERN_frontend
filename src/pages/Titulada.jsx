@@ -10,11 +10,12 @@ import { EditIcon } from "../components/EditIcon"
 import { DeleteIcon } from "../components/DeleteIcon"
 import { Tooltip } from "@nextui-org/react"
 import { EyeIcon } from "../components/EyeIcon"
+import ModalEliminarTitulada from "../components/ModalEliminarTitulada"
 
 export default function Titulada() {
       
   const params = useParams()
-  const { cargando, alerta, titulada, obtenerTitulada, handleModalTitulada, handleModaDetalleslTitulada } = useTitulada()
+  const { cargando, alerta, titulada, obtenerTitulada, eliminarTitulada, handleModalTitulada, handleModaDetalleslTitulada, handleModalEliminarTitulada } = useTitulada()
 
   useEffect(() => {
     return ()=>obtenerTitulada(params.ficha)
@@ -24,10 +25,10 @@ export default function Titulada() {
 
   const { error } = alerta
 
-  if(error) return <Alerta alerta={alerta}/>
-
+  
   return (
     <>
+      {error && <Alerta alerta={alerta}/>}
       <div className="flex justify-between mb-7 items-center">
         <h1 className="text-center uppercase">{titulada.programa}</h1>
         <div className="flex gap-5 items-center">
@@ -43,7 +44,7 @@ export default function Titulada() {
           </Tooltip>
           <Tooltip color="danger" content="Eliminar Titulada">
             <span className="text-lg text-danger cursor-pointer active:opacity-50">
-              <DeleteIcon />
+              <DeleteIcon onClick={handleModalEliminarTitulada} />
             </span>
           </Tooltip>
         </div>
@@ -51,6 +52,7 @@ export default function Titulada() {
       <TableAprendices/>
       <ModalTitulada/>
       <ModalDetallesTitulada/>
+      <ModalEliminarTitulada title={'Titulada'} onClick={()=>eliminarTitulada(titulada?._id)}/>
     </>
   )
 }
