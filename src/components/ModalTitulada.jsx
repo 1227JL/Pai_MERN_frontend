@@ -6,15 +6,18 @@ import { useParams } from 'react-router-dom'
 import {
     Select,
     SelectItem,
-    Input
+    Input,
+    Avatar,
+    Chip
 } from '@nextui-org/react'
 import {PROGRAMAS, JORNADAS, MODALIDADES, ESTADOSTITULADAS} from "../components/data";
+import useIntructor from '../hooks/useIntructor'
 
 export default function ModalTitulada() {
 
     const params = useParams()
-    const { alerta, setAlerta, submitTitulada } = useTitulada()
-    const { titulada, modalTitulada, handleModalTitulada } = useTitulada()
+    const { alerta, setAlerta, submitTitulada, titulada, modalTitulada, handleModalTitulada } = useTitulada()
+    const { instructores } = useIntructor()
 
     const [id, setId] = useState(null)
     const [programa, setPrograma] = useState('')
@@ -23,9 +26,9 @@ export default function ModalTitulada() {
     const [jornada, setJornada] = useState('')
     const [estado, setEstado] = useState('')
     const [modalidad, setModalidad] = useState('')
-    const [instructor, setIntructor] = useState([])
-    const [ambiente, setAmbiente] = useState([])
-    const [duracion, setDuracion] = useState(0)
+    const [instructor, setIntructor] = useState({})
+    const [ambiente, setAmbiente] = useState({})
+    const [duracion, setDuracion] = useState('')
     const [archivoAdjunto, setArchivoAdjunto] = useState('')
 
     const inputsTitulada = [
@@ -35,9 +38,9 @@ export default function ModalTitulada() {
     ]
 
     const selectsTitulada = [
-        {label: 'Programa', stateSet: setTipo, defaultOption: tipo, options: PROGRAMAS, placeholder: 'Seleccione un tipo de programa'},
+        {label: 'Tipo rograma', stateSet: setTipo, defaultOption: tipo, options: PROGRAMAS, placeholder: 'Seleccione un tipo de programa'},
         {label: 'Jornada', stateSet: setJornada, defaultOption: jornada, options: JORNADAS, placeholder: 'Seleccione una jornada'},
-        {label: 'Modalidades', stateSet: setModalidad, defaultOption: modalidad, options: MODALIDADES, placeholder: 'Seleccione una modalidad'},
+        {label: 'Modalidad', stateSet: setModalidad, defaultOption: modalidad, options: MODALIDADES, placeholder: 'Seleccione una modalidad'},
     ]
 
     useEffect(() => {
@@ -56,7 +59,7 @@ export default function ModalTitulada() {
     const handleSubmit = async (e) => {
         e.preventDefault()
 
-        if([programa, ficha, tipo, jornada, modalidad, duracion].includes('')){
+        if([programa, ficha, tipo, jornada, modalidad, instructor, duracion].includes('')){
             setAlerta({
                 msg: 'Todos los campos son obligatorios',
                 error: true
@@ -66,7 +69,7 @@ export default function ModalTitulada() {
 
         setAlerta({})
 
-        await submitTitulada({id, programa, ficha, tipo, jornada, modalidad, duracion, estado})
+        await submitTitulada({id, programa, ficha, tipo, jornada, modalidad, instructor, duracion, estado})
     }
 
     const { msg } = alerta
@@ -143,6 +146,7 @@ export default function ModalTitulada() {
                                                 />
                                             </div>
                                         ))}
+
                                         {selectsTitulada.map(select => {
                                             const selectProps = {
                                                 key: select.label,
@@ -166,6 +170,68 @@ export default function ModalTitulada() {
                                                 </Select>
                                             );
                                         })}
+
+                                        <Select
+                                            items={instructores}
+                                            label="Asignar a"
+                                            labelPlacement='inside'
+                                            placeholder='Selecciona un Instructor'
+                                            onChange={e=>setIntructor(e.target.value)}
+                                            classNames={{
+                                                trigger: "bg-default-100 h-auto gap-1 mb-5",
+                                                listboxWrapper: "max-h-[400px]",
+                                            }}
+                                            listboxProps={{
+                                                itemClasses: {
+                                                    base: [
+                                                        "rounded-md",
+                                                        "text-default-500",
+                                                        "transition-opacity",
+                                                        "data-[hover=true]:text-foreground",
+                                                        "data-[hover=true]:bg-default-100",
+                                                        "dark:data-[hover=true]:bg-default-50",
+                                                        "data-[selectable=true]:focus:bg-default-50",
+                                                        "data-[pressed=true]:opacity-70",
+                                                        "data-[focus-visible=true]:ring-default-500",
+                                                    ],
+                                                },
+                                            }}
+                                            popoverProps={{
+                                                classNames: {
+                                                    base: "p-0 border-small border-divider bg-background",
+                                                    arrow: "bg-default-200",
+                                                },
+                                            }}
+                                            renderValue={(items) => {
+                                                return items.map((item) => (
+                                                    <div key={item?.data?._id} className="flex items-center gap-2">
+                                                        <Avatar
+                                                            alt={item?.data?.nombre}
+                                                            className="flex-shrink-0"
+                                                            size="sm"
+                                                            src={item?.data?.imagen}
+                                                        />
+                                                        <div className="flex flex-col">
+                                                            <span>{item?.data?.nombre}</span>
+                                                            <span className="text-default-500 text-tiny">({item?.data?.email})</span>
+                                                        </div>
+                                                    </div>
+                                                ));
+                                            }}
+                                            >
+                                            {(instructor) => (
+                                                <SelectItem key={instructor?._id} textValue={instructor?.nombre}>
+                                                    <div className="flex gap-2 items-center">
+                                                        <Avatar alt={instructor?.nombre} className="flex-shrink-0" size="sm" src={instructor?.imagen} />
+                                                        <div className="flex flex-col">
+                                                            <span className="text-small">{instructor?.nombre}</span>
+                                                            <span className="text-tiny text-default-400">{instructor?.email}</span>
+                                                        </div>
+                                                    </div>
+                                                </SelectItem>
+                                            )}
+                                        </Select>
+                                    
                                         {id && (
                                             <div className="w-full flex flex-col justify-center gap-4">
                                                 <div className="flex w-full flex-wrap md:flex-nowrap mb-6 md:mb-0 gap-4">

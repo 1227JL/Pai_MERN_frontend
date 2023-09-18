@@ -14,6 +14,7 @@ const TituladaProvider = ({children}) => {
     const [cargando, setCargando] = useState(false)
     const [buscador, setBuscador] = useState(false)
     const [modalTitulada, setModalTitulada] = useState(false)
+    const [modalDetallesTitulada, setModalDetallesTitulada] = useState(false)
     const [modalAprendiz, setModalAprendiz] = useState(false)
 
 
@@ -164,6 +165,11 @@ const TituladaProvider = ({children}) => {
         setModalTitulada(!modalTitulada)
         setAlerta({})
     }
+
+    const handleModaDetalleslTitulada = () => {
+        setModalDetallesTitulada(!modalDetallesTitulada)
+        setAlerta({})
+    }
   
     const handleModalAprendiz = () => {
         setModalAprendiz(!modalAprendiz)
@@ -185,6 +191,8 @@ const TituladaProvider = ({children}) => {
                 obtenerTitulada,
                 modalTitulada,
                 handleModalTitulada,
+                modalDetallesTitulada,
+                handleModaDetalleslTitulada,
                 modalAprendiz,
                 handleModalAprendiz
             }}

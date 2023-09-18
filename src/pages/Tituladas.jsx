@@ -3,8 +3,8 @@ import useTitulada from "../hooks/useTitulada"
 import Busqueda from "../components/BusquedaTituladas"
 import Titulada from "../components/Titulada"
 import Spinner from "../components/Spinner"
-import quitarTildes from "../helpers/quitarTildes"
 import ModalTitulada from "../components/ModalTitulada"
+import quitarTildes from "../helpers/QuitarTildes"
 
 export default function Tituladas() {
 
