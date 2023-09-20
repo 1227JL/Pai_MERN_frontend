@@ -1,7 +1,7 @@
-import { Dialog, Transition } from '@headlessui/react'
-import { Fragment, useEffect, useState } from 'react'
 import useTitulada from '../hooks/useTitulada'
 import { User } from '@nextui-org/react'
+import {Modal, ModalContent, ModalHeader, ModalBody} from "@nextui-org/react";
+
 
 export default function ModalDetallesTitulada() {
     
@@ -11,114 +11,99 @@ export default function ModalDetallesTitulada() {
     if(!titulada.instructores) return
     return (
         <>
-            <Transition.Root show={ modalDetallesTitulada } as={Fragment}>
-                <Dialog as="div" className="fixed z-20 inset-0 overflow-y-auto" onClose={ handleModaDetalleslTitulada }>
-                    <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block">
-                        <Transition.Child
-                            as={Fragment}
-                            enter="ease-out duration-300"
-                            enterFrom="opacity-0"
-                            enterTo="opacity-100"
-                            leave="ease-in duration-200"
-                            leaveFrom="opacity-100"
-                            leaveTo="opacity-0"
-                        >
-                            <Dialog.Overlay 
-                                className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" 
-                            />
-                        </Transition.Child>
-
-                        {/* This element is to trick the browser into centering the modal contents. */}
-                        <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">
-                            &#8203;
-                        </span>
-
-                        <Transition.Child
-                            as={Fragment}
-                            enter="ease-out duration-300"
-                            enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                            enterTo="opacity-100 translate-y-0 sm:scale-100"
-                            leave="ease-in duration-200"
-                            leaveFrom="opacity-100 translate-y-0 sm:scale-100"
-                            leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                        >
-                            <div className="inline-block align-middle bg-white rounded-lg px-4 pt-5 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:max-w-3xl w-full sm:p-6">
-                                <div className="block absolute top-0 right-0 pt-4 pr-4">
-                                    <button
-                                        type="button"
-                                        className="bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                                        onClick={ handleModaDetalleslTitulada }
-                                    >
-                                    <span className="sr-only">Cerrar</span>
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
-                                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                                        </svg>
-                                    </button>
+            <Modal classNames={{
+                body: "pb-6",
+                base: "m-auto mx-2",
+            }} backdrop={'blur'} isOpen={modalDetallesTitulada} onClose={handleModaDetalleslTitulada}>
+                <ModalContent>
+                    {(onClose) => (
+                        <>
+                            <ModalHeader className="flex flex-col gap-1">{titulada?.programa}</ModalHeader>
+                            <ModalBody>
+                                <div>
+                                    <p className='font-bold'>Ficha</p>
+                                    <p>{titulada?.ficha}</p>
                                 </div>
-
-
-                                <div className="sm:flex sm:items-start">
-                                    <div className="mt-3 sm:mt-0 sm:ml-4 w-full">
-                                        <Dialog.Title as="h3" className="text-lg leading-6 font-bold text-gray-900 mb-5 uppercase">
-                                            {titulada?.programa}
-                                        </Dialog.Title>
-                                        <div className='mb-2'>
-                                            <p className='font-bold'>Ficha</p>
-                                            <p className=''>{titulada?.ficha}</p>
-                                        </div>
-                                        <div className='mb-2'>
-                                            <p className='font-bold'>Tipo de Formación</p>
-                                            <p className=''>{titulada?.tipo}</p>
-                                        </div>
-                                        <div className='mb-2'>
-                                            <p className='font-bold'>Instructor a Cargo</p>
-                                            <User   
-                                                name={titulada?.instructores[0]?.nombre}
-                                                className='mt-2'
-                                                description={titulada?.instructores[0]?.email}
-                                                avatarProps={{
-                                                    src: titulada?.instructores[0]?.imagen
-                                                }}
-                                            />
-                                        </div>
-                                        <div className='mb-2'>
-                                            <p className='font-bold'>Ambiente</p>
-                                            <p className=''>{titulada?.ambiente || 'E-105'}</p>
-                                        </div>
-                                        <div className='mb-2'>
-                                            <p className='font-bold'>Modalidad</p>
-                                            <p className=''>{titulada?.modalidad}</p>
-                                        </div>
-                                        <div className='mb-2'>
-                                            <p className='font-bold'>Jornada</p>
-                                            <p className=''>{titulada?.jornada}</p>
-                                        </div>
-                                        <div className='mb-2'>
-                                            <p className='font-bold'>Duración</p>
-                                            <p className=''>{titulada?.duracion}</p>
-                                        </div>
-                                        <div className='mb-2'>
-                                            <p className='font-bold'>Cantidad de Aprendices</p>
-                                            <p className=''>{titulada?.aprendices?.length || 25}</p>
-                                        </div>
-                                        <div className='mb-2'>
-                                            <p className='font-bold'>Creada por</p>
-                                            <User   
-                                                name={titulada?.creador?.nombre}
-                                                className='mt-2'
-                                                description={titulada?.creador?.email}
-                                                avatarProps={{
-                                                    src: titulada?.creador?.imagen
-                                                }}
-                                            />
-                                        </div>
+                                <div>
+                                    <p className='font-bold'>Tipo de Formación</p>
+                                    <p>{titulada?.tipo}</p>
+                                </div>
+                                <div>
+                                    <p className='font-bold'>Instructor a Cargo</p>
+                                    <User   
+                                        name={titulada?.instructores[0]?.nombre}
+                                        className='mt-2'
+                                        description={titulada?.instructores[0]?.email}
+                                        avatarProps={{
+                                            src: titulada?.instructores[0]?.imagen
+                                        }}
+                                    />
+                                </div>
+                                <div>
+                                    <p className='font-bold'>Ambiente</p>
+                                    <p>{titulada?.ambiente || 'E-105'}</p>
+                                </div>
+                                <div>
+                                    <p className='font-bold'>Modalidad</p>
+                                    <p>{titulada?.modalidad}</p>
+                                </div>
+                                <div>
+                                    <p className='font-bold'>Jornada</p>
+                                    <p>{titulada?.jornada}</p>
+                                </div>
+                                <div>
+                                    <p className='font-bold'>Duración</p>
+                                    <p>{titulada?.duracion}</p>
+                                </div>
+                                <div>
+                                    <p className='font-bold'>Cantidad de Aprendices</p>
+                                    <p>{titulada?.aprendices?.length || 25}</p>
+                                </div>
+                                <div>
+                                    <p className='font-bold'>Creada por</p>
+                                    <User   
+                                        name={titulada?.creador?.nombre}
+                                        className='mt-2'
+                                        description={titulada?.creador?.email}
+                                        avatarProps={{
+                                            src: titulada?.creador?.imagen
+                                        }}
+                                    />
+                                </div>
+                                <div>
+                                    <p className='font-bold mb-2'>Estado de Formación</p>
+                                    <div className={`p-3 rounded-lg ${(() => {
+                                        switch (titulada?.estado) {
+                                            case 'Etapa Lectiva':
+                                                return 'bg-success-100';
+                                            case 'Etapa Productiva':
+                                                return 'bg-warning-100';
+                                            case 'Formación Finalizada':
+                                                return 'bg-danger-100';
+                                            default:
+                                                return 'bg-default-100';
+                                        }
+                                        })()}`}>
+                                        <p className={`text-sm ${(() => {
+                                            switch (titulada?.estado) {
+                                                case 'Etapa Lectiva':
+                                                    return 'text-success-600';
+                                                case 'Etapa Productiva':
+                                                    return 'text-warning-600';
+                                                case 'Formación Finalizada':
+                                                    return 'text-danger-600';
+                                                default:
+                                                    return 'text-default-400';
+                                            }
+                                            })()}`}
+                                        >{titulada.estado}</p>
                                     </div>
                                 </div>
-                            </div>
-                        </Transition.Child>
-                    </div>
-                </Dialog>
-            </Transition.Root>
+                            </ModalBody>
+                        </>
+                    )}
+                </ModalContent>
+            </Modal>  
         </>
     )
 }

@@ -8,9 +8,9 @@ export default function MenuNavegacionConsultar() {
         <div className="flex items-center">
             <Menu as="div" className="relative z-20 text-left bg-white">
             <div className='flex'>
-                <Menu.Button className="rounded-md p-2 text-sm font-bold hover:bg-white-200">
-                    Consultar
-                </Menu.Button>
+              <Menu.Button className="rounded-md p-2 text-sm font-bold hover:bg-white-200">
+                  Consultar
+              </Menu.Button>
             </div>
             <Transition
                 as={Fragment}
@@ -41,7 +41,7 @@ export default function MenuNavegacionConsultar() {
                         <Link to={'/consultar/instructores'} className="flex items-center gap-5 p-3 rounded-lg hover:bg-white-200 hover:cursor-pointer transition-colors">
                             <img src="/src/assets/instructor.png" alt="icono instructores" height={40} width={40}/>
                             <div>
-                                <p className="font-bold text-black-100 text-sm">Consultar Intructores</p>
+                                <p className="font-bold text-black-100 text-sm">Consultar Instructores</p>
                                 <p className="text-default-400 text-sm">Consulta información de los distintos instructores</p>
                             </div>
                         </Link>

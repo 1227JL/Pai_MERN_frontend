@@ -1,11 +1,10 @@
 import { useEffect } from "react"
 import { useParams } from "react-router-dom"
-import TableAprendices from "./TableAprendices"
+import TableAprendices from "../components/TableAprendices"
 import useTitulada from "../hooks/useTitulada"
 import Spinner from "../components/Spinner"
 import ModalTitulada from "../components/ModalTitulada"
 import ModalDetallesTitulada from "../components/ModalDetallesTitulada"
-import Alerta from "../components/Alerta"
 import { EditIcon } from "../components/EditIcon"
 import { DeleteIcon } from "../components/DeleteIcon"
 import { Tooltip } from "@nextui-org/react"
@@ -15,7 +14,7 @@ import ModalEliminarTitulada from "../components/ModalEliminarTitulada"
 export default function Titulada() {
       
   const params = useParams()
-  const { cargando, alerta, titulada, obtenerTitulada, eliminarTitulada, handleModalTitulada, handleModaDetalleslTitulada, handleModalEliminarTitulada } = useTitulada()
+  const { cargando, titulada, obtenerTitulada, eliminarTitulada, handleModalTitulada, handleModaDetalleslTitulada, handleModalEliminarTitulada } = useTitulada()
 
   useEffect(() => {
     return ()=>obtenerTitulada(params.ficha)
@@ -23,15 +22,11 @@ export default function Titulada() {
 
   if(cargando) return <Spinner>Obteniendo Titulada...</Spinner>
 
-  const { error } = alerta
-
-  
   return (
     <>
-      {error && <Alerta alerta={alerta}/>}
-      <div className="flex justify-between mb-7 items-center">
-        <h1 className="text-center uppercase">{titulada.programa}</h1>
-        <div className="flex gap-5 items-center">
+      <div className="flex flex-col lg:flex-row gap-2 justify-between mb-7 items-center">
+        <h1 className=" text-xl md:text-3xl text-center uppercase">{titulada.programa}</h1>
+        <div className="flex gap-5 items-center ml-auto">
           <Tooltip content="Detalles de la Titulada">
             <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
               <EyeIcon onClick={handleModaDetalleslTitulada}/>
@@ -49,7 +44,7 @@ export default function Titulada() {
           </Tooltip>
         </div>
       </div>
-      <TableAprendices/>
+      {/* <TableAprendices/> */}
       <ModalTitulada/>
       <ModalDetallesTitulada/>
       <ModalEliminarTitulada title={'Titulada'} onClick={()=>eliminarTitulada(titulada?._id)}/>

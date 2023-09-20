@@ -14,6 +14,7 @@ const InstructorProvider = ({children}) => {
   const [instructores, setInstructores] = useState([])
   const [instructor, setInstructor] = useState({})
   const [modalInstructor, setModalInstructor] = useState(false)
+  const [modalEliminarInstructor, setModalEliminarInstructor] = useState(false)
 
   useEffect(() => {
     const obtenerInstructores = async () => {
@@ -47,20 +48,26 @@ const InstructorProvider = ({children}) => {
   
   
   const handleModalInstructor = (instructor) => {
-    setModalInstructor(!modalInstructor)
-    setAlerta({})
     setInstructor(instructor)
+    setAlerta({})
+    setModalInstructor(!modalInstructor)
+  }
+
+  const handleModalEliminarInstructor = (instructor) => {
+    setInstructor(instructor)
+    setModalEliminarInstructor(!modalEliminarInstructor)
   }
 
   const submitInstructor = async (instructor) => {
     if(instructor.id){
-      console.log('instructor ya registrado');
+      await actualizarInstructor(instructor)
       return
     }
     await agregarInstructor(instructor)
   }
 
   const agregarInstructor = async (instructor) => {
+    console.log(instructor)
     try {
       const token = localStorage.getItem('token')
 
@@ -97,9 +104,49 @@ const InstructorProvider = ({children}) => {
     }
   }
 
+  const actualizarInstructor = async (instructor) => {
+    console.log(instructor)
+  }
+
+  const eliminarInstructor = async () => {
+    try {
+      const token = localStorage.getItem('token')
+
+      if(!token){
+        return
+      }
+
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        }
+      }
+
+      const { data } = await clienteAxios.delete(`/instructores/${instructor._id}`, config)
+
+      const instructoresActualizados = instructores.filter(instructorState => instructorState._id !== instructor._id)
+      setInstructores(instructoresActualizados)
+
+      setModalEliminarInstructor(!modalEliminarInstructor)
+
+      setAlerta({
+        msg: data.msg,
+        error: true
+      })
+
+      setTimeout(() => {
+        setAlerta({})
+      }, 2000);
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   return (
     <InstructorContext.Provider
       value={{
+        cargando,
         alerta,
         setAlerta,
         modalInstructor,
@@ -107,6 +154,9 @@ const InstructorProvider = ({children}) => {
         instructor,
         handleModalInstructor,
         submitInstructor,
+        modalEliminarInstructor,
+        handleModalEliminarInstructor,
+        eliminarInstructor
       }}
     >
       {children}

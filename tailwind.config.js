@@ -10,7 +10,6 @@ export default {
         "primary-100": "#4ce060",
         "primary-200": "#46d459",
         "middle-100": "#fabb05",
-        "danger-100": "#fe0324",
         "more-100": "#593fffd6",
         "more-200": "#593fff",
         "black-100": "#333333",

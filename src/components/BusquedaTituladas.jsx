@@ -1,7 +1,7 @@
 import { Fragment, useState } from 'react'
 import { Combobox, Dialog, Transition } from '@headlessui/react'
 import useTitulada from '../hooks/useTitulada'
-import quitarTildes from '../helpers/quitarTildes'
+import { quitarTildes } from '../helpers/Utils'
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')

@@ -63,8 +63,6 @@ const TituladaProvider = ({children}) => {
     }
 
     const crearTitulada = async (titulada) => {
-        console.log(titulada);
-
         setCargando(true)
         try {
             const token = localStorage.getItem('token')
@@ -88,6 +86,11 @@ const TituladaProvider = ({children}) => {
                 msg: 'Titulada Creada Exitosamente',
                 error: false
             })
+
+            setTimeout(() => {
+                setAlerta({})
+                setModalTitulada(false)
+            }, 2000);
 
         } catch (error) {
             setAlerta({

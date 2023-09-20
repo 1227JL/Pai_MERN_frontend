@@ -5,12 +5,10 @@ import Titulada from "../components/Titulada"
 import Spinner from "../components/Spinner"
 import ModalTitulada from "../components/ModalTitulada"
 import Boton from "../components/Boton"
-import QuitarTildes from "../helpers/QuitarTildes"
-import Alerta from "../components/Alerta"
 
 export default function Tituladas() {
 
-    const { cargando, alerta, tituladas, handleBuscador, handleModalTitulada } = useTitulada()
+    const { cargando, tituladas, handleBuscador, handleModalTitulada } = useTitulada()
     const [filtros, setFiltros] = useState([]);
     const [tituladasFiltradas, setTituladasFiltradas] = useState([]);
 
@@ -28,10 +26,10 @@ export default function Tituladas() {
       
           return lowerCaseFilters.every((filtro) => {
             return (
-              QuitarTildes(titulada.tipo.toLowerCase()).includes(filtro) ||
-              QuitarTildes(titulada.jornada.toLowerCase()).includes(filtro) ||
-              QuitarTildes(titulada.estado.toLowerCase()).includes(filtro) ||
-              QuitarTildes(titulada.modalidad.toLowerCase()).includes(filtro)
+              quitarTildes(titulada.tipo.toLowerCase()).includes(filtro) ||
+              quitarTildes(titulada.jornada.toLowerCase()).includes(filtro) ||
+              quitarTildes(titulada.estado.toLowerCase()).includes(filtro) ||
+              quitarTildes(titulada.modalidad.toLowerCase()).includes(filtro)
               // Agrega aquí más atributos según sea necesario
             );
           });
@@ -54,8 +52,6 @@ export default function Tituladas() {
           setFiltros((prevFiltros) => prevFiltros.filter((filtro) => filtro !== checkboxId));
         }
     };
-
-    const { msg } = alerta
 
     return (
         <>
@@ -215,7 +211,6 @@ export default function Tituladas() {
                         <Boton classes={'bg-more-100'} onClick={handleBuscador}>Buscar Titulada</Boton>
                     </div>
                     <hr />
-                    {msg && <Alerta alerta={alerta}/>}
                     {cargando ? (
                         <Spinner>Obteniendo Tituladas...</Spinner>
                     ) : (

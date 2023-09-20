@@ -1,4 +1,5 @@
-import React, { useCallback } from "react";
+import React from "react";
+
 import {
   Table,
   TableHeader,
@@ -15,19 +16,15 @@ import {
   Chip,
   User,
   Pagination,
-  Tooltip
 } from "@nextui-org/react";
-import {columns, statusOptions} from "../components/data";
-import { PlusIcon } from "../components/PlusIcon";
-import { ChevronDownIcon } from "../components/ChevronDownIcon";
-import { SearchIcon } from "../components/SerchIcon";
-import { EyeIcon } from "../components/EyeIcon";
-import { EditIcon } from "../components/EditIcon";
-import { DeleteIcon } from "../components/DeleteIcon";
+import {PlusIcon} from "./PlusIcon";
+import {VerticalDotsIcon} from "./VerticalDotsIcon";
+import {ChevronDownIcon} from "./ChevronDownIcon";
+import {columns, statusOptions} from "./data";
+import { SearchIcon } from "./SerchIcon";
 import { capitalize } from "../helpers/Utils";
-import useInstructor from "../hooks/useIntructor"
-import ModalInstructor from "../components/ModalInstructor"
-import quitarTildes from "../helpers/QuitarTildes";
+import useTitulada from "../hooks/useTitulada";
+import ModalAprendiz from "./ModalAprendiz";
 
 const statusColorMap = {
   Activo: "success",
@@ -37,14 +34,14 @@ const statusColorMap = {
 
 const INITIAL_VISIBLE_COLUMNS = ["nombre", "area", "estado", "actions"];
 
-export default function TableInstructores() {
+export default function App() {
 
-  const { instructores, handleModalInstructor } = useInstructor()
+  const { titulada, handleModalAprendiz } = useTitulada()
   const [filterValue, setFilterValue] = React.useState("");
   const [selectedKeys, setSelectedKeys] = React.useState(new Set([]));
   const [visibleColumns, setVisibleColumns] = React.useState(new Set(INITIAL_VISIBLE_COLUMNS));
   const [statusFilter, setStatusFilter] = React.useState("all");
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [sortDescriptor, setSortDescriptor] = React.useState({
     column: "age",
     direction: "ascending",
@@ -60,21 +57,21 @@ export default function TableInstructores() {
   }, [visibleColumns]);
 
   const filteredItems = React.useMemo(() => {
-    let filteredInstructores = [...instructores];
+    let filteredUsers = [...titulada?.aprendices];
 
     if (hasSearchFilter) {
-      filteredInstructores = filteredInstructores.filter((instructor) =>
-        quitarTildes(instructor.nombre.toLowerCase()).includes(quitarTildes(filterValue.toLowerCase())),
+      filteredUsers = filteredUsers.filter((aprendiz) =>
+        aprendiz?.nombre?.toLowerCase().includes(filterValue.toLowerCase()) || aprendiz?.email?.toLowerCase().includes(filterValue.toLowerCase()),   
       );
     }
     if (statusFilter !== "all" && Array.from(statusFilter).length !== statusOptions.length) {
-      filteredInstructores = filteredInstructores.filter((instructor) =>
-        Array.from(statusFilter).includes(instructor.estado.toLowerCase()),
+      filteredUsers = filteredUsers.filter((aprendiz) =>
+        Array.from(statusFilter).includes(aprendiz?.estado),
       );
     }
 
-    return filteredInstructores;
-  }, [instructores, filterValue, statusFilter]);
+    return filteredUsers;
+  }, [titulada, filterValue, statusFilter]);
 
   const pages = Math.ceil(filteredItems.length / rowsPerPage);
 
@@ -95,55 +92,50 @@ export default function TableInstructores() {
     });
   }, [sortDescriptor, items]);
 
-  const renderCell = React.useCallback((instructor, columnKey) => {
-    const cellValue = instructor[columnKey];
+  const renderCell = React.useCallback((aprendiz, columnKey) => {
+    const cellValue = aprendiz[columnKey];
 
     switch (columnKey) {
       case "nombre":
         return (
           <User
-            avatarProps={{radius: "full", src: instructor.avatar}}
-            description={instructor.nombre}
+            avatarProps={{radius: "full", src: aprendiz?.avatar}}
+            description={aprendiz?.email}
             name={cellValue}
-          >
-            {instructor.email}
-          </User>
+          />
         );
       case "area":
         return (
           <div className="flex flex-col">
             <p className="text-bold text-small capitalize">{cellValue}</p>
-            {/* <p className="text-bold text-tiny capitalize text-default-400">{instructor.nombre}</p> */}
+            <p className="text-bold text-tiny capitalize text-default-400">{aprendiz?.area}</p>
           </div>
         );
       case "estado":
         return (
-          <Chip className="capitalize" color={statusColorMap[instructor.estado]} size="sm" variant="flat">
+          <Chip className="capitalize" color={statusColorMap[aprendiz.estado]} size="sm" variant="flat">
             {cellValue}
           </Chip>
         );
-        case "actions":
-          return (
-            <div className="relative flex items-center gap-2">
-              <Tooltip content="Details">
-                <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-                  <EyeIcon />
-                </span>
-              </Tooltip>
-              <Tooltip content="Edit user">
-                <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-                  <EditIcon onClick={()=>handleModalInstructor(instructor)} />
-                </span>
-              </Tooltip>
-              <Tooltip color="danger" content="Delete user">
-                <span className="text-lg text-danger cursor-pointer active:opacity-50">
-                  <DeleteIcon />
-                </span>
-              </Tooltip>
-            </div>
-          );
-        default:
-          return cellValue;
+      case "actions":
+        return (
+          <div className="relative flex items-center gap-2">
+            <Dropdown>
+              <DropdownTrigger aria-label="Opciones">
+                <Button isIconOnly size="sm" variant="light">
+                  <VerticalDotsIcon className="text-default-300" />
+                </Button>
+              </DropdownTrigger>
+              <DropdownMenu aria-labelledby="opciones-label">
+                <DropdownItem>View</DropdownItem>
+                <DropdownItem onClick={()=>handleModalAprendiz(aprendiz)}>Edit</DropdownItem>
+                <DropdownItem>Delete</DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+          </div>
+        );
+      default:
+        return cellValue;
     }
   }, []);
 
@@ -173,7 +165,7 @@ export default function TableInstructores() {
     }
   }, []);
 
-  const onClear = useCallback(()=>{
+  const onClear = React.useCallback(()=>{
     setFilterValue("")
     setPage(1)
   },[])
@@ -186,7 +178,7 @@ export default function TableInstructores() {
             <Input
               isClearable
               className="w-full sm:max-w-[44%]"
-              placeholder="Busca por el nombre..."
+              placeholder="Search by name..."
               startContent={<SearchIcon />}
               value={filterValue}
               onClear={() => onClear()}
@@ -196,7 +188,7 @@ export default function TableInstructores() {
               <Dropdown>
                 <DropdownTrigger className="hidden sm:flex">
                   <Button endContent={<ChevronDownIcon className="text-small" />} variant="flat">
-                    Estado
+                    Status
                   </Button>
                 </DropdownTrigger>
                 <DropdownMenu
@@ -235,8 +227,8 @@ export default function TableInstructores() {
                   ))}
                 </DropdownMenu>
               </Dropdown>
-              <Button onClick={handleModalInstructor} color="success" endContent={<PlusIcon color={'white'} />}>
-                <p className="text-white">Agregar</p>
+              <Button onClick={handleModalInstructor} className="bg-primary-100 text-white" endContent={<PlusIcon />}>
+                Agregar
               </Button>
             </div>
           </div>
@@ -248,14 +240,15 @@ export default function TableInstructores() {
                 className="bg-transparent outline-none text-default-400 text-small"
                 onChange={onRowsPerPageChange}
               >
-                <option value="5">5</option>
                 <option value="10">10</option>
-                <option value="15">15</option>
+                <option value="20">20</option>
+                <option value="30">30</option>
+                <option value="40">40</option>
               </select>
             </label>
           </div>
         </div>
-        <ModalInstructor/>
+        <ModalAprendiz/>
       </>
     );
   }, [
@@ -271,11 +264,6 @@ export default function TableInstructores() {
   const bottomContent = React.useMemo(() => {
     return (
       <div className="py-2 px-2 flex justify-between items-center">
-        <span className="w-[30%] text-small text-default-400">
-          {selectedKeys === "all"
-            ? "Todos seleccionados"
-            : `${selectedKeys.size} de ${filteredItems.length} seleccionados`}
-        </span>
         <Pagination
           isCompact
           showControls
@@ -287,10 +275,10 @@ export default function TableInstructores() {
         />
         <div className="hidden sm:flex w-[30%] justify-end gap-2">
           <Button isDisabled={pages === 1} size="sm" variant="flat" onPress={onPreviousPage}>
-            Previo
+            Previous
           </Button>
           <Button isDisabled={pages === 1} size="sm" variant="flat" onPress={onNextPage}>
-            Siguiente
+            Next
           </Button>
         </div>
       </div>
@@ -300,7 +288,9 @@ export default function TableInstructores() {
   return (
     <Table
       aria-label="Example table with custom cells, pagination and sorting"
-      isHeaderSticky
+      // isHeaderSticky
+      showSelectionCheckboxes={false}
+      isStriped={true}
       bottomContent={bottomContent}
       bottomContentPlacement="outside"
       classNames={{
@@ -325,10 +315,10 @@ export default function TableInstructores() {
           </TableColumn>
         )}
       </TableHeader>
-      <TableBody emptyContent={"Instructor no encontrado"} items={sortedItems}>
-        {(item) => (
-          <TableRow key={item._id}>
-            {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
+      <TableBody emptyContent={"Instructores no encontrados"} items={sortedItems}>
+        {(instructor) => (
+          <TableRow key={instructor._id}>
+            {(columnKey) => <TableCell>{renderCell(instructor, columnKey)}</TableCell>}
           </TableRow>
         )}
       </TableBody>

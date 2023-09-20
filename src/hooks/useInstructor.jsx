@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import InstructorContext from "../context/InstructorProvider";
 
-export default function useIntructor() {
+export default function useInstructor() {
     return useContext(InstructorContext)
 }
