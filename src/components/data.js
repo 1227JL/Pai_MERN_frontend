@@ -26,10 +26,9 @@ const CONTRATOS = ['Término Indefinido', 'Término Fijo']
 const AREAS = ['Deportes', 'Gastronomia', 'Sistemas', 'Gestion', 'Idiomas']
 
 const columns = [
-  {name: "ID", uid: "id", sortable: true},
   {name: "NOMBRE", uid: "nombre", sortable: true},
+  {name: "CONTRATO", uid: "contrato", sortable: true},
   {name: "AREA", uid: "area", sortable: true},
-  {name: "EMAIL", uid: "email"},
   {name: "ESTADO", uid: "estado", sortable: true},
   {name: "ACTIONS", uid: "actions"},
 ];
@@ -40,4 +39,9 @@ const statusOptions = [
   {name: "Vacaciones", uid: "vacaciones"},
 ];
 
-export {columns, statusOptions, PROGRAMAS, JORNADAS, MODALIDADES, ESTADOSTITULADAS, CONTRATOS, AREAS};
+const contratoOptions = [
+  {name: "Término Indefinido", uid: "termino indefinido"},
+  {name: "Término Fijo", uid: "termino fijo"},
+];
+
+export {columns, statusOptions, contratoOptions, PROGRAMAS, JORNADAS, MODALIDADES, ESTADOSTITULADAS, CONTRATOS, AREAS};

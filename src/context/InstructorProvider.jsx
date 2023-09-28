@@ -15,6 +15,7 @@ const InstructorProvider = ({children}) => {
   const [instructor, setInstructor] = useState({})
   const [modalInstructor, setModalInstructor] = useState(false)
   const [modalEliminarInstructor, setModalEliminarInstructor] = useState(false)
+  const [modalDetallesInstructor, setModalDetallesInstructor] = useState(false)
 
   useEffect(() => {
     const obtenerInstructores = async () => {
@@ -53,6 +54,12 @@ const InstructorProvider = ({children}) => {
     setModalInstructor(!modalInstructor)
   }
 
+  const handleModalDetallesInstructor = (instructor) => {
+    setInstructor(instructor)
+    setAlerta({})
+    setModalDetallesInstructor(!modalDetallesInstructor)
+  }
+
   const handleModalEliminarInstructor = (instructor) => {
     setInstructor(instructor)
     setModalEliminarInstructor(!modalEliminarInstructor)
@@ -67,7 +74,6 @@ const InstructorProvider = ({children}) => {
   }
 
   const agregarInstructor = async (instructor) => {
-    console.log(instructor)
     try {
       const token = localStorage.getItem('token')
 
@@ -83,29 +89,60 @@ const InstructorProvider = ({children}) => {
       }
 
       const { data } = await clienteAxios.post('/instructores', instructor, config)
-      
+
       const instructoresActualizados = [...instructores, data]
       setInstructores(instructoresActualizados)
-
       setAlerta({
-        msg: data.msg,
+        msg: "Instructor Registrado Exitosamente",
         error: false
       })
 
       setTimeout(() => {
-        setAlerta({})
         setModalInstructor(false)
+        setAlerta({})
       }, 2000);
     } catch (error) {
       setAlerta({
         msg: error.response.data.msg,
         error: true
       })
-    }
+    }  
   }
 
   const actualizarInstructor = async (instructor) => {
-    console.log(instructor)
+    try {
+      const token = localStorage.getItem('token')
+
+      if(!token){
+        return
+      }
+
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        }
+      }
+
+      const { data } = await clienteAxios.put(`/instructores/${instructor?.id}`, instructor, config)
+
+      const instructoresActualizados = instructores.map(instructorState => instructorState._id === data._id ? data : instructorState)
+      setInstructores(instructoresActualizados)
+
+      setAlerta({
+        msg: "Instructor Actualizado Exitosamente",
+        error: false
+      })
+
+      setInstructor({})
+
+      setTimeout(() => {
+        setModalInstructor(false)
+        setAlerta({})
+      }, 2000);
+    } catch (error) {
+      console.log(error.response)
+    }
   }
 
   const eliminarInstructor = async () => {
@@ -156,6 +193,8 @@ const InstructorProvider = ({children}) => {
         submitInstructor,
         modalEliminarInstructor,
         handleModalEliminarInstructor,
+        modalDetallesInstructor,
+        handleModalDetallesInstructor,
         eliminarInstructor
       }}
     >

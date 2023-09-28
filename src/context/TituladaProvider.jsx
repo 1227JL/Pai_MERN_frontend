@@ -64,6 +64,7 @@ const TituladaProvider = ({children}) => {
 
     const crearTitulada = async (titulada) => {
         setCargando(true)
+        console.log(titulada)
         try {
             const token = localStorage.getItem('token')
 
@@ -73,7 +74,7 @@ const TituladaProvider = ({children}) => {
 
             const config = {
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'multipart/form-data',
                     Authorization: `Bearer ${token}`
                 }
             }
@@ -121,10 +122,7 @@ const TituladaProvider = ({children}) => {
             const { data } = await clienteAxios(`/tituladas/${ficha}`, config)
             setTitulada(data)
         } catch (error) {
-            setAlerta({
-                msg: error.response.data.msg,
-                error: true
-            })
+            navigate('/consultar/tituladas')
         }finally {
             setCargando(false)
         }
@@ -140,7 +138,7 @@ const TituladaProvider = ({children}) => {
 
             const config = {
                 headers: {
-                    "Content-Type": "application/json",
+                    "Content-Type": "multipart/form-data",
                     Authorization: `Bearer ${token}`
                 }
             }

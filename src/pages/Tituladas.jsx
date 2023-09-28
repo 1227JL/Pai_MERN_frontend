@@ -55,7 +55,8 @@ export default function Tituladas() {
 
     return (
         <>
-            <div className='lg:flex lg:gap-7'>
+            <h1 className="heading text-center">Gestiona las <span className='text-slate-600'>Tituladas</span></h1>
+            <div className='lg:flex lg:gap-7 mt-10'>
                 <div className='mb-6 lg:mb-0 flex flex-col lg:w-1/3 shadow-small p-5 rounded-xl h-[40rem]'>
                     <h1>Filtros de busqueda</h1>
                     <hr/>
@@ -206,13 +207,15 @@ export default function Tituladas() {
                     <Boton classes={'bg-primary-100 mt-auto'} onClick={handleModalTitulada}>Agregar Nueva Titulada</Boton>
                 </div>
                 <div className='lg:w-2/3 flex-2'>
-                    <div className="flex justify-between items-center">
-                        <h1>Tituladas</h1>
+                    <div className="mb-2 flex justify-between items-center">
+                        <h1 className="m-0">Tituladas</h1>
                         <Boton classes={'bg-more-100'} onClick={handleBuscador}>Buscar Titulada</Boton>
                     </div>
                     <hr />
                     {cargando ? (
-                        <Spinner>Obteniendo Tituladas...</Spinner>
+                        <div className="mt-10">
+                            <Spinner>Obteniendo Tituladas...</Spinner>
+                        </div>
                     ) : (
                         (filtros?.length > 0) ? (
                             <div className='flex flex-col gap-4 overflow-y-scroll p-2 pr-4 mt-2 max-h-[42rem]'>

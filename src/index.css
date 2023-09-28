@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 .sk-fading-circle {
-margin: 50px auto 15px auto;
+margin: 5px auto 15px auto;
 width: 40px;
 height: 40px;
 position: relative;
@@ -137,8 +137,17 @@ border-radius: 100%;
 0%, 39%, 100% { opacity: 0; }
 40% { opacity: 1; } 
 }
+
+@keyframes spin {
+0% { transform: rotate(0deg); }
+100% { transform: rotate(360deg); }
+}
+
   
 @layer base {
+    h1,h2,h3, h4, p, span, label {
+        @apply text-slate-600
+    }
     h1 {
         @apply text-3xl font-black mb-3
     }
@@ -149,6 +158,9 @@ border-radius: 100%;
 }
 
 @layer components {
+    .heading {
+        @apply text-primary-100 font-black text-6xl capitalize
+    }
     .checkbox {
       @apply appearance-none w-5 h-5 border border-white-300 rounded-full hover:cursor-pointer relative checked:before:content-[""] checked:before:absolute checked:before:top-1/2 checked:before:left-1/2 checked:before:w-3 checked:before:h-3 checked:before:-translate-x-1/2 checked:before:-translate-y-1/2 checked:before:bg-primary-100 checked:before:rounded-full;
     }
@@ -165,3 +177,5 @@ border-radius: 100%;
 }
 
 /* className='appearance-none w-5 h-5 border border-white-300 rounded-full hover:cursor-pointer relative checked:before:content-[""] checked:before:absolute checked:before:top-1/2 checked:before:left-1/2 checked:before:w-3 checked:before:h-3 checked:before:-translate-x-1/2 checked:before:-translate-y-1/2 checked:before:bg-primary-100 checked:before:rounded-full'  */
+
+/* Dropzone */

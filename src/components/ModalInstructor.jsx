@@ -80,6 +80,7 @@ export default function ModalInstructor() {
 
     await submitInstructor({ id, nombre, identificacion, email: agregarDominioSena(email), telefono, contrato, area });
 
+    setId(null)
     setNombre('');
     setIdentificacion('');
     setEmail('');

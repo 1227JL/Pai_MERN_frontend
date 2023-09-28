@@ -28,9 +28,9 @@ export default function Header() {
       </nav>
       <div className="flex gap-3 items-center absolute right-0 lg:right-8 z-10">
         <img className="hidden lg:block" src="/src/assets/bell.png" alt="icono notificaciones"/>
-        <div className="flex flex-col text-sm gap-1">
-          <p className="text-right text-black-100 font-semibold">{nombre}</p>
-          <p className="text-right text-default-400">{rol}</p>
+        <div className="hidden sm:flex flex-col text-sm gap-1">
+          <p className="hidden sm:block text-right text-black-100 font-semibold">{nombre}</p>
+          <p className="hidden sm:block text-right text-default-400">{rol}</p>
         </div>
         <img src="/src/assets/user.jpg" alt="icono usuario" height={64} width={64}/>
         <MenuOpcionesPerfil/>

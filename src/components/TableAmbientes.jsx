@@ -23,10 +23,10 @@ import {ChevronDownIcon} from "./ChevronDownIcon";
 import {columns, statusOptions, contratoOptions} from "./data";
 import { SearchIcon } from "./SerchIcon";
 import { capitalize, quitarTildes } from "../helpers/Utils";
-import useInstructor from "../hooks/useInstructor";
-import ModalInstructor from "./ModalInstructor";
-import ModalEliminarInstructor from "./ModalEliminarInstructor";
-import ModalDetallesInstructor from "./ModalDetallesInstructor";
+import ModalAmbiente from "./ModalAmbiente";
+import ModalDetallesAmbiente from "./ModalDetallesAmbiente";
+import ModalEliminarAmbiente from "./ModalEliminarAmbiente";
+import useAmbiente from "../hooks/useAmbiente";
 
 const statusColorMap = {
   Activo: "success",
@@ -36,9 +36,9 @@ const statusColorMap = {
 
 const INITIAL_VISIBLE_COLUMNS = ["nombre", "contrato", "area", "estado", "actions"];
 
-export default function TableInstructores() {
+export default function TableAmbientes() {
 
-  const { instructores, handleModalInstructor, handleModalDetallesInstructor, handleModalEliminarInstructor } = useInstructor()
+  const { ambientes, handleModalAmbiente, handleModalDetallesAmbiente, handleModalEliminarAmbiente } = useAmbiente()
   const [filterValue, setFilterValue] = React.useState("");
   const [selectedKeys, setSelectedKeys] = React.useState(new Set([]));
   const [visibleColumns, setVisibleColumns] = React.useState(new Set(INITIAL_VISIBLE_COLUMNS));
@@ -60,7 +60,7 @@ export default function TableInstructores() {
   }, [visibleColumns]);
 
   const filteredItems = React.useMemo(() => {
-    let filteredUsers = [...instructores];
+    let filteredUsers = [...ambientes];
 
     if (hasSearchFilter) {
       filteredUsers = filteredUsers.filter((user) =>
@@ -80,7 +80,7 @@ export default function TableInstructores() {
     }
 
     return filteredUsers;
-  }, [instructores, filterValue, statusFilter, contratoFilter]);
+  }, [ambientes, filterValue, statusFilter, contratoFilter]);
 
   const pages = Math.ceil(filteredItems.length / rowsPerPage);
 
@@ -101,22 +101,22 @@ export default function TableInstructores() {
     });
   }, [sortDescriptor, items]);
 
-  const renderCell = React.useCallback((instructor, columnKey) => {
-    const cellValue = instructor[columnKey];
+  const renderCell = React.useCallback((ambiente, columnKey) => {
+    const cellValue = ambiente[columnKey];
 
     switch (columnKey) {
       case "nombre":
         return (
           <User
-            avatarProps={{radius: "full", src: instructor.avatar}}
-            description={instructor.email}
+            avatarProps={{radius: "full", src: ambiente.avatar}}
+            description={ambiente.email}
             name={cellValue}
           />
         );
       case "contrato":
         return (
           <div className="flex flex-col">
-            <p className="text-bold text-small capitalize">{instructor.contrato}</p>
+            <p className="text-bold text-small capitalize">{ambiente.contrato}</p>
           </div>
         );
       case "area":
@@ -127,7 +127,7 @@ export default function TableInstructores() {
         );
       case "estado":
         return (
-          <Chip className="capitalize" color={statusColorMap[instructor.estado]} size="sm" variant="flat">
+          <Chip className="capitalize" color={statusColorMap[ambiente.estado]} size="sm" variant="flat">
             {cellValue}
           </Chip>
         );
@@ -141,9 +141,9 @@ export default function TableInstructores() {
                 </Button>
               </DropdownTrigger>
               <DropdownMenu aria-labelledby="opciones-label">
-                <DropdownItem onClick={()=>handleModalDetallesInstructor(instructor)}>View</DropdownItem>
-                <DropdownItem onClick={()=>handleModalInstructor(instructor)}>Edit</DropdownItem>
-                <DropdownItem onClick={()=>handleModalEliminarInstructor(instructor)}>Delete</DropdownItem>
+                <DropdownItem onClick={()=>handleModalDetallesAmbiente(ambiente)}>View</DropdownItem>
+                <DropdownItem onClick={()=>handleModalAmbiente(ambiente)}>Edit</DropdownItem>
+                <DropdownItem onClick={()=>handleModalEliminarAmbiente(ambiente)}>Delete</DropdownItem>
               </DropdownMenu>
             </Dropdown>
           </div>
@@ -262,15 +262,15 @@ export default function TableInstructores() {
                   ))}
                 </DropdownMenu>
               </Dropdown>
-              <Button onClick={handleModalInstructor} className="bg-primary-100 text-white" endContent={<PlusIcon />}>
+              <Button onClick={handleModalAmbiente} className="bg-primary-100 text-white" endContent={<PlusIcon />}>
                 Agregar
               </Button>
             </div>
           </div>
           <div className="flex justify-between items-center">
-            <span className="text-default-400 text-small">Total {instructores.length} Instructores</span>
+            <span className="text-default-400 text-small">Total {ambientes.length} Ambientes</span>
             <label className="flex items-center text-default-400 text-small">
-              Instructores por página:
+                ambientes por página:
               <select
                 className="bg-transparent outline-none text-default-400 text-small"
                 onChange={onRowsPerPageChange}
@@ -283,9 +283,9 @@ export default function TableInstructores() {
             </label>
           </div>
         </div>
-        <ModalInstructor/>
-        <ModalDetallesInstructor/>
-        <ModalEliminarInstructor/>
+        <ModalAmbiente/>
+        <ModalDetallesAmbiente/>
+        <ModalEliminarAmbiente/>
       </>
     );
   }, [
@@ -294,7 +294,7 @@ export default function TableInstructores() {
     contratoFilter,
     visibleColumns,
     onRowsPerPageChange,
-    instructores,
+    ambientes,
     onSearchChange,
     hasSearchFilter,
   ]);
@@ -321,7 +321,7 @@ export default function TableInstructores() {
         </div>
       </div>
     );
-  }, [selectedKeys, items.length, page, pages, hasSearchFilter, instructores]);
+  }, [selectedKeys, items.length, page, pages, hasSearchFilter, ambientes]);
 
   return (
     <Table
@@ -353,7 +353,7 @@ export default function TableInstructores() {
           </TableColumn>
         )}
       </TableHeader>
-      <TableBody emptyContent={"Instructores no encontrados"} items={sortedItems}>
+      <TableBody emptyContent={"Ambientes no encontrados"} items={sortedItems}>
         {(instructor) => (
           <TableRow key={instructor._id}>
             {(columnKey) => <TableCell>{renderCell(instructor, columnKey)}</TableCell>}

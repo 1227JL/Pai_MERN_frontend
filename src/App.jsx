@@ -11,9 +11,10 @@ import Home from './pages/Home'
 import RutaProtegida from './layouts/RutaProtegida'
 import Tituladas from './pages/Tituladas'
 import Instructores from './pages/Instructores'
-import AgregarInstructor from './pages/AgregarInstructor'
 import Titulada from './pages/Titulada'
 import { InstructorProvider } from './context/InstructorProvider'
+import { AmbienteProvider } from './context/AmbienteProvider'
+import Ambientes from './pages/Ambientes'
 
 function App() {
   return (
@@ -21,26 +22,28 @@ function App() {
       <AuthProvider>
         <TituladaProvider>
           <InstructorProvider>
-            <Routes>
-              <Route path='/' element={<AuthLayout/>}>
-                <Route index element={<Login/>}></Route>
-                <Route path='registrar' element={<Registrar/>}></Route>
-                <Route path='olvide-password' element={<OlvidePassword/>}></Route>
-                <Route path='olvide-password/:token' element={<NuevoPassword/>}></Route>
-                <Route path='confirmar/:token' element={<ConfirmarCuenta/>}></Route>
-              </Route>
+            <AmbienteProvider>
+              <Routes>
+                <Route path='/' element={<AuthLayout/>}>
+                  <Route index element={<Login/>}></Route>
+                  <Route path='registrar' element={<Registrar/>}></Route>
+                  <Route path='olvide-password' element={<OlvidePassword/>}></Route>
+                  <Route path='olvide-password/:token' element={<NuevoPassword/>}></Route>
+                  <Route path='confirmar/:token' element={<ConfirmarCuenta/>}></Route>
+                </Route>
 
-              <Route path='/inicio' element={<RutaProtegida/>}>
-                <Route index element={<Home/>}/>
-              </Route>
+                <Route path='/inicio' element={<RutaProtegida/>}>
+                  <Route index element={<Home/>}/>
+                </Route>
 
-              <Route path='/consultar' element={<RutaProtegida/>}>
-                <Route path='tituladas' element={<Tituladas/>}/>
-                <Route path='tituladas/:ficha' element={<Titulada/>}/>
-                <Route path='instructores' element={<Instructores/>}/>
-                <Route path='instructores/agregar' element={<AgregarInstructor/>}/>
-              </Route>
-            </Routes>
+                <Route path='/consultar' element={<RutaProtegida/>}>
+                  <Route path='tituladas' element={<Tituladas/>}/>
+                  <Route path='tituladas/:ficha' element={<Titulada/>}/>
+                  <Route path='instructores' element={<Instructores/>}/>
+                  <Route path='ambientes' element={<Ambientes/>}/>
+                </Route>
+              </Routes>
+            </AmbienteProvider>
           </InstructorProvider>
         </TituladaProvider>
       </AuthProvider>

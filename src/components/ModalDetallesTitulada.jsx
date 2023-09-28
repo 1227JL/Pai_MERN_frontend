@@ -1,17 +1,15 @@
 import useTitulada from '../hooks/useTitulada'
-import { User } from '@nextui-org/react'
+import { Link, User } from '@nextui-org/react'
 import {Modal, ModalContent, ModalHeader, ModalBody} from "@nextui-org/react";
-
 
 export default function ModalDetallesTitulada() {
     
     const { titulada, modalDetallesTitulada, handleModaDetalleslTitulada } = useTitulada()
     
-    
     if(!titulada.instructores) return
     return (
         <>
-            <Modal classNames={{
+            <Modal size='xl' classNames={{
                 body: "pb-6",
                 base: "m-auto mx-2",
             }} backdrop={'blur'} isOpen={modalDetallesTitulada} onClose={handleModaDetalleslTitulada}>
@@ -20,15 +18,15 @@ export default function ModalDetallesTitulada() {
                         <>
                             <ModalHeader className="flex flex-col gap-1">{titulada?.programa}</ModalHeader>
                             <ModalBody>
-                                <div>
+                                <div className='md:flex justify-between items-center'>
                                     <p className='font-bold'>Ficha</p>
                                     <p>{titulada?.ficha}</p>
                                 </div>
-                                <div>
+                                <div className='md:flex justify-between items-center'>
                                     <p className='font-bold'>Tipo de Formación</p>
                                     <p>{titulada?.tipo}</p>
                                 </div>
-                                <div>
+                                <div className='md:flex justify-between items-center'>
                                     <p className='font-bold'>Instructor a Cargo</p>
                                     <User   
                                         name={titulada?.instructores[0]?.nombre}
@@ -39,27 +37,27 @@ export default function ModalDetallesTitulada() {
                                         }}
                                     />
                                 </div>
-                                <div>
+                                <div className='md:flex justify-between items-center'>
                                     <p className='font-bold'>Ambiente</p>
                                     <p>{titulada?.ambiente || 'E-105'}</p>
                                 </div>
-                                <div>
+                                <div className='md:flex justify-between items-center'>
                                     <p className='font-bold'>Modalidad</p>
                                     <p>{titulada?.modalidad}</p>
                                 </div>
-                                <div>
+                                <div className='md:flex justify-between items-center'>
                                     <p className='font-bold'>Jornada</p>
                                     <p>{titulada?.jornada}</p>
                                 </div>
-                                <div>
+                                <div className='md:flex justify-between items-center'>
                                     <p className='font-bold'>Duración</p>
                                     <p>{titulada?.duracion}</p>
                                 </div>
-                                <div>
+                                <div className='md:flex justify-between items-center'>
                                     <p className='font-bold'>Cantidad de Aprendices</p>
                                     <p>{titulada?.aprendices?.length || 25}</p>
                                 </div>
-                                <div>
+                                <div className='md:flex justify-between items-center'>
                                     <p className='font-bold'>Creada por</p>
                                     <User   
                                         name={titulada?.creador?.nombre}
@@ -69,6 +67,10 @@ export default function ModalDetallesTitulada() {
                                             src: titulada?.creador?.imagen
                                         }}
                                     />
+                                </div>
+                                <div className='md:flex justify-between items-center'>
+                                    <p className='font-bold'>Archivo Adjunto</p>
+                                    <Link isExternal isBlock showAnchorIcon href={`http://localhost:4000/uploads/${titulada?.archivoAdjunto}`} color="secondary">Ver Diseño Curricular</Link>
                                 </div>
                                 <div>
                                     <p className='font-bold mb-2'>Estado de Formación</p>
