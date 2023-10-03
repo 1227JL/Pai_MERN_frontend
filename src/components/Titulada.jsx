@@ -13,7 +13,7 @@ export default function Titulada({titulada}) {
         <p className='text-slate-600 font-semibold'>Jornada: <span className='font-normal'>{titulada?.jornada}</span></p>
       </div>
       <div className="flex flex-col items-center lg:flex-row lg:justify-between">
-        <p className='text-slate-600 font-semibold'>Ambiente: <span className='font-normal'>{titulada?.ambiente || 'E-105'}</span></p>
+        <p className='text-slate-600 font-semibold'>Ambiente: <span className='font-normal'>{titulada?.ambiente?.bloque}-{titulada?.ambiente?.numero}</span></p>
         <p className={`lg:ml-auto ${(() => {
           switch (titulada?.estado) {
             case 'Etapa Lectiva':

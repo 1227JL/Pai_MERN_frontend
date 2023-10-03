@@ -105,7 +105,7 @@ export default function ModalInstructor() {
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">{id ? 'Editar Instructor' : 'Agregar Instructor'}</ModalHeader>
+              <ModalHeader className="flex flex-col gap-1">{id ? 'Editar' : 'Agregar'} Instructor</ModalHeader>
               <ModalBody>
                 {msg && <Alerta alerta={alerta} />}
 
@@ -138,7 +138,6 @@ export default function ModalInstructor() {
                       selectProps.disabledKeys = [select?.defaultOption]
                       selectProps.defaultSelectedKeys = [select?.defaultOption]
                     }
-                    
                     
                     return (
                       <Select {...selectProps}>

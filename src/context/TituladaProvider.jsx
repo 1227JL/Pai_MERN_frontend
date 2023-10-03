@@ -64,7 +64,6 @@ const TituladaProvider = ({children}) => {
 
     const crearTitulada = async (titulada) => {
         setCargando(true)
-        console.log(titulada)
         try {
             const token = localStorage.getItem('token')
 

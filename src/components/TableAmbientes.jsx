@@ -20,7 +20,7 @@ import {
 import {PlusIcon} from "./PlusIcon";
 import {VerticalDotsIcon} from "./VerticalDotsIcon";
 import {ChevronDownIcon} from "./ChevronDownIcon";
-import {columns, statusOptions, contratoOptions} from "./data";
+import {columnsAmbiente, statusOptions, contratoOptions} from "./data";
 import { SearchIcon } from "./SerchIcon";
 import { capitalize, quitarTildes } from "../helpers/Utils";
 import ModalAmbiente from "./ModalAmbiente";
@@ -29,12 +29,12 @@ import ModalEliminarAmbiente from "./ModalEliminarAmbiente";
 import useAmbiente from "../hooks/useAmbiente";
 
 const statusColorMap = {
-  Activo: "success",
+  Disponible: "success",
   Inactivo: "danger",
   Vacaciones: "warning",
 };
 
-const INITIAL_VISIBLE_COLUMNS = ["nombre", "contrato", "area", "estado", "actions"];
+const INITIAL_VISIBLE_COLUMNS = ["numero", "categoria", "estado", "actions"];
 
 export default function TableAmbientes() {
 
@@ -43,10 +43,10 @@ export default function TableAmbientes() {
   const [selectedKeys, setSelectedKeys] = React.useState(new Set([]));
   const [visibleColumns, setVisibleColumns] = React.useState(new Set(INITIAL_VISIBLE_COLUMNS));
   const [statusFilter, setStatusFilter] = React.useState("all");
-  const [contratoFilter, setContratoFilter] = React.useState("all");
+  const [numeroFilter, setNumeroFilter] = React.useState("all");
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [sortDescriptor, setSortDescriptor] = React.useState({
-    column: "age",
+    column: "numero",
     direction: "ascending",
   });
   const [page, setPage] = React.useState(1);
@@ -54,33 +54,33 @@ export default function TableAmbientes() {
   const hasSearchFilter = Boolean(filterValue);
 
   const headerColumns = React.useMemo(() => {
-    if (visibleColumns === "all") return columns;
+    if (visibleColumns === "all") return columnsAmbiente;
 
-    return columns.filter((column) => Array.from(visibleColumns).includes(column.uid));
+    return columnsAmbiente.filter((column) => Array.from(visibleColumns).includes(column.uid));
   }, [visibleColumns]);
 
   const filteredItems = React.useMemo(() => {
-    let filteredUsers = [...ambientes];
+    let filteredAmbiente = [...ambientes];
 
     if (hasSearchFilter) {
-      filteredUsers = filteredUsers.filter((user) =>
-        quitarTildes(user.nombre).toLowerCase().includes(filterValue.toLowerCase()) || quitarTildes(user.email).toLowerCase().includes(filterValue.toLowerCase()),
-        
-      );
-    }
-    if (statusFilter !== "all" && Array.from(statusFilter).length !== statusOptions.length) {
-      filteredUsers = filteredUsers.filter((user) =>
-        Array.from(statusFilter).includes((user.estado).toLowerCase()),
-      );
-    }
-    if (contratoFilter !== "all" && Array.from(contratoFilter).length !== contratoOptions.length) {
-      filteredUsers = filteredUsers.filter((user) =>
-        Array.from(contratoFilter).includes(quitarTildes(user.contrato).toLowerCase()),
+      filteredAmbiente = filteredAmbiente.filter((ambiente) =>
+        (`${ambiente?.bloque.toLowerCase()}-${ambiente?.numero.toString()}`).includes(filterValue)
       );
     }
 
-    return filteredUsers;
-  }, [ambientes, filterValue, statusFilter, contratoFilter]);
+    if (statusFilter !== "all" && Array.from(statusFilter).length !== statusOptions.length) {
+      filteredAmbiente = filteredAmbiente.filter((ambiente) =>
+        Array.from(statusFilter).includes((ambiente.estado).toLowerCase()),
+      );
+    }
+    if (numeroFilter !== "all" && Array.from(numeroFilter).length !== contratoOptions.length) {
+      filteredAmbiente = filteredAmbiente.filter((ambiente) =>
+        Array.from(numeroFilter).includes(quitarTildes(ambiente.contrato).toLowerCase()),
+      );
+    }
+
+    return filteredAmbiente;
+  }, [ambientes, filterValue, statusFilter, numeroFilter]);
 
   const pages = Math.ceil(filteredItems.length / rowsPerPage);
 
@@ -105,18 +105,17 @@ export default function TableAmbientes() {
     const cellValue = ambiente[columnKey];
 
     switch (columnKey) {
-      case "nombre":
+      case "numero":
         return (
-          <User
-            avatarProps={{radius: "full", src: ambiente.avatar}}
-            description={ambiente.email}
-            name={cellValue}
-          />
+          <div className="flex items-center gap-2">
+            <img src="/src/assets/ambiente.png" alt="" width={42}/>
+            <p>{`${ambiente?.bloque}-${ambiente?.numero}`}</p>
+          </div>
         );
-      case "contrato":
+      case "categoria":
         return (
           <div className="flex flex-col">
-            <p className="text-bold text-small capitalize">{ambiente.contrato}</p>
+            <p className="text-bold text-small capitalize">{ambiente?.categoria}</p>
           </div>
         );
       case "area":
@@ -209,9 +208,9 @@ export default function TableAmbientes() {
                   disallowEmptySelection
                   aria-label="Table Columns"
                   closeOnSelect={false}
-                  selectedKeys={contratoFilter}
+                  selectedKeys={numeroFilter}
                   selectionMode="multiple"
-                  onSelectionChange={setContratoFilter}
+                  onSelectionChange={setNumeroFilter}
                 >
                   {contratoOptions.map((contrato) => (
                     <DropdownItem key={contrato.uid} className="capitalize">
@@ -255,7 +254,7 @@ export default function TableAmbientes() {
                   selectionMode="multiple"
                   onSelectionChange={setVisibleColumns}
                 >
-                  {columns.map((column) => (
+                  {columnsAmbiente.map((column) => (
                     <DropdownItem key={column.uid} className="capitalize">
                       {capitalize(column.name)}
                     </DropdownItem>
@@ -291,7 +290,7 @@ export default function TableAmbientes() {
   }, [
     filterValue,
     statusFilter,
-    contratoFilter,
+    numeroFilter,
     visibleColumns,
     onRowsPerPageChange,
     ambientes,
@@ -329,13 +328,13 @@ export default function TableAmbientes() {
       // isHeaderSticky
       showSelectionCheckboxes={false}
       isStriped={true}
+      selectionMode='none'
       bottomContent={bottomContent}
       bottomContentPlacement="outside"
       classNames={{
         wrapper: "max-h-[382px]",
       }}
       selectedKeys={selectedKeys}
-      selectionMode="multiple"
       sortDescriptor={sortDescriptor}
       topContent={topContent}
       topContentPlacement="outside"

@@ -1,10 +1,14 @@
 import useTitulada from '../hooks/useTitulada'
 import { Link, User } from '@nextui-org/react'
 import {Modal, ModalContent, ModalHeader, ModalBody} from "@nextui-org/react";
+import { useNavigate } from 'react-router-dom';
+import useInstructor from '../hooks/useInstructor';
 
 export default function ModalDetallesTitulada() {
     
     const { titulada, modalDetallesTitulada, handleModaDetalleslTitulada } = useTitulada()
+    const { setBusqueda } = useInstructor()
+    const navigate = useNavigate()
     
     if(!titulada.instructores) return
     return (
@@ -28,18 +32,23 @@ export default function ModalDetallesTitulada() {
                                 </div>
                                 <div className='md:flex justify-between items-center'>
                                     <p className='font-bold'>Instructor a Cargo</p>
-                                    <User   
-                                        name={titulada?.instructores[0]?.nombre}
-                                        className='mt-2'
-                                        description={titulada?.instructores[0]?.email}
-                                        avatarProps={{
-                                            src: titulada?.instructores[0]?.imagen
-                                        }}
-                                    />
+                                    <Link className='cursor-pointer' color='secondary' onClick={()=>{
+                                        navigate('/consultar/instructores')
+                                        setBusqueda(titulada?.instructores[0]?.nombre)
+                                    }}>
+                                        <User   
+                                            name={titulada?.instructores[0]?.nombre}
+                                            className='mt-2'
+                                            description={titulada?.instructores[0]?.email}
+                                            avatarProps={{
+                                                src: titulada?.instructores[0]?.imagen
+                                            }}
+                                        />
+                                    </Link>
                                 </div>
                                 <div className='md:flex justify-between items-center'>
                                     <p className='font-bold'>Ambiente</p>
-                                    <p>{titulada?.ambiente || 'E-105'}</p>
+                                    <p>{`${titulada?.ambiente?.bloque}-${titulada?.ambiente?.numero}`}</p>
                                 </div>
                                 <div className='md:flex justify-between items-center'>
                                     <p className='font-bold'>Modalidad</p>

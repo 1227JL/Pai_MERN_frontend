@@ -130,7 +130,7 @@ export default function ModalTitulada() {
     const handleSubmit = async (e) => {
         e.preventDefault()
 
-        if([programa, ficha, duracion, tipo, jornada, modalidad, instructor, ambiente, selectedFile].includes('')){
+        if([programa, ficha, duracion, tipo, jornada, modalidad, instructor, ambiente].includes('') || !id && !selectedFile){
             setAlerta({
                 msg: 'Todos los campos son obligatorios',
                 error: true
@@ -155,7 +155,7 @@ export default function ModalTitulada() {
                 <ModalContent>
                     {(onClose) => (
                         <>
-                            <ModalHeader className="flex flex-col gap-1">{id ? 'Editar Titulada' : 'Agregar Titulada'}</ModalHeader>
+                            <ModalHeader className="flex flex-col gap-1">{id ? 'Editar' : 'Agregar'} Titulada</ModalHeader>
                             <ModalBody>
                             
                                 {msg && <Alerta alerta={alerta}/>}
@@ -178,26 +178,29 @@ export default function ModalTitulada() {
                                         </div>
                                     ))}
 
-                                    {selectsTitulada.map(select => {
+                                    {selectsTitulada?.map(select => {
                                         const selectProps = {
-                                            key: select.label,
+                                            key: select?.label,
                                             className: 'mb-5',
-                                            label: select.label,
-                                            onChange: e => select.stateSet(e.target.value),
-                                            placeholder: select.placeholder,
+                                            label: select?.label,
+                                            onChange: e => select?.stateSet(e.target.value),
+                                            placeholder: select?.placeholder,
                                         };
 
                                         if (id) {
                                             selectProps.defaultSelectedKeys = [select?.defaultOption]
-                                            propsSelectInstructor.defaultSelectedKeys = [instructor._id]
                                             selectProps.disabledKeys = [select?.defaultOption]
+                                            propsSelectInstructor.defaultSelectedKeys = [instructor?._id]
+                                            propsSelectInstructor.disabledKeys = [instructor?._id || instructor]
+                                            propsSelectAmbiente.defaultSelectedKeys = [ambiente?._id]
+                                            propsSelectAmbiente.disabledKeys = [ambiente?._id || ambiente]
                                         }
                                         
                                         return (
                                             <Select {...selectProps}>
-                                                {select.options.map(option => (
-                                                    <SelectItem key={option.name} value={option.name}>
-                                                        {option.name}
+                                                {select?.options?.map(option => (
+                                                    <SelectItem key={option?.name} value={option?.name}>
+                                                        {option?.name}
                                                     </SelectItem>
                                                 ))}
                                             </Select>
@@ -253,9 +256,7 @@ export default function ModalTitulada() {
                                         {(ambiente) => (
                                             <SelectItem key={ambiente?._id || instructor._id} textValue={ambiente?.numero}>
                                                 <div className="flex gap-2 items-center">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m8.25 3v6.75m0 0l-3-3m3 3l3-3M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
-                                                    </svg>
+                                                    <img src="/src/assets/ambiente.png" alt="icono ambientes" height={40} width={40}/>
                                                     <div className="flex flex-col">
                                                         <span className="text-small">{ambiente?.bloque}-{ambiente?.numero}</span>
                                                         <span className="text-tiny text-default-400">Capacidad: {ambiente?.capacidad} aprendices, Categoria: {ambiente?.categoria}</span>

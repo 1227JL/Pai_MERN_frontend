@@ -24,11 +24,20 @@ const ESTADOSTITULADAS = [
 
 const CONTRATOS = ['Término Indefinido', 'Término Fijo']
 const AREAS = ['Deportes', 'Gastronomia', 'Sistemas', 'Gestion', 'Idiomas']
+const BLOQUESAMBIENTE = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
+const CATEGORIASAMBIENTE = ['Cocina', 'Informática', 'Otro']
 
 const columns = [
   {name: "NOMBRE", uid: "nombre", sortable: true},
   {name: "CONTRATO", uid: "contrato", sortable: true},
   {name: "AREA", uid: "area", sortable: true},
+  {name: "ESTADO", uid: "estado", sortable: true},
+  {name: "ACTIONS", uid: "actions"},
+];
+
+const columnsAmbiente = [
+  {name: "NUMERO", uid: "numero", sortable: true},
+  {name: "CATEGORIA", uid: "categoria", sortable: true},
   {name: "ESTADO", uid: "estado", sortable: true},
   {name: "ACTIONS", uid: "actions"},
 ];
@@ -44,4 +53,4 @@ const contratoOptions = [
   {name: "Término Fijo", uid: "termino fijo"},
 ];
 
-export {columns, statusOptions, contratoOptions, PROGRAMAS, JORNADAS, MODALIDADES, ESTADOSTITULADAS, CONTRATOS, AREAS};
+export {columns, columnsAmbiente, statusOptions, contratoOptions, PROGRAMAS, JORNADAS, MODALIDADES, ESTADOSTITULADAS, CONTRATOS, AREAS, BLOQUESAMBIENTE, CATEGORIASAMBIENTE};

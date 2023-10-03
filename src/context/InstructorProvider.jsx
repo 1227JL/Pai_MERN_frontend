@@ -11,6 +11,7 @@ const InstructorProvider = ({children}) => {
 
   const [alerta, setAlerta] = useState({})
   const [cargando, setCargando] = useState(false)
+  const [busqueda, setBusqueda] = useState('')
   const [instructores, setInstructores] = useState([])
   const [instructor, setInstructor] = useState({})
   const [modalInstructor, setModalInstructor] = useState(false)
@@ -186,14 +187,17 @@ const InstructorProvider = ({children}) => {
         cargando,
         alerta,
         setAlerta,
-        modalInstructor,
+        busqueda,
+        setBusqueda,
         instructores,
         instructor,
+        modalInstructor,
         handleModalInstructor,
         submitInstructor,
         modalEliminarInstructor,
         handleModalEliminarInstructor,
         modalDetallesInstructor,
+        setModalDetallesInstructor,
         handleModalDetallesInstructor,
         eliminarInstructor
       }}

@@ -35,6 +35,8 @@ const AmbienteProvider = ({children}) => {
                 setAmbientes(data)
             } catch (error) {
                 console.log(error.response)
+            }finally{
+                setCargando(false)
             }
         }
         return ()=>obtenerAmbientes()
@@ -44,25 +46,73 @@ const AmbienteProvider = ({children}) => {
         setAmbiente(ambiente)
         setAlerta({})
         setModalAmbiente(!modalAmbiente)
-        console.log('hola')
     }
     
     const handleModalDetallesAmbiente = (ambiente) => {
         setAmbiente(ambiente)
         setAlerta({})
         setModalDetallesAmbiente(!modalDetallesAmbiente)
-        console.log('hola')
     }
     
     const handleModalEliminarAmbiente = (ambiente) => {
         setAmbiente(ambiente)
         setModalEliminarAmbiente(!modalEliminarAmbiente)
     }
+
+    const submitAmbiente = async (ambiente) => {
+        if(ambiente?.id){
+            await actualizarAmbiente(ambiente)
+            return
+        }
+        await agregarAmbiente(ambiente)
+    }
+
+    const agregarAmbiente = async (ambiente) => {
+        try {            
+            const token = localStorage.getItem('token')
+    
+            if(!token){
+                return
+            }
+    
+            const config = {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: `Bearer ${token}`
+                }
+            }
+
+            const { data } = await clienteAxios.post('/ambientes', ambiente, config)
+            const ambientesActualizados = [...ambientes, data]
+            setAmbientes(ambientesActualizados)
+            
+            setAlerta({
+                msg: 'Ambiente Creado Exitosamente',
+                error: false
+            })
+
+            setTimeout(() => {
+                setAlerta({})
+                setModalAmbiente(false)
+            }, 2000);
+        } catch (error) {
+            console.log(error.response)
+            setAlerta({
+                msg: error.response.data.msg,
+                error: true
+            })
+        }
+    }
+
+    const actualizarAmbiente = async (ambiente) => {
+        console.log('Editando', ambiente)
+    }
     
     return (
         <AmbienteContext.Provider
             value={{
                 alerta,
+                setAlerta,
                 cargando,
                 ambientes,
                 ambiente,
@@ -71,7 +121,8 @@ const AmbienteProvider = ({children}) => {
                 modalEliminarAmbiente,
                 handleModalAmbiente,
                 handleModalDetallesAmbiente,
-                handleModalEliminarAmbiente
+                handleModalEliminarAmbiente,
+                submitAmbiente
             }}
         >
             {children}

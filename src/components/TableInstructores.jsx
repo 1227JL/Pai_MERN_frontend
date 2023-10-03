@@ -38,15 +38,15 @@ const INITIAL_VISIBLE_COLUMNS = ["nombre", "contrato", "area", "estado", "action
 
 export default function TableInstructores() {
 
-  const { instructores, handleModalInstructor, handleModalDetallesInstructor, handleModalEliminarInstructor } = useInstructor()
-  const [filterValue, setFilterValue] = React.useState("");
+  const { instructores, busqueda, handleModalInstructor, handleModalDetallesInstructor, handleModalEliminarInstructor } = useInstructor()
+  const [filterValue, setFilterValue] = React.useState("" || busqueda);
   const [selectedKeys, setSelectedKeys] = React.useState(new Set([]));
   const [visibleColumns, setVisibleColumns] = React.useState(new Set(INITIAL_VISIBLE_COLUMNS));
   const [statusFilter, setStatusFilter] = React.useState("all");
   const [contratoFilter, setContratoFilter] = React.useState("all");
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [sortDescriptor, setSortDescriptor] = React.useState({
-    column: "age",
+    column: "nombre",
     direction: "ascending",
   });
   const [page, setPage] = React.useState(1);
@@ -64,8 +64,7 @@ export default function TableInstructores() {
 
     if (hasSearchFilter) {
       filteredUsers = filteredUsers.filter((user) =>
-        quitarTildes(user.nombre).toLowerCase().includes(filterValue.toLowerCase()) || quitarTildes(user.email).toLowerCase().includes(filterValue.toLowerCase()),
-        
+        quitarTildes(user.nombre).toLowerCase().includes(quitarTildes(filterValue).toLowerCase()) || quitarTildes(user.email).toLowerCase().includes(filterValue.toLowerCase())
       );
     }
     if (statusFilter !== "all" && Array.from(statusFilter).length !== statusOptions.length) {
@@ -335,7 +334,7 @@ export default function TableInstructores() {
         wrapper: "max-h-[382px]",
       }}
       selectedKeys={selectedKeys}
-      selectionMode="multiple"
+      selectionMode='none'
       sortDescriptor={sortDescriptor}
       topContent={topContent}
       topContentPlacement="outside"

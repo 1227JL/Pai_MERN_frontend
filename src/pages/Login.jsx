@@ -45,7 +45,7 @@ export default function Login() {
 
     return (
         <>
-            <h1 className='text-primary-100 font-black text-6xl capitalize'>Inicia sesión y administra <span className='text-slate-600'>Tituladas</span></h1>
+            <h1 className='text-primary-100 font-black text-6xl capitalize'>Inicia sesión y administra <span className='text-slate-600'>el SENA Regional Casanare</span></h1>
 
             <form onSubmit={handleSubmit} className='my-10 bg-white shadow-200 p-10 py-5 rounded-md'>
                 {msg && <Alerta alerta={alerta}/>}
