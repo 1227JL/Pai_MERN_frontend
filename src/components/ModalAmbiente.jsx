@@ -8,7 +8,7 @@ import {
   Input
 } from '@nextui-org/react'
 import Boton from './Boton';
-import { BLOQUESAMBIENTE, CATEGORIASAMBIENTE } from './data';
+import { BLOQUESAMBIENTE, CATEGORIASAMBIENTE, ESTADOSAMBIENTES } from './data';
    
 export default function ModalAmbiente() {
 
@@ -19,6 +19,7 @@ export default function ModalAmbiente() {
   const [capacidad, setCapacidad] = useState('')
   const [bloque, setBloque] = useState('')
   const [categoria, setCategoria] = useState('')
+  const [estado, setEstado] = useState('Disponible')
 
   useEffect(() => {
     if (ambiente && Object.keys(ambiente).length > 0) {
@@ -27,6 +28,7 @@ export default function ModalAmbiente() {
       setCapacidad(ambiente.capacidad || ''); // Siempre define un valor inicial
       setBloque(ambiente.bloque || ''); // Siempre define un valor inicial
       setCategoria(ambiente.categoria || ''); // Siempre define un valor inicial
+      setEstado(ambiente.estado || ''); // Siempre define un valor inicial
       return;
     }
   
@@ -60,7 +62,7 @@ export default function ModalAmbiente() {
 
     setAlerta({})
 
-    await submitAmbiente({id, numero, capacidad, bloque, categoria})
+    await submitAmbiente({id, numero, capacidad, bloque, categoria, estado})
   }
 
   const { msg } = alerta;
@@ -79,7 +81,7 @@ export default function ModalAmbiente() {
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">{id ? 'Agregar' : 'Editar'} Ambiente</ModalHeader>
+              <ModalHeader className="flex flex-col gap-1">{id ? 'Editar' : 'Agregar'} Ambiente</ModalHeader>
               <ModalBody>
                 {msg && <Alerta alerta={alerta} />}
 
@@ -123,6 +125,29 @@ export default function ModalAmbiente() {
                     );
                   })}
 
+                  {id && (
+                    <div className="w-full flex flex-col justify-center gap-4 md:col-span-2">
+                        <div className="flex w-full flex-wrap md:flex-nowrap mb-5 gap-4">
+                            <Select 
+                              label="Selecciona un estado" 
+                              color={
+                                estado === 'Disponible' ? 'success' :
+                                estado === 'No Disponible' ? 'danger' :
+                                estado === 'En Mantenimiento' ? 'warning' :
+                                'default'
+                              }
+                              onChange={e=> setEstado(e.target.value)}
+                              defaultSelectedKeys={[estado]}
+                            >
+                              {ESTADOSAMBIENTES.map((estado) => (
+                                <SelectItem key={estado} value={estado}>
+                                  {estado}
+                                </SelectItem>
+                              ))}
+                            </Select>
+                        </div>
+                    </div>  
+                  )}
 
                   <Boton type="submit" classes={'bg-primary-100 w-full'}>{id ? 'Guardar Cambios' : 'Registrar Ambiente'}</Boton>
                 </form>

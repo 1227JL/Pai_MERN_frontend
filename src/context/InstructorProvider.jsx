@@ -135,10 +135,10 @@ const InstructorProvider = ({children}) => {
         error: false
       })
 
-      setInstructor({})
-
+      
       setTimeout(() => {
         setModalInstructor(false)
+        setInstructor({})
         setAlerta({})
       }, 2000);
     } catch (error) {
@@ -161,19 +161,14 @@ const InstructorProvider = ({children}) => {
         }
       }
 
-      const { data } = await clienteAxios.delete(`/instructores/${instructor._id}`, config)
+      await clienteAxios.delete(`/instructores/${instructor._id}`, config)
 
       const instructoresActualizados = instructores.filter(instructorState => instructorState._id !== instructor._id)
       setInstructores(instructoresActualizados)
-
       setModalEliminarInstructor(!modalEliminarInstructor)
 
-      setAlerta({
-        msg: data.msg,
-        error: true
-      })
-
       setTimeout(() => {
+        setInstructor({})
         setAlerta({})
       }, 2000);
     } catch (error) {
@@ -192,6 +187,7 @@ const InstructorProvider = ({children}) => {
         instructores,
         instructor,
         modalInstructor,
+        setModalInstructor,
         handleModalInstructor,
         submitInstructor,
         modalEliminarInstructor,

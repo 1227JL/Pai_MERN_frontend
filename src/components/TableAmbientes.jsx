@@ -20,7 +20,7 @@ import {
 import {PlusIcon} from "./PlusIcon";
 import {VerticalDotsIcon} from "./VerticalDotsIcon";
 import {ChevronDownIcon} from "./ChevronDownIcon";
-import {columnsAmbiente, statusOptions, contratoOptions} from "./data";
+import {columnsAmbiente, statusOptions, contratoOptions, ESTADOSAMBIENTES, CATEGORIASAMBIENTE} from "./data";
 import { SearchIcon } from "./SerchIcon";
 import { capitalize, quitarTildes } from "../helpers/Utils";
 import ModalAmbiente from "./ModalAmbiente";
@@ -29,24 +29,24 @@ import ModalEliminarAmbiente from "./ModalEliminarAmbiente";
 import useAmbiente from "../hooks/useAmbiente";
 
 const statusColorMap = {
-  Disponible: "success",
-  Inactivo: "danger",
-  Vacaciones: "warning",
+  "Disponible": "success",
+  "No Disponible": "danger",
+  "En Mantenimiento": "warning",
 };
 
-const INITIAL_VISIBLE_COLUMNS = ["numero", "categoria", "estado", "actions"];
+const INITIAL_VISIBLE_COLUMNS = ["bloque", "categoria", "capacidad", "estado", "actions"];
 
 export default function TableAmbientes() {
 
-  const { ambientes, handleModalAmbiente, handleModalDetallesAmbiente, handleModalEliminarAmbiente } = useAmbiente()
+  const { ambientes, setModalAmbiente, handleModalAmbiente, handleModalDetallesAmbiente, handleModalEliminarAmbiente } = useAmbiente()
   const [filterValue, setFilterValue] = React.useState("");
   const [selectedKeys, setSelectedKeys] = React.useState(new Set([]));
   const [visibleColumns, setVisibleColumns] = React.useState(new Set(INITIAL_VISIBLE_COLUMNS));
   const [statusFilter, setStatusFilter] = React.useState("all");
-  const [numeroFilter, setNumeroFilter] = React.useState("all");
+  const [categoriaFilter, setCategoriaFilter] = React.useState("all");
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [sortDescriptor, setSortDescriptor] = React.useState({
-    column: "numero",
+    column: "bloque",
     direction: "ascending",
   });
   const [page, setPage] = React.useState(1);
@@ -70,17 +70,17 @@ export default function TableAmbientes() {
 
     if (statusFilter !== "all" && Array.from(statusFilter).length !== statusOptions.length) {
       filteredAmbiente = filteredAmbiente.filter((ambiente) =>
-        Array.from(statusFilter).includes((ambiente.estado).toLowerCase()),
+        Array.from(statusFilter).includes((ambiente.estado)),
       );
     }
-    if (numeroFilter !== "all" && Array.from(numeroFilter).length !== contratoOptions.length) {
+    if (categoriaFilter !== "all" && Array.from(categoriaFilter).length !== CATEGORIASAMBIENTE.length) {
       filteredAmbiente = filteredAmbiente.filter((ambiente) =>
-        Array.from(numeroFilter).includes(quitarTildes(ambiente.contrato).toLowerCase()),
+        Array.from(categoriaFilter).includes(ambiente.categoria),
       );
     }
 
     return filteredAmbiente;
-  }, [ambientes, filterValue, statusFilter, numeroFilter]);
+  }, [ambientes, filterValue, statusFilter, categoriaFilter]);
 
   const pages = Math.ceil(filteredItems.length / rowsPerPage);
 
@@ -105,7 +105,7 @@ export default function TableAmbientes() {
     const cellValue = ambiente[columnKey];
 
     switch (columnKey) {
-      case "numero":
+      case "bloque":
         return (
           <div className="flex items-center gap-2">
             <img src="/src/assets/ambiente.png" alt="" width={42}/>
@@ -115,13 +115,13 @@ export default function TableAmbientes() {
       case "categoria":
         return (
           <div className="flex flex-col">
-            <p className="text-bold text-small capitalize">{ambiente?.categoria}</p>
+            <p className="text-bold text-small">{ambiente?.categoria}</p>
           </div>
         );
-      case "area":
+      case "capacidad":
         return (
           <div className="flex flex-col">
-            <p className="text-bold text-small capitalize">{cellValue}</p>
+            <p className="text-bold text-small capitalize">{ambiente?.capacidad} Aprendices</p>
           </div>
         );
       case "estado":
@@ -191,7 +191,7 @@ export default function TableAmbientes() {
             <Input
               isClearable
               className="w-full sm:max-w-[44%]"
-              placeholder="Search by name..."
+              placeholder="Buscar por Bloque-Ambiente..."
               startContent={<SearchIcon />}
               value={filterValue}
               onClear={() => onClear()}
@@ -201,20 +201,21 @@ export default function TableAmbientes() {
               <Dropdown>
                 <DropdownTrigger className="hidden md:flex">
                   <Button endContent={<ChevronDownIcon className="text-small" />} variant="flat">
-                    Contrato
+                    Categorias
                   </Button>
                 </DropdownTrigger>
                 <DropdownMenu
                   disallowEmptySelection
                   aria-label="Table Columns"
+                  shouldBlockScroll={false}
                   closeOnSelect={false}
-                  selectedKeys={numeroFilter}
+                  selectedKeys={categoriaFilter}
                   selectionMode="multiple"
-                  onSelectionChange={setNumeroFilter}
+                  onSelectionChange={setCategoriaFilter}
                 >
-                  {contratoOptions.map((contrato) => (
-                    <DropdownItem key={contrato.uid} className="capitalize">
-                      {capitalize(contrato.name)}
+                  {CATEGORIASAMBIENTE.map((categoria) => (
+                    <DropdownItem key={categoria} className="capitalize">
+                      {capitalize(categoria)}
                     </DropdownItem>
                   ))}
                 </DropdownMenu>
@@ -233,9 +234,9 @@ export default function TableAmbientes() {
                   selectionMode="multiple"
                   onSelectionChange={setStatusFilter}
                 >
-                  {statusOptions.map((status) => (
-                    <DropdownItem key={status.uid} className="capitalize">
-                      {capitalize(status.name)}
+                  {ESTADOSAMBIENTES.map((status) => (
+                    <DropdownItem key={status} className="capitalize">
+                      {capitalize(status)}
                     </DropdownItem>
                   ))}
                 </DropdownMenu>
@@ -261,7 +262,7 @@ export default function TableAmbientes() {
                   ))}
                 </DropdownMenu>
               </Dropdown>
-              <Button onClick={handleModalAmbiente} className="bg-primary-100 text-white" endContent={<PlusIcon />}>
+              <Button onClick={()=>{setModalAmbiente(true)}} className="bg-primary-100 text-white" endContent={<PlusIcon />}>
                 Agregar
               </Button>
             </div>
@@ -290,7 +291,7 @@ export default function TableAmbientes() {
   }, [
     filterValue,
     statusFilter,
-    numeroFilter,
+    categoriaFilter,
     visibleColumns,
     onRowsPerPageChange,
     ambientes,

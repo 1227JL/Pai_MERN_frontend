@@ -38,7 +38,7 @@ const INITIAL_VISIBLE_COLUMNS = ["nombre", "contrato", "area", "estado", "action
 
 export default function TableInstructores() {
 
-  const { instructores, busqueda, handleModalInstructor, handleModalDetallesInstructor, handleModalEliminarInstructor } = useInstructor()
+  const { instructores, busqueda, setModalInstructor, handleModalInstructor, handleModalDetallesInstructor, handleModalEliminarInstructor } = useInstructor()
   const [filterValue, setFilterValue] = React.useState("" || busqueda);
   const [selectedKeys, setSelectedKeys] = React.useState(new Set([]));
   const [visibleColumns, setVisibleColumns] = React.useState(new Set(INITIAL_VISIBLE_COLUMNS));
@@ -261,7 +261,7 @@ export default function TableInstructores() {
                   ))}
                 </DropdownMenu>
               </Dropdown>
-              <Button onClick={handleModalInstructor} className="bg-primary-100 text-white" endContent={<PlusIcon />}>
+              <Button onClick={()=>{setModalInstructor(true)}} className="bg-primary-100 text-white" endContent={<PlusIcon />}>
                 Agregar
               </Button>
             </div>

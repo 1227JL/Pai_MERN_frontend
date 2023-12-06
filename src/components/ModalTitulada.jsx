@@ -6,7 +6,7 @@ import {
     Select,
     SelectItem,
     Input,
-    Avatar,
+    User
 } from '@nextui-org/react'
 import {PROGRAMAS, JORNADAS, MODALIDADES, ESTADOSTITULADAS} from "../components/data";
 import useTitulada from '../hooks/useTitulada'
@@ -80,6 +80,7 @@ export default function ModalTitulada() {
     };
 
     const propsSelectAmbiente = {
+        isDisabled: modalidad == 'Virtual' ? true : false,
         items: ambientes,
         label: "Asignar Ambiente",
         labelPlacement: 'inside',
@@ -211,16 +212,11 @@ export default function ModalTitulada() {
                                         renderValue={(items) => {
                                             return items.map((item) => (
                                                 <div key={item?.data?._id} className="flex items-center gap-2">
-                                                    <Avatar
-                                                        alt={item?.data?.nombre}
-                                                        className="flex-shrink-0"
-                                                        size="sm"
-                                                        src={item?.data?.imagen}
+                                                    <User
+                                                        avatarProps={{radius: "full", src: item?.data?.imagen}}
+                                                        description={item?.data?.email}
+                                                        name={item?.data?.nombre}
                                                     />
-                                                    <div className="flex flex-col">
-                                                        <span>{item?.data?.nombre}</span>
-                                                        <span className="text-default-500 text-tiny">({item?.data?.email})</span>
-                                                    </div>
                                                 </div>
                                             ));
                                         }}
@@ -228,11 +224,11 @@ export default function ModalTitulada() {
                                         {(user) => (
                                             <SelectItem key={user?._id || instructor._id} textValue={user?.nombre}>
                                                 <div className="flex gap-2 items-center">
-                                                    <Avatar alt={user?.nombre} className="flex-shrink-0" size="sm" src={user?.imagen} />
-                                                    <div className="flex flex-col">
-                                                        <span className="text-small">{user?.nombre}</span>
-                                                        <span className="text-tiny text-default-400">{user?.email}</span>
-                                                    </div>
+                                                    <User
+                                                        avatarProps={{radius: "full", src: user?.imagen}}
+                                                        description={user?.email}
+                                                        name={user?.nombre}
+                                                    />
                                                 </div>
                                             </SelectItem>
                                         )}
@@ -242,9 +238,7 @@ export default function ModalTitulada() {
                                         renderValue={(items) => {
                                             return items.map((item) => (
                                                 <div key={item?.data?._id} className="flex items-center gap-2">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m8.25 3v6.75m0 0l-3-3m3 3l3-3M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
-                                                    </svg>
+                                                    <img src="/src/assets/ambiente.png" alt="icono ambientes" height={40} width={40}/>
                                                     <div className="flex flex-col">
                                                         <span>{item?.data?.bloque}-{item?.data?.numero}</span>
                                                         <span className="text-default-500 text-tiny">Capacidad: {item?.data?.capacidad}, Categoria: {item?.data?.categoria}</span>

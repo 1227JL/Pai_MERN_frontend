@@ -20,30 +20,34 @@ import {
 import {PlusIcon} from "./PlusIcon";
 import {VerticalDotsIcon} from "./VerticalDotsIcon";
 import {ChevronDownIcon} from "./ChevronDownIcon";
-import {columns, statusOptions} from "./data";
+import {columnsAprendiz, ESTADOSAPRENDIZ} from "./data";
 import { SearchIcon } from "./SerchIcon";
-import { capitalize } from "../helpers/Utils";
+import { capitalize, quitarTildes } from "../helpers/Utils";
+import ModalInstructor from "./ModalInstructor";
+import ModalEliminarInstructor from "./ModalEliminarInstructor";
+import ModalDetallesInstructor from "./ModalDetallesInstructor";
 import useTitulada from "../hooks/useTitulada";
-import ModalAprendiz from "./ModalAprendiz";
 
 const statusColorMap = {
-  Activo: "success",
-  Inactivo: "danger",
-  Vacaciones: "warning",
+  "Etapa Lectiva": "success",
+  "Formación Finalizada": "danger",
+  "Decersión": "danger",
+  "Etapa Productiva": "warning",
 };
 
-const INITIAL_VISIBLE_COLUMNS = ["nombre", "area", "estado", "actions"];
+const INITIAL_VISIBLE_COLUMNS = ["nombre", "estado", "actions"];
 
-export default function App() {
+export default function TableAprendices() {
 
-  const { titulada, handleModalAprendiz } = useTitulada()
-  const [filterValue, setFilterValue] = React.useState("");
+  const {titulada, busqueda, setModalAprendiz, handleModalAprendiz, handleModalDetallesAprendiz, handleModalEliminarAprendiz} = useTitulada()
+  const [filterValue, setFilterValue] = React.useState("" || busqueda);
   const [selectedKeys, setSelectedKeys] = React.useState(new Set([]));
   const [visibleColumns, setVisibleColumns] = React.useState(new Set(INITIAL_VISIBLE_COLUMNS));
   const [statusFilter, setStatusFilter] = React.useState("all");
+  const [contratoFilter, setContratoFilter] = React.useState("all");
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [sortDescriptor, setSortDescriptor] = React.useState({
-    column: "age",
+    column: "nombre",
     direction: "ascending",
   });
   const [page, setPage] = React.useState(1);
@@ -51,27 +55,32 @@ export default function App() {
   const hasSearchFilter = Boolean(filterValue);
 
   const headerColumns = React.useMemo(() => {
-    if (visibleColumns === "all") return columns;
+    if (visibleColumns === "all") return columnsAprendiz;
 
-    return columns.filter((column) => Array.from(visibleColumns).includes(column.uid));
+    return columnsAprendiz.filter((column) => Array.from(visibleColumns).includes(column.uid));
   }, [visibleColumns]);
 
   const filteredItems = React.useMemo(() => {
-    let filteredUsers = [...titulada?.aprendices];
+    let filteredUsers = [...titulada.aprendices];
 
     if (hasSearchFilter) {
-      filteredUsers = filteredUsers.filter((aprendiz) =>
-        aprendiz?.nombre?.toLowerCase().includes(filterValue.toLowerCase()) || aprendiz?.email?.toLowerCase().includes(filterValue.toLowerCase()),   
+      filteredUsers = filteredUsers.filter((user) =>
+        quitarTildes(user.nombre).toLowerCase().includes(quitarTildes(filterValue).toLowerCase()) || quitarTildes(user.email).toLowerCase().includes(filterValue.toLowerCase())
       );
     }
-    if (statusFilter !== "all" && Array.from(statusFilter).length !== statusOptions.length) {
-      filteredUsers = filteredUsers.filter((aprendiz) =>
-        Array.from(statusFilter).includes(aprendiz?.estado),
+    if (statusFilter !== "all" && Array.from(statusFilter).length !== ESTADOSAPRENDIZ.length) {
+      filteredUsers = filteredUsers.filter((user) =>
+        Array.from(statusFilter).includes((user.estado).toLowerCase()),
       );
     }
+    // if (contratoFilter !== "all" && Array.from(contratoFilter).length !== contratoOptions.length) {
+    //   filteredUsers = filteredUsers.filter((user) =>
+    //     Array.from(contratoFilter).includes(quitarTildes(user.contrato).toLowerCase()),
+    //   );
+    // }
 
     return filteredUsers;
-  }, [titulada, filterValue, statusFilter]);
+  }, [titulada.aprendices, filterValue, statusFilter, contratoFilter]);
 
   const pages = Math.ceil(filteredItems.length / rowsPerPage);
 
@@ -99,17 +108,10 @@ export default function App() {
       case "nombre":
         return (
           <User
-            avatarProps={{radius: "full", src: aprendiz?.avatar}}
-            description={aprendiz?.email}
+            avatarProps={{radius: "full", src: aprendiz.avatar}}
+            description={aprendiz.email}
             name={cellValue}
           />
-        );
-      case "area":
-        return (
-          <div className="flex flex-col">
-            <p className="text-bold text-small capitalize">{cellValue}</p>
-            <p className="text-bold text-tiny capitalize text-default-400">{aprendiz?.area}</p>
-          </div>
         );
       case "estado":
         return (
@@ -127,9 +129,9 @@ export default function App() {
                 </Button>
               </DropdownTrigger>
               <DropdownMenu aria-labelledby="opciones-label">
-                <DropdownItem>View</DropdownItem>
+                <DropdownItem onClick={()=>handleModalDetallesAprendiz(aprendiz)}>View</DropdownItem>
                 <DropdownItem onClick={()=>handleModalAprendiz(aprendiz)}>Edit</DropdownItem>
-                <DropdownItem>Delete</DropdownItem>
+                <DropdownItem onClick={()=>handleModalEliminarAprendiz(aprendiz)}>Delete</DropdownItem>
               </DropdownMenu>
             </Dropdown>
           </div>
@@ -173,7 +175,7 @@ export default function App() {
   const topContent = React.useMemo(() => {
     return (
       <>
-        <div className="flex flex-col gap-4">
+        <div className="mt-2 flex flex-col gap-4">
           <div className="flex justify-between gap-3 items-end">
             <Input
               isClearable
@@ -185,10 +187,31 @@ export default function App() {
               onValueChange={onSearchChange}
             />
             <div className="flex gap-3">
+              {/* <Dropdown>
+                <DropdownTrigger className="hidden md:flex">
+                  <Button endContent={<ChevronDownIcon className="text-small" />} variant="flat">
+                    Contrato
+                  </Button>
+                </DropdownTrigger>
+                <DropdownMenu
+                  disallowEmptySelection
+                  aria-label="Table Columns"
+                  closeOnSelect={false}
+                  selectedKeys={contratoFilter}
+                  selectionMode="multiple"
+                  onSelectionChange={setContratoFilter}
+                >
+                  {contratoOptions.map((contrato) => (
+                    <DropdownItem key={contrato.uid} className="capitalize">
+                      {capitalize(contrato.name)}
+                    </DropdownItem>
+                  ))}
+                </DropdownMenu>
+              </Dropdown> */}
               <Dropdown>
                 <DropdownTrigger className="hidden sm:flex">
                   <Button endContent={<ChevronDownIcon className="text-small" />} variant="flat">
-                    Status
+                    Estado
                   </Button>
                 </DropdownTrigger>
                 <DropdownMenu
@@ -199,7 +222,7 @@ export default function App() {
                   selectionMode="multiple"
                   onSelectionChange={setStatusFilter}
                 >
-                  {statusOptions.map((status) => (
+                  {ESTADOSAPRENDIZ.map((status) => (
                     <DropdownItem key={status.uid} className="capitalize">
                       {capitalize(status.name)}
                     </DropdownItem>
@@ -209,7 +232,7 @@ export default function App() {
               <Dropdown>
                 <DropdownTrigger className="hidden sm:flex">
                   <Button endContent={<ChevronDownIcon className="text-small" />} variant="flat">
-                    Columns
+                    Columnas
                   </Button>
                 </DropdownTrigger>
                 <DropdownMenu
@@ -220,22 +243,22 @@ export default function App() {
                   selectionMode="multiple"
                   onSelectionChange={setVisibleColumns}
                 >
-                  {columns.map((column) => (
+                  {columnsAprendiz.map((column) => (
                     <DropdownItem key={column.uid} className="capitalize">
                       {capitalize(column.name)}
                     </DropdownItem>
                   ))}
                 </DropdownMenu>
               </Dropdown>
-              <Button onClick={handleModalInstructor} className="bg-primary-100 text-white" endContent={<PlusIcon />}>
+              <Button onClick={()=>{setModalAprendiz(true)}} className="bg-primary-100 text-white" endContent={<PlusIcon />}>
                 Agregar
               </Button>
             </div>
           </div>
           <div className="flex justify-between items-center">
-            <span className="text-default-400 text-small">Total {instructores.length} Instructores</span>
+            <span className="text-default-400 text-small">Total {titulada.aprendices.length} Aprendices</span>
             <label className="flex items-center text-default-400 text-small">
-              Instructores por página:
+              Aprendices por página:
               <select
                 className="bg-transparent outline-none text-default-400 text-small"
                 onChange={onRowsPerPageChange}
@@ -248,15 +271,18 @@ export default function App() {
             </label>
           </div>
         </div>
-        <ModalAprendiz/>
+        <ModalInstructor/>
+        <ModalDetallesInstructor/>
+        <ModalEliminarInstructor/>
       </>
     );
   }, [
     filterValue,
     statusFilter,
+    contratoFilter,
     visibleColumns,
     onRowsPerPageChange,
-    instructores.length,
+    titulada.aprendices,
     onSearchChange,
     hasSearchFilter,
   ]);
@@ -283,7 +309,7 @@ export default function App() {
         </div>
       </div>
     );
-  }, [selectedKeys, items.length, page, pages, hasSearchFilter]);
+  }, [selectedKeys, items.length, page, pages, hasSearchFilter, titulada.aprendices]);
 
   return (
     <Table
@@ -297,7 +323,7 @@ export default function App() {
         wrapper: "max-h-[382px]",
       }}
       selectedKeys={selectedKeys}
-      selectionMode="multiple"
+      selectionMode='none'
       sortDescriptor={sortDescriptor}
       topContent={topContent}
       topContentPlacement="outside"
@@ -315,7 +341,7 @@ export default function App() {
           </TableColumn>
         )}
       </TableHeader>
-      <TableBody emptyContent={"Instructores no encontrados"} items={sortedItems}>
+      <TableBody emptyContent={"Aprendices no encontrados"} items={sortedItems}>
         {(instructor) => (
           <TableRow key={instructor._id}>
             {(columnKey) => <TableCell>{renderCell(instructor, columnKey)}</TableCell>}

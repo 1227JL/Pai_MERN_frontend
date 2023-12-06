@@ -6,7 +6,7 @@ import useInstructor from '../hooks/useInstructor';
 
 export default function ModalDetallesTitulada() {
     
-    const { titulada, modalDetallesTitulada, handleModaDetalleslTitulada } = useTitulada()
+    const { titulada, modalDetallesTitulada, handleModalDetallesTitulada } = useTitulada()
     const { setBusqueda } = useInstructor()
     const navigate = useNavigate()
     
@@ -16,7 +16,7 @@ export default function ModalDetallesTitulada() {
             <Modal size='xl' classNames={{
                 body: "pb-6",
                 base: "m-auto mx-2",
-            }} backdrop={'blur'} isOpen={modalDetallesTitulada} onClose={handleModaDetalleslTitulada}>
+            }} backdrop={'blur'} isOpen={modalDetallesTitulada} onClose={handleModalDetallesTitulada}>
                 <ModalContent>
                     {(onClose) => (
                         <>

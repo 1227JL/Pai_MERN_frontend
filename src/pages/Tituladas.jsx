@@ -5,6 +5,7 @@ import Titulada from "../components/Titulada"
 import Spinner from "../components/Spinner"
 import ModalTitulada from "../components/ModalTitulada"
 import Boton from "../components/Boton"
+import {quitarTildes} from '../helpers/utils'
 
 export default function Tituladas() {
 
@@ -26,9 +27,9 @@ export default function Tituladas() {
       
           return lowerCaseFilters.every((filtro) => {
             return (
-              quitarTildes(titulada.tipo.toLowerCase()).includes(filtro) ||
-              quitarTildes(titulada.jornada.toLowerCase()).includes(filtro) ||
-              quitarTildes(titulada.estado.toLowerCase()).includes(filtro) ||
+                quitarTildes(titulada.tipo.toLowerCase()).includes(filtro) ||
+                quitarTildes(titulada.estado.toLowerCase()).includes(filtro) ||
+              titulada.jornada.toLowerCase().includes(filtro) ||
               quitarTildes(titulada.modalidad.toLowerCase()).includes(filtro)
               // Agrega aquí más atributos según sea necesario
             );
@@ -36,10 +37,10 @@ export default function Tituladas() {
         });
     };      
       
-
     useEffect(() => {
         const tituladasFiltradas = filtrarTituladas(tituladas, filtros);
         setTituladasFiltradas(tituladasFiltradas);
+        console.log(filtros)
     }, [filtros]);
     
     const handleCheckboxChange = (event) => { 

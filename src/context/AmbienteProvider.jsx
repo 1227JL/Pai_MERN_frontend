@@ -43,7 +43,11 @@ const AmbienteProvider = ({children}) => {
     }, [auth])
     
     const handleModalAmbiente = (ambiente) => {
-        setAmbiente(ambiente)
+        if(ambiente){
+            setAmbiente(ambiente)
+        }else{
+            setAmbiente({})
+        }
         setAlerta({})
         setModalAmbiente(!modalAmbiente)
     }
@@ -77,7 +81,7 @@ const AmbienteProvider = ({children}) => {
     
             const config = {
                 headers: {
-                    'Content-Type': 'multipart/form-data',
+                    'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`
                 }
             }
@@ -93,10 +97,10 @@ const AmbienteProvider = ({children}) => {
 
             setTimeout(() => {
                 setAlerta({})
+                setAmbiente({})
                 setModalAmbiente(false)
             }, 2000);
         } catch (error) {
-            console.log(error.response)
             setAlerta({
                 msg: error.response.data.msg,
                 error: true
@@ -105,7 +109,67 @@ const AmbienteProvider = ({children}) => {
     }
 
     const actualizarAmbiente = async (ambiente) => {
-        console.log('Editando', ambiente)
+        try {
+            const token = localStorage.getItem('token')
+
+            if(!token){
+                return
+            }
+
+            const config = {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`
+                }
+            }
+
+            const { data } = await clienteAxios.put(`/ambientes/${ambiente.id}`, ambiente, config)
+            const ambientesActualizados = ambientes.map(ambienteState => ambienteState._id === data._id ? data : ambienteState)
+            setAmbientes(ambientesActualizados)
+
+            setAlerta({
+                msg: 'Ambiente actualizado correctamente',
+                error: false
+            })
+
+            setTimeout(() => {
+                setAlerta({})
+                setModalAmbiente(false)
+                setAmbiente({})
+            }, 2000);
+
+        } catch (error) {
+            setAlerta({
+                msg: error.response.data.msg,
+                error: true
+            })
+        }
+    }
+
+    const eliminarAmbiente = async (id) =>{
+        try {
+            const token = localStorage.getItem('token')
+    
+            if(!token){
+                return
+            }
+    
+            const config = {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                }
+            }
+    
+            await clienteAxios.delete(`/ambientes/${id}`, config)
+    
+            const ambientesActualizados = ambientes.filter(ambienteState => ambienteState._id !== id)
+            setAmbientes(ambientesActualizados)
+
+            setModalEliminarAmbiente(false)
+        } catch (error) {
+            console.log(error.response)
+        }
     }
     
     return (
@@ -117,12 +181,14 @@ const AmbienteProvider = ({children}) => {
                 ambientes,
                 ambiente,
                 modalAmbiente,
+                setModalAmbiente,
                 modalDetallesAmbiente,
                 modalEliminarAmbiente,
                 handleModalAmbiente,
                 handleModalDetallesAmbiente,
                 handleModalEliminarAmbiente,
-                submitAmbiente
+                submitAmbiente,
+                eliminarAmbiente
             }}
         >
             {children}

@@ -14,13 +14,13 @@ import ModalEliminarTitulada from "../components/ModalEliminarTitulada"
 export default function Titulada() {
       
   const params = useParams()
-  const { cargando, titulada, obtenerTitulada, eliminarTitulada, handleModalTitulada, handleModaDetalleslTitulada, handleModalEliminarTitulada } = useTitulada()
+  const { cargando, titulada, obtenerTitulada, eliminarTitulada, handleModalTitulada, handleModalDetallesTitulada, handleModalEliminarTitulada } = useTitulada()
 
   useEffect(() => {
     return ()=>obtenerTitulada(params.ficha)
   }, [])
-
-  if(cargando) return <Spinner>Obteniendo Titulada...</Spinner>
+  
+  if(cargando || !titulada.aprendices) return <Spinner>Obteniendo Titulada...</Spinner>
 
   return (
     <>
@@ -29,7 +29,7 @@ export default function Titulada() {
         <div className="flex gap-5 items-center ml-auto">
           <Tooltip content="Detalles de la Titulada">
             <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-              <EyeIcon onClick={handleModaDetalleslTitulada}/>
+              <EyeIcon onClick={handleModalDetallesTitulada}/>
             </span>
           </Tooltip>
           <Tooltip content="Editar titulada">
@@ -44,7 +44,7 @@ export default function Titulada() {
           </Tooltip>
         </div>
       </div>
-      {/* <TableAprendices/> */}
+      <TableAprendices/>
       <ModalTitulada/>
       <ModalDetallesTitulada/>
       <ModalEliminarTitulada title={'Titulada'} onClick={()=>eliminarTitulada(titulada?._id)}/>

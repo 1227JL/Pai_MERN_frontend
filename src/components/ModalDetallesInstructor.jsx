@@ -72,6 +72,8 @@ export default function ModalDetallesInstructor() {
                                                 return 'bg-success-100';
                                             case 'Inactivo':
                                                 return 'bg-danger-100';
+                                            case 'Vacaciones':
+                                                return 'bg-warning-100';
                                             default:
                                                 return 'bg-default-100';
                                         }
@@ -82,6 +84,8 @@ export default function ModalDetallesInstructor() {
                                                     return 'text-success-600';
                                                 case 'Inactivo':
                                                     return 'text-danger-600';
+                                                case 'Vacaciones':
+                                                    return 'text-warning-600';
                                                 default:
                                                     return 'text-default-400';
                                             }

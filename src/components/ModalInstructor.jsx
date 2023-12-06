@@ -8,7 +8,7 @@ import {
     Input
 } from '@nextui-org/react'
 import {MailIcon} from '../components/MailIcon';
-import { AREAS, CONTRATOS } from './data'
+import { AREAS, CONTRATOS, ESTADOSINSTRUCTORES } from './data'
 import Boton from './Boton';
 import { agregarDominioSena } from '../helpers/Utils';
 
@@ -23,6 +23,7 @@ export default function ModalInstructor() {
   const [telefono, setTelefono] = useState('');
   const [contrato, setContrato] = useState('');
   const [area, setArea] = useState('');
+  const [estado, setEstado] = useState('Activo')
 
   const propsEmail = {
     startContent: <MailIcon className="text-xl text-default-400 pointer-events-none flex-shrink-0" />,
@@ -54,6 +55,7 @@ export default function ModalInstructor() {
       setTelefono(instructor.telefono || ''); // Siempre define un valor inicial
       setContrato(instructor.contrato || ''); // Siempre define un valor inicial
       setArea(instructor.area || ''); // Siempre define un valor inicial
+      setEstado(instructor.estado || ''); // Siempre define un valor inicial
       return;
     }
   
@@ -64,6 +66,7 @@ export default function ModalInstructor() {
     setTelefono('');
     setContrato('');
     setArea('');
+    setEstado('');
   }, [id, instructor]);
 
   const handleSubmit = async (e) => {
@@ -78,15 +81,7 @@ export default function ModalInstructor() {
 
     setAlerta({});
 
-    await submitInstructor({ id, nombre, identificacion, email: agregarDominioSena(email), telefono, contrato, area });
-
-    setId(null)
-    setNombre('');
-    setIdentificacion('');
-    setEmail('');
-    setTelefono('');
-    setContrato('');
-    setArea('');
+    await submitInstructor({ id, nombre, identificacion, email: agregarDominioSena(email), telefono, contrato, area, estado });
   };
 
   const { msg } = alerta;
@@ -149,6 +144,30 @@ export default function ModalInstructor() {
                       </Select>
                     );
                   })}
+
+                  {id && (
+                    <div className="w-full flex flex-col justify-center gap-4 md:col-span-2">
+                        <div className="flex w-full flex-wrap md:flex-nowrap mb-5 gap-4">
+                            <Select 
+                              label="Selecciona un estado" 
+                              color={
+                                estado === 'Activo' ? 'success' :
+                                estado === 'Inactivo' ? 'danger' :
+                                estado === 'Vacaciones' ? 'warning' :
+                                'default'
+                              }
+                              onChange={e=> setEstado(e.target.value)}
+                              defaultSelectedKeys={[estado]}
+                            >
+                              {ESTADOSINSTRUCTORES.map((estado) => (
+                                <SelectItem key={estado} value={estado}>
+                                  {estado}
+                                </SelectItem>
+                              ))}
+                            </Select>
+                        </div>
+                    </div>  
+                  )}
 
                   <Boton type="submit" classes={'bg-primary-100 w-full'}>{ id ? 'Guardar Cambios': 'Registrar Instructor'}</Boton>
                 </form>

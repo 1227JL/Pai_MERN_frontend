@@ -13,6 +13,7 @@ const TituladaProvider = ({children}) => {
 
     const [tituladas, setTituladas] = useState([])
     const [titulada, setTitulada] = useState({})
+    const [busqueda, setBusqueda] = useState('')
     const [alerta, setAlerta] = useState({})
     const [cargando, setCargando] = useState(false)
     const [buscador, setBuscador] = useState(false)
@@ -20,6 +21,8 @@ const TituladaProvider = ({children}) => {
     const [modalDetallesTitulada, setModalDetallesTitulada] = useState(false)
     const [modalEliminarTitulada, setModalEliminarTitulada] = useState(false)
     const [modalAprendiz, setModalAprendiz] = useState(false)
+    const [modalDetallesAprendiz, setModalDetallesAprendiz] = useState(false)
+    const [modalEliminarAprendiz, setModalEliminarAprendiz] = useState(false)
 
 
     useEffect(() => {
@@ -209,29 +212,40 @@ const TituladaProvider = ({children}) => {
         setAlerta({})
     }
 
-    const handleModaDetalleslTitulada = () => {
+    const handleModalDetallesTitulada = () => {
         setModalDetallesTitulada(!modalDetallesTitulada)
     }
 
     const handleModalEliminarTitulada = () => {
         setModalEliminarTitulada(!modalEliminarTitulada)
     }
-  
+    
     const handleModalAprendiz = () => {
         setModalAprendiz(!modalAprendiz)
         setAlerta({})
+    }
+
+    const handleModalDetallesAprendiz = () => {
+        setModalDetallesAprendiz(!modalDetallesAprendiz)
+    }
+
+    const handleModalEliminarAprendiz= () => {
+        setModalEliminarAprendiz(!modalEliminarAprendiz)
     }
 
     return (
         <TituladaContext.Provider
             value={{
                 cargando,
+                busqueda,
+                setBusqueda,
                 tituladas,
                 setTituladas,
                 titulada,
                 alerta,
                 setAlerta,
                 buscador,
+                setModalAprendiz,
                 handleBuscador,
                 submitTitulada,
                 obtenerTitulada,
@@ -239,11 +253,13 @@ const TituladaProvider = ({children}) => {
                 modalTitulada,
                 handleModalTitulada,
                 modalDetallesTitulada,
-                handleModaDetalleslTitulada,
+                handleModalDetallesTitulada,
                 modalEliminarTitulada,
                 handleModalEliminarTitulada,
                 modalAprendiz,
-                handleModalAprendiz
+                handleModalAprendiz,
+                handleModalDetallesAprendiz,
+                handleModalEliminarAprendiz
             }}
         >
             {children}

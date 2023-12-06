@@ -28,7 +28,7 @@ export default function MenuNavegacionConsultar() {
                         <Link to={'/consultar/tituladas'} className="flex items-center gap-5 p-3 rounded-lg hover:bg-white-200 hover:cursor-pointer transition-colors">
                             <img src="/src/assets/cap.png" alt="icono tituladas" height={40} width={40}/>
                             <div>
-                                <p className="font-bold text-black-100 text-sm">Consultar Tituladas</p>
+                                <p className="font-bold text-sm">Consultar Tituladas</p>
                                 <p className="text-default-400 text-sm">Consulta información de las distintas tituladas</p>
                             </div>
                         </Link>
@@ -41,7 +41,7 @@ export default function MenuNavegacionConsultar() {
                         <Link to={'/consultar/instructores'} className="flex items-center gap-5 p-3 rounded-lg hover:bg-white-200 hover:cursor-pointer transition-colors">
                             <img src="/src/assets/instructor.png" alt="icono instructores" height={40} width={40}/>
                             <div>
-                                <p className="font-bold text-black-100 text-sm">Consultar Instructores</p>
+                                <p className="font-bold text-sm">Consultar Instructores</p>
                                 <p className="text-default-400 text-sm">Consulta información de los distintos instructores</p>
                             </div>
                         </Link>
@@ -54,7 +54,7 @@ export default function MenuNavegacionConsultar() {
                         <Link to={'/consultar/ambientes'} className="flex items-center gap-5 p-3 rounded-lg hover:bg-white-200 hover:cursor-pointer transition-colors">
                             <img src="/src/assets/ambiente.png" alt="icono ambientes" height={40} width={40}/>
                             <div>
-                                <p className="font-bold text-black-100 text-sm">Consultar Ambientes</p>
+                                <p className="font-bold text-sm">Consultar Ambientes</p>
                                 <p className="text-default-400 text-sm">Consulta información de los distintos ambientes</p>
                             </div>
                         </Link>

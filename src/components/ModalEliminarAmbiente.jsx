@@ -4,7 +4,7 @@ import useAmbiente from '../hooks/useAmbiente'
 
 const ModalEliminarAmbiente = () => {
     
-    const { modalEliminarAmbiente, handleModalEliminarAmbiente, } = useAmbiente()
+    const { ambiente, modalEliminarAmbiente, handleModalEliminarAmbiente, eliminarAmbiente } = useAmbiente()
     return (
         <Transition.Root show={ modalEliminarAmbiente } as={Fragment}>
             <Dialog as="div" className="fixed z-20 inset-0 overflow-y-auto" onClose={ handleModalEliminarAmbiente }>
@@ -62,7 +62,7 @@ const ModalEliminarAmbiente = () => {
                                 </div>
                                 <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
                                     <Dialog.Title as="h3" className="text-lg leading-6 font-bold text-gray-900">
-                                        Eliminar Ambiente  
+                                        Eliminar Ambiente {ambiente && `${ambiente?.bloque}-${ambiente?.numero}`}
                                     </Dialog.Title>
                                     <div className="mt-2">
                                         <p className="text-sm text-gray-500">Una vez eliminado no se podra recuperar</p>
@@ -73,7 +73,7 @@ const ModalEliminarAmbiente = () => {
                                 <button
                                     type="button"
                                     className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
-                                    onClick={()=>eliminarTarea(tarea)}
+                                    onClick={()=>eliminarAmbiente(ambiente?._id)}
                                 >
                                     Eliminar
                                 </button>
