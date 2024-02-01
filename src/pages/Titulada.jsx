@@ -10,6 +10,8 @@ import { DeleteIcon } from "../components/DeleteIcon"
 import { Tooltip } from "@nextui-org/react"
 import { EyeIcon } from "../components/EyeIcon"
 import ModalEliminarTitulada from "../components/ModalEliminarTitulada"
+import ModalAprendiz from "../components/ModalAprendiz"
+import ModalDetallesAprendiz from "../components/ModalDetallesAprendiz"
 
 export default function Titulada() {
       
@@ -46,6 +48,8 @@ export default function Titulada() {
       </div>
       <TableAprendices/>
       <ModalTitulada/>
+      <ModalAprendiz/>
+      <ModalDetallesAprendiz/>
       <ModalDetallesTitulada/>
       <ModalEliminarTitulada title={'Titulada'} onClick={()=>eliminarTitulada(titulada?._id)}/>
     </>

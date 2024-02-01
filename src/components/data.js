@@ -43,6 +43,7 @@ const ESTADOSAMBIENTES = [
 ]
 
 const CONTRATOS = ['Término Indefinido', 'Término Fijo']
+const TIPOSIDENTIFICACION = ['Tarjeta de identidad', 'Cédula de ciudadanía', 'Cedula de extranjería']
 const AREAS = ['Deportes', 'Gastronomia', 'Sistemas', 'Gestion', 'Idiomas']
 const BLOQUESAMBIENTE = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
 
@@ -103,4 +104,4 @@ const contratoOptions = [
   {name: "Término Fijo", uid: "termino fijo"},
 ];
 
-export {columns, columnsAmbiente, statusOptions, columnsAprendiz, contratoOptions, PROGRAMAS, JORNADAS, MODALIDADES, ESTADOSTITULADAS, ESTADOSAPRENDIZ, ESTADOSINSTRUCTORES, ESTADOSAMBIENTES, CONTRATOS, AREAS, BLOQUESAMBIENTE, CATEGORIASAMBIENTE};
+export {columns, columnsAmbiente, statusOptions, columnsAprendiz, contratoOptions, PROGRAMAS, JORNADAS, MODALIDADES, ESTADOSTITULADAS, ESTADOSAPRENDIZ, ESTADOSINSTRUCTORES, ESTADOSAMBIENTES, CONTRATOS, AREAS, BLOQUESAMBIENTE, CATEGORIASAMBIENTE, TIPOSIDENTIFICACION};

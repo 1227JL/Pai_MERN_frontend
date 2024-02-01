@@ -184,9 +184,9 @@ export default function TableAmbientes() {
   },[])
 
   const topContent = React.useMemo(() => {
-    return (
+    return ( 
       <>
-        <div className="mt-2 flex flex-col gap-4">
+        <div className="mt-7 flex flex-col gap-4">
           <div className="flex justify-between gap-3 items-end">
             <Input
               isClearable

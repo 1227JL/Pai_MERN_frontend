@@ -1,43 +1,166 @@
-import { Link } from "react-router-dom"
-import useAuth from "../hooks/useAuth"
-import MenuOpcionesPerfil from "./MenuOpcionesPerfil"
-import MenuNavegacionConsultar from "./MenuNavegacionConsultar"
+import {
+  Navbar,
+  NavbarBrand,
+  NavbarContent,
+  NavbarMenuToggle,
+  NavbarItem,
+  NavbarMenu,
+  NavbarMenuItem,
+  Button,
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
+  Link,
+  User,
+} from "@nextui-org/react";
+import { useState } from "react";
+import useAuth from "../hooks/useAuth";
+import { ChevronDown } from "./ChevronDown";
+import { useNavigate } from "react-router-dom";
 
 export default function Header() {
+  const { auth, cerrarSesionAuth } = useAuth();
+  const navigate = useNavigate();
+  const { nombre, rol } = auth;
 
-  const { auth } = useAuth()
-  const { nombre, rol } = auth
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const menuItems = [
+    {
+      name: "Consultar tituladas",
+      href: "/consultar/tituladas"
+    },
+    {
+      name: "Consultar instructores",
+      href: "/consultar/instructores"
+    },
+    {
+      name: "Consultar ambientes",
+      href: "/consultar/ambientes"
+    },
+  ];
 
   return (
-    <div className='lg:shadow-small p-2 md:p-8 rounded-full flex justify-between items-center relative'>
-      <div>
-        <Link
-          to={'/inicio'}
-        >
-          <p className='font-black text-3xl'>Pa<span className='text-primary-100'>i</span></p>
-        </Link>
-      </div>
-      <nav className="mx-auto hidden lg:block">
-        <ul className="flex gap-10 items-center">
-          <Link 
-            className="text-sm font-bold p-2 rounded hover:bg-white-200 transition-colors" 
-            to={'/inicio'}
-          >Inicio</Link>
-          <MenuNavegacionConsultar/>
-          <Link 
-            className="text-sm font-bold p-2 rounded hover:bg-white-200 transition-colors" 
-            to={'/eventos'}
-          >Eventos</Link>
-        </ul>
-      </nav>
-      <div className="flex gap-3 items-center absolute right-0 lg:right-8 z-10">
-        <div className="hidden sm:flex flex-col text-sm gap-1">
-          <p className="hidden sm:block text-right font-semibold">{nombre}</p>
-          <p className="hidden sm:block text-right text-default-400">{rol}</p>
-        </div>
-        <img src="/src/assets/user.jpg" alt="icono usuario" height={64} width={64}/>
-        <MenuOpcionesPerfil/>
-      </div>
-    </div>
-  )
+    <Navbar maxWidth="full" onMenuOpenChange={setIsMenuOpen}>
+      <NavbarContent>
+        <NavbarMenuToggle
+          aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+          className="md:hidden"
+        />
+        <NavbarBrand>
+          <p className="font-black text-3xl">
+            Pa<span className="text-primary-100">i</span>
+          </p>
+        </NavbarBrand>
+      </NavbarContent>
+
+      <NavbarContent className="hidden md:flex gap-4" justify="center">
+        <Dropdown>
+          <NavbarItem>
+            <DropdownTrigger>
+              <Button
+                disableRipple
+                className="p-0 bg-transparent data-[hover=true]:bg-transparent"
+                endContent={<ChevronDown fill="currentColor" size={16} />}
+                radius="sm"
+                variant="light"
+              >
+                Consutar
+              </Button>
+            </DropdownTrigger>
+          </NavbarItem>
+          <DropdownMenu
+            aria-label="ACME features"
+            className="p-2"
+            itemClasses={{
+              base: "gap-4",
+            }}
+          >
+            <DropdownItem
+              className="p-2"
+              key="tituladas"
+              description="Consulta información de las distintas tituladas"
+              startContent={
+                <img
+                  src="/src/assets/cap.png"
+                  alt="icono tituladas"
+                  height={35}
+                  width={35}
+                />
+              }
+              onPress={() => navigate("/consultar/tituladas")}
+            >
+              Consultar Tituladas
+            </DropdownItem>
+            <DropdownItem
+              className="p-2"
+              key="instructores"
+              description="Consulta información de los distintos instructores"
+              startContent={
+                <img
+                  src="/src/assets/instructor.png"
+                  alt="icono instructores"
+                  height={35}
+                  width={35}
+                />
+              }
+              onPress={() => navigate("/consultar/instructores")}
+            >
+              Consultar Instructores
+            </DropdownItem>
+            <DropdownItem
+              className="p-2"
+              key="ambientes"
+              description="Consulta información de los distintos ambientes"
+              startContent={
+                <img
+                  src="/src/assets/ambiente.png"
+                  alt="icono ambientes"
+                  height={35}
+                  width={35}
+                />
+              }
+              onPress={() => navigate("/consultar/ambientes")}
+            >
+              Consultar Ambientes
+            </DropdownItem>
+          </DropdownMenu>
+        </Dropdown>
+        <NavbarItem>
+          <Link color="foreground" href="#">
+            Integrations
+          </Link>
+        </NavbarItem>
+      </NavbarContent>
+      <NavbarContent justify="end">
+        <Dropdown>
+          <DropdownTrigger>
+            <User name={nombre} description={rol} />
+          </DropdownTrigger>
+          <DropdownMenu
+          >
+            <DropdownItem key="profile">Mi perfil</DropdownItem>
+            <DropdownItem key="logout" onPress={cerrarSesionAuth}>
+              Cerrar Sesión
+            </DropdownItem>
+          </DropdownMenu>
+        </Dropdown>
+      </NavbarContent>
+      <NavbarMenu>
+        {menuItems.map((item, index) => (
+          <NavbarMenuItem key={`${item}-${index}`}>
+            <Link
+              color="foreground"
+              className="w-full"
+              href={item.href}
+              size="lg"
+            >
+              {item.name}
+            </Link>
+          </NavbarMenuItem>
+        ))}
+      </NavbarMenu>
+    </Navbar>
+  );
 }

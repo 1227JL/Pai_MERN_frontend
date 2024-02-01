@@ -186,12 +186,12 @@ export default function TableInstructores() {
   const topContent = React.useMemo(() => {
     return (
       <>
-        <div className="mt-2 flex flex-col gap-4">
+        <div className="mt-7 flex flex-col gap-4">
           <div className="flex justify-between gap-3 items-end">
             <Input
               isClearable
               className="w-full sm:max-w-[44%]"
-              placeholder="Search by name..."
+              placeholder="Buscar por el nombre"
               startContent={<SearchIcon />}
               value={filterValue}
               onClear={() => onClear()}

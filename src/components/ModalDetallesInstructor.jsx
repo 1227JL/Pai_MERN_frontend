@@ -46,18 +46,17 @@ export default function ModalDetallesInstructor() {
                                     <p className='font-bold'>Contrato</p>
                                     <p>{instructor?.contrato}</p>
                                 </div>
-                                <div className='md:flex justify-between items-center'>
-                                    <p className='font-bold'>Horas</p>
+                                <div className='flex flex-col gap-2'>
+                                    <p className='font-bold'>Horas realizadas</p>
                                     <Progress
                                         formatOptions={'number'}
-                                        size="sm"
+                                        size="md"
                                         radius="sm"
                                         classNames={{
-                                            base: "max-w-md",
                                             track: "border border-default",
-                                            indicator: "bg-gradient-to-r from-pink-500 to-yellow-500",
+                                            indicator: "bg-gradient-to-r from-success-600 to-success-300",
                                             label: "tracking-wider font-medium text-default-600",
-                                            value: "text-foreground/60",
+                                            value: "text-foreground/80",
                                         }}
                                         value={instructor?.horas}
                                         maxValue={instructor?.contrato === 'Término Fijo' ? 160 : 120}

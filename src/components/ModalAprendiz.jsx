@@ -1,222 +1,223 @@
-import { Dialog, Transition } from '@headlessui/react'
-import { Fragment, useState } from 'react'
-import Alerta from './Alerta'
-import useTitulada from '../hooks/useTitulada'
+import { useEffect, useState } from "react";
+import { Modal, ModalContent, ModalHeader, ModalBody } from "@nextui-org/react";
+import Alerta from "./Alerta";
+import { Select, SelectItem, Input } from "@nextui-org/react";
+import Boton from "./Boton";
+import useTitulada from "../hooks/useTitulada";
+import { TIPOSIDENTIFICACION } from "./data";
+import { MailIcon } from "./MailIcon";
+import FileUpload from "./FileUpload";
 
 export default function ModalAprendiz() {
+  const { alerta, setAlerta, modalAprendiz, handleModalAprendiz } =
+    useTitulada();
 
-    const { modalAprendiz, handleModalAprendiz } = useTitulada()
+  const [id, setId] = useState("");
+  const [nombres, setNombres] = useState("");
+  const [apellidos, setApellidos] = useState("");
+  const [identificacion, setIdentificacion] = useState("");
+  const [tipoIdentificacion, setTipoIdentificacion] = useState("");
+  const [email, setEmail] = useState("");
+  const [telefono, setTelefono] = useState("");
 
-    const [nombre, setNombre] = useState('')
-    const [, set] = useState('')
+  const inputsAprendiz = [
+    {
+      state: nombres,
+      stateSet: setNombres,
+      type: "text",
+      label: "Nombres",
+      placeholder: "Nombres del aprendiz",
+    },
+    {
+      state: apellidos,
+      stateSet: setApellidos,
+      type: "text",
+      label: "Apellidos",
+      placeholder: "Apellidos del aprendiz",
+    },
+    {
+      state: identificacion,
+      stateSet: setIdentificacion,
+      type: "number",
+      label: "Identificación",
+      placeholder: "Número de documento",
+    },
+    {
+      state: email,
+      stateSet: setEmail,
+      type: "text",
+      label: "Email",
+      placeholder: "Email de contacto",
+    },
+    {
+      state: telefono,
+      stateSet: setTelefono,
+      type: "number",
+      label: "Teléfono",
+      placeholder: "Teléfono de contacto",
+    },
+  ];
 
-    return (
-        <>
-            <Transition.Root className={'z-20'} show={ modalAprendiz } as={Fragment}>
-            <Dialog as="div" className="fixed inset-0 overflow-y-auto" onClose={ handleModalAprendiz }>
-                <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block">
-                    <Transition.Child
-                        as={Fragment}
-                        enter="ease-out duration-300"
-                        enterFrom="opacity-0"
-                        enterTo="opacity-100"
-                        leave="ease-in duration-200"
-                        leaveFrom="opacity-100"
-                        leaveTo="opacity-0"
-                    >
-                        <Dialog.Overlay 
-                            className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" 
-                        />
-                    </Transition.Child>
+  const propsEmail = {
+    startContent: <MailIcon className="text-xl text-default-400 pointer-events-none flex-shrink-0" />,
+  };
 
-                    {/* This element is to trick the browser into centering the modal contents. */}
-                    <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">
-                        &#8203;
-                    </span>
+  const selectsAprendiz = [
+    {
+      label: "Tipo de identificación",
+      stateSet: setTipoIdentificacion,
+      defaultOption: tipoIdentificacion,
+      options: TIPOSIDENTIFICACION,
+      placeholder: "Seleccione un tipo de identificación",
+    },
+  ];
 
-                    <Transition.Child
-                        as={Fragment}
-                        enter="ease-out duration-300"
-                        enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                        enterTo="opacity-100 translate-y-0 sm:scale-100"
-                        leave="ease-in duration-200"
-                        leaveFrom="opacity-100 translate-y-0 sm:scale-100"
-                        leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                    >
-                        <div className="inline-block align-middle bg-white rounded-lg px-4 pt-5 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:max-w-5xl w-full sm:p-6">
-                            <div className="block absolute top-0 right-0 pt-4 pr-4">
-                                <button
-                                    type="button"
-                                    className="bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                                    onClick={ handleModalAprendiz }
-                                >
-                                <span className="sr-only">Cerrar</span>
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                                    </svg>
-                                </button>
-                            </div>
+  // useEffect(() => {
+  //   if (aprendiz && Object.keys(aprendiz).length > 0) {
+  //     setId(aprendiz._id);
+  //     setNombre(aprendiz.nombre || ""); // Siempre define un valor inicial
+  //     setIdentificacion(aprendiz.identificacion || ""); // Siempre define un valor inicial
+  //     setEmail(aprendiz.email || ""); // Siempre define un valor inicial
+  //     setTelefono(aprendiz.telefono || ""); // Siempre define un valor inicial
+  //     setContrato(aprendiz.contrato || ""); // Siempre define un valor inicial
+  //     setArea(aprendiz.area || ""); // Siempre define un valor inicial
+  //     setEstado(aprendiz.estado || ""); // Siempre define un valor inicial
+  //     return;
+  //   }
 
+  //   setId(null);
+  //   setNombre(""); // Puedes mantener esto como una cadena vacía si es necesario
+  //   setIdentificacion("");
+  //   setEmail("");
+  //   setTelefono("");
+  //   setContrato("");
+  //   setArea("");
+  //   setEstado("");
+  // }, [id, aprendiz]);
 
-                            <div className="sm:flex sm:items-start">
-                                <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
-                                    <Dialog.Title as="h3" className="text-lg leading-6 font-bold text-gray-900 mb-5">
-                                        Agregar Aprendiz
-                                    </Dialog.Title>
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if ([nombres, identificacion, email, telefono].includes("")) {
+      setAlerta({
+        msg: "Todos los campos son obligatorios",
+        error: true,
+      });
+      return;
+    }
 
-                                    <form 
-                                        className='my-5 grid md:grid-cols-2 lg:grid-cols-3 gap-x-3'
-                                    >
-                                         <div className='mb-5'>
-                                            <label
-                                                className='text-gray-700 uppercase font-bold text-sm' 
-                                                htmlFor='programa'
-                                            >
-                                                Programa Formación
-                                            </label>
-                                            <input
-                                                type="text"
-                                                id="programa"
-                                                placeholder='Programa de Formación'
-                                                className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md'
-                                                value={nombre}
-                                                onChange={e => setNombre(e.target.value)}
-                                            />
-                                        </div>
-                                        {/* <div className='mb-5'>
-                                            <label
-                                                className='text-gray-700 uppercase font-bold text-sm' 
-                                                htmlFor='programa'
-                                            >
-                                                Programa Formación
-                                            </label>
-                                            <input
-                                                type="text"
-                                                id="programa"
-                                                placeholder='Programa de Formación'
-                                                className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md'
-                                                value={programa}
-                                                onChange={e => setPrograma(e.target.value)}
-                                            />
-                                        </div>
-                                        <div className='mb-5'>
-                                            <label
-                                                className='text-gray-700 uppercase font-bold text-sm' 
-                                                htmlFor='ficha'
-                                            >
-                                                Número Ficha
-                                            </label>
-                                            <input
-                                                type='number'
-                                                id="ficha"
-                                                placeholder='Número de Ficha'
-                                                className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md'
-                                                value={ficha}
-                                                onChange={e => setFicha(e.target.value)}
-                                            />
-                                        </div>
-                                        <div className='mb-5'>
-                                            <label
-                                                className='text-gray-700 uppercase font-bold text-sm' 
-                                                htmlFor='tipo'
-                                            >
-                                               Tipo Programa
-                                            </label>
-                                            <select
-                                                id="tipo"
-                                                className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md'
-                                                value={tipo}
-                                                onChange={e => setTipo(e.target.value)}
-                                            >
-                                                <option value="">- Selecciona el tipo de Programa -</option>
-                                                {PROGRAMAS?.map(programa => (
-                                                    <option key={programa} value={programa}>{programa}</option>
-                                                ))}
-                                            </select>
-                                        </div>
-                                        <div className='mb-5'>
-                                            <label
-                                                className='text-gray-700 uppercase font-bold text-sm' 
-                                                htmlFor='jornada'
-                                            >
-                                               Jornada
-                                            </label>
-                                            <select
-                                                id="jornada"
-                                                className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md'
-                                                value={jornada}
-                                                onChange={e => setJornada(e.target.value)}
-                                            >
-                                                <option value="">- Selecciona la Jornada -</option>
-                                                {JORNADAS?.map(jornada => (
-                                                    <option key={jornada} value={jornada}>{jornada}</option>
-                                                ))}
-                                            </select>
-                                        </div>
-                                        <div className='mb-5'>
-                                            <label
-                                                className='text-gray-700 uppercase font-bold text-sm' 
-                                                htmlFor='modalidad'
-                                            >
-                                               Modalidad
-                                            </label>
-                                            <select
-                                                id="modalidad"
-                                                className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md'
-                                                value={modalidad}
-                                                onChange={e => setModalidad(e.target.value)}
-                                            >
-                                                <option value="">- Selecciona la Modalidad -</option>
-                                                {MODALIDADES?.map(modalidad => (
-                                                    <option key={modalidad} value={modalidad}>{modalidad}</option>
-                                                ))}
-                                            </select>
-                                        </div>
-                                        <div className='mb-5'>
-                                            <label
-                                                className='text-gray-700 uppercase font-bold text-sm' 
-                                                htmlFor='duracion'
-                                            >
-                                                Duración Formación
-                                            </label>
-                                            <input
-                                                type='number'
-                                                id="duracion"
-                                                placeholder='Duración en Horas'
-                                                className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md'
-                                                value={duracion}
-                                                onChange={e => setDuracion(e.target.value)}
-                                            />
-                                        </div>
-                                        <div className='mb-5 col-span-3'>
-                                            <label
-                                                className='text-gray-700 uppercase font-bold text-sm' 
-                                                htmlFor='archivo'
-                                            >
-                                                Duración Formación
-                                            </label>
-                                            <input
-                                                type='file'
-                                                id="archivo"
-                                                placeholder='Duración en Horas'
-                                                className='border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md'
-                                                value={archivoAdjunto}
-                                                onChange={e => setArchivoAdjunto(e.target.value)}
-                                            />
-                                        </div>
-                                        <input
-                                            type="submit"
-                                            className='button-primary-block md:col-span-2 lg:col-span-3'
-                                            value={ id ? 'Guardar Cambios': 'Crear Titulada'}
-                                        /> */}
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </Transition.Child>
-                </div>
-            </Dialog>
-        </Transition.Root>
-        </>
-    )
+    setAlerta({});
+
+    await submitInstructor({
+      id,
+      nombres,
+      identificacion,
+      email,
+      telefono,
+      estado,
+    });
+  };
+
+  const { msg } = alerta;
+
+  return (
+    <>
+      <Modal
+        classNames={{
+          body: "pb-6",
+          base: "m-auto mx-2",
+        }}
+        backdrop={"blur"}
+        isOpen={modalAprendiz}
+        onClose={handleModalAprendiz}
+      >
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                {id ? "Editar" : "Agregar"} Aprendiz
+              </ModalHeader>
+              <ModalBody>
+                {msg && <Alerta alerta={alerta} />}
+
+                <form onSubmit={handleSubmit}>
+                  {inputsAprendiz.map((input) => (
+                    <div key={input.label} className="mb-5">
+                      <Input
+                        {...(input.label === "Email" ? propsEmail : {})}
+                        type={input.type}
+                        label={input.label}
+                        labelPlacement={"inside"}
+                        placeholder={input.placeholder}
+                        value={input.state}
+                        onChange={(e) => input.stateSet(e.target.value)}
+                      />
+                    </div>
+                  ))}
+
+                  {selectsAprendiz.map((select) => {
+                    const selectProps = {
+                      key: select.label,
+                      className: "mb-5",
+                      label: select.label,
+                      onChange: (e) => select.stateSet(e.target.value),
+                      placeholder: select.placeholder,
+                    };
+
+                    if (id) {
+                      selectProps.selectedKeys = [select?.defaultOption];
+                      selectProps.disabledKeys = [select?.defaultOption];
+                      selectProps.defaultSelectedKeys = [select?.defaultOption];
+                    }
+
+                    return (
+                      <Select {...selectProps}>
+                        {select.options.map((option) => (
+                          <SelectItem key={option} value={option}>
+                            {option}
+                          </SelectItem>
+                        ))}
+                      </Select>
+                    );
+                  })}
+
+                  <FileUpload/>
+
+                  {/* {id && (
+                    <div className="w-full flex flex-col justify-center gap-4 md:col-span-2">
+                      <div className="flex w-full flex-wrap md:flex-nowrap mb-5 gap-4">
+                        <Select
+                          label="Selecciona un estado"
+                          color={
+                            estado === "Activo"
+                              ? "success"
+                              : estado === "Inactivo"
+                              ? "danger"
+                              : estado === "Vacaciones"
+                              ? "warning"
+                              : "default"
+                          }
+                          onChange={(e) => setEstado(e.target.value)}
+                          defaultSelectedKeys={[estado]}
+                        >
+                          {ESTADOSINSTRUCTORES.map((estado) => (
+                            <SelectItem key={estado} value={estado}>
+                              {estado}
+                            </SelectItem>
+                          ))}
+                        </Select>
+                      </div>
+                    </div>
+                  )} */}
+
+                  <Boton type="submit" classes={"bg-primary-100 w-full"}>
+                    {id ? "Guardar Cambios" : "Registrar Instructor"}
+                  </Boton>
+                </form>
+              </ModalBody>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+    </>
+  );
 }

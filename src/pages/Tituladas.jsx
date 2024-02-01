@@ -40,7 +40,6 @@ export default function Tituladas() {
     useEffect(() => {
         const tituladasFiltradas = filtrarTituladas(tituladas, filtros);
         setTituladasFiltradas(tituladasFiltradas);
-        console.log(filtros)
     }, [filtros]);
     
     const handleCheckboxChange = (event) => { 
@@ -56,8 +55,8 @@ export default function Tituladas() {
 
     return (
         <>
-            <h1 className="heading text-center">Gestiona las <span className='text-slate-600'>Tituladas</span></h1>
-            <div className='lg:flex lg:gap-7 mt-10'>
+            <h1 className="m-0 text-center">Gestiona las <span className='text-slate-600'>Tituladas</span></h1>
+            <div className='lg:flex lg:gap-7 mt-7'>
                 <div className='mb-6 lg:mb-0 flex flex-col lg:w-1/3 shadow-small p-5 rounded-xl h-[40rem]'>
                     <h1>Filtros de busqueda</h1>
                     <hr/>

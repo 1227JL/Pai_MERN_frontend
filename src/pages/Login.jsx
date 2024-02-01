@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import Alerta from "../components/Alerta"
 import clienteAxios from "../../config/clienteAxios"
@@ -12,7 +12,7 @@ export default function Login() {
     const [password, setPassword] = useState('')
     const [alerta, setAlerta] = useState({})
 
-    const { auth, setAuth } = useAuth()
+    const { setAuth } = useAuth()
     
     const handleSubmit =  async (e) => {
         e.preventDefault()
@@ -29,7 +29,6 @@ export default function Login() {
 
         try {
             const { data } = await clienteAxios.post('/usuarios/login', { email, password})
-
             localStorage.setItem('token', data.token)
             setAuth(data)
             navigate('/inicio')

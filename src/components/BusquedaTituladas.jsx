@@ -20,7 +20,7 @@ const BusquedaTituladas = () => {
 
     return (
         <Transition.Root show={ buscador } as={Fragment} afterLeave={()=>setBusqueda('') }>
-            <Dialog as="div" className="fixed inset-0 z-20 overflow-y-auto mt-20 p-4 sm:p-20 md:p-20" onClose={ handleBuscador }>
+            <Dialog as="div" className="fixed inset-0 z-50 overflow-y-auto mt-20 p-4 sm:p-20 md:p-20" onClose={ handleBuscador }>
                 <Transition.Child
                     as={Fragment}
                     enter="ease-out duration-300"

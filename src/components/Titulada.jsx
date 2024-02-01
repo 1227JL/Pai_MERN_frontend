@@ -5,7 +5,7 @@ export default function Titulada({titulada}) {
   return (
     <div key={titulada._id} className='flex flex-col shadow-small p-5 rounded-xl'>
       <div className='flex flex-col items-center lg:flex-row lg:justify-between'>
-        <p className='text-slate-600 font-bold uppercase text-center'>{titulada?.programa}</p>
+        <p className='text-slate-600 font-bold uppercase'>{titulada?.programa}</p>
         <p className='text-black-300 font-semibold'>{titulada?.ficha}</p>
       </div>
       <div className="flex flex-col items-center lg:flex-row lg:justify-between">

@@ -13,6 +13,7 @@ const TituladaProvider = ({children}) => {
 
     const [tituladas, setTituladas] = useState([])
     const [titulada, setTitulada] = useState({})
+    const [aprendiz, setAprendiz] = useState({})
     const [busqueda, setBusqueda] = useState('')
     const [alerta, setAlerta] = useState({})
     const [cargando, setCargando] = useState(false)
@@ -23,7 +24,6 @@ const TituladaProvider = ({children}) => {
     const [modalAprendiz, setModalAprendiz] = useState(false)
     const [modalDetallesAprendiz, setModalDetallesAprendiz] = useState(false)
     const [modalEliminarAprendiz, setModalEliminarAprendiz] = useState(false)
-
 
     useEffect(() => {
         const obtenerTituladas = async () => {
@@ -225,7 +225,8 @@ const TituladaProvider = ({children}) => {
         setAlerta({})
     }
 
-    const handleModalDetallesAprendiz = () => {
+    const handleModalDetallesAprendiz = (aprendiz) => {
+        setAprendiz(aprendiz)
         setModalDetallesAprendiz(!modalDetallesAprendiz)
     }
 
@@ -242,6 +243,7 @@ const TituladaProvider = ({children}) => {
                 tituladas,
                 setTituladas,
                 titulada,
+                aprendiz,
                 alerta,
                 setAlerta,
                 buscador,
@@ -258,6 +260,7 @@ const TituladaProvider = ({children}) => {
                 handleModalEliminarTitulada,
                 modalAprendiz,
                 handleModalAprendiz,
+                modalDetallesAprendiz,
                 handleModalDetallesAprendiz,
                 handleModalEliminarAprendiz
             }}

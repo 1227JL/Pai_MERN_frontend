@@ -10,15 +10,15 @@ export default function RutaProtegida() {
     return (
         <>
             {auth?._id ? (
-                <div className="px-8 py-5">
+                <div>
                     <Header/>
                     <div className="lg:flex">
-                        <main className="flex-1 mt-8">
+                        <main className="flex-1 px-8 py-5">
                             <Outlet/>
                         </main>
                     </div>
                 </div>
-            ) : <Navigate to={'/'}/>}
+            ): <Navigate to={'/'}/>}
         </>
     )
 }
