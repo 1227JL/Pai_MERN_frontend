@@ -11,7 +11,6 @@ import useTitulada from "../hooks/useTitulada";
 export default function ModalDetallesAprendiz() {
   const { aprendiz, modalDetallesAprendiz, handleModalDetallesAprendiz } =
     useTitulada();
-  console.log(aprendiz);
 
   return (
     <>
@@ -28,7 +27,7 @@ export default function ModalDetallesAprendiz() {
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">
+              <ModalHeader className="flex flex-col gap-1  hei ">
                 Detalles Aprendiz
               </ModalHeader>
               <ModalBody>

@@ -84,7 +84,7 @@ export default function ModalDetallesTitulada() {
                     isExternal
                     isBlock
                     showAnchorIcon
-                    href={`http://localhost:4000/uploads/${titulada?.archivoAdjunto}`}
+                    href={`http://localhost:4000/uploads/disenosCurriculares/${titulada?.archivoAdjunto}`}
                     color="secondary"
                   >
                     Ver Diseño Curricular

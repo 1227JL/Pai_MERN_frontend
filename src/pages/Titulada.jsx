@@ -12,6 +12,7 @@ import { EyeIcon } from "../components/EyeIcon"
 import ModalEliminarTitulada from "../components/ModalEliminarTitulada"
 import ModalAprendiz from "../components/ModalAprendiz"
 import ModalDetallesAprendiz from "../components/ModalDetallesAprendiz"
+import TableCompetencias from "../components/TableCompetencias"
 
 export default function Titulada() {
       
@@ -24,10 +25,12 @@ export default function Titulada() {
   
   if(cargando || !titulada.aprendices) return <Spinner>Obteniendo Titulada...</Spinner>
 
+  console.log(titulada)
+
   return (
-    <>
+    <div className={'space-y-4'}>
       <div className="flex flex-col lg:flex-row gap-2 justify-between mb-7 items-center">
-        <h1 className=" text-xl md:text-3xl text-center uppercase">{titulada.programa}</h1>
+        <h1 className=" text-xl md:text-3xl text-center uppercase">{titulada.programa} ({titulada.ficha})</h1>
         <div className="flex gap-5 items-center ml-auto">
           <Tooltip content="Detalles de la Titulada">
             <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
@@ -46,12 +49,23 @@ export default function Titulada() {
           </Tooltip>
         </div>
       </div>
-      <TableAprendices/>
+      <div>
+        <h1>Aprendices</h1>
+        <TableAprendices/>
+      </div>
+      <div>
+        <h1>Competencias</h1>
+        <TableCompetencias/>
+      </div>
+      <div>
+        <h1>Transversales</h1>
+        {/* <TableCompetencias/> */}
+      </div>
       <ModalTitulada/>
       <ModalAprendiz/>
       <ModalDetallesAprendiz/>
       <ModalDetallesTitulada/>
       <ModalEliminarTitulada title={'Titulada'} onClick={()=>eliminarTitulada(titulada?._id)}/>
-    </>
+    </div>
   )
 }

@@ -9,7 +9,7 @@ import { MailIcon } from "./MailIcon";
 import FileUpload from "./FileUpload";
 
 export default function ModalAprendiz() {
-  const { alerta, setAlerta, modalAprendiz, handleModalAprendiz } =
+  const { alerta, setAlerta, modalAprendiz, handleModalAprendiz, submitAprendeiz } =
     useTitulada();
 
   const [id, setId] = useState("");
@@ -107,7 +107,7 @@ export default function ModalAprendiz() {
 
     setAlerta({});
 
-    await submitInstructor({
+    await submitAprendeiz({
       id,
       nombres,
       identificacion,
