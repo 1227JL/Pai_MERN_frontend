@@ -56,8 +56,8 @@ export default function Tituladas() {
     return (
         <>
             <h1 className="m-0 text-center">Gestiona las <span className='text-slate-600'>Tituladas</span></h1>
-            <div className='lg:flex lg:gap-7 mt-7'>
-                <div className='mb-6 lg:mb-0 flex flex-col lg:w-1/3 shadow-small p-5 rounded-xl h-[40rem]'>
+            <div className='flex flex-col lg:flex-row gap-5 lg:gap-7 mt-7'>
+                <div className='flex flex-col lg:w-1/3 shadow-small p-5 rounded-xl h-[40rem]'>
                     <h1>Filtros de busqueda</h1>
                     <hr/>
                     <div className='mt-4 relative'>
@@ -179,7 +179,7 @@ export default function Tituladas() {
                             >Noche</label>
                         </div>
                     </div>
-                    <div className='mt-4'>
+                    <div className='mt-4 mb-2'>
                         <h3 className='font-semibold mb-2'>Modalidad de Formación</h3>
                         <div className='flex items-center gap-2'>
                             <input 
@@ -204,7 +204,7 @@ export default function Tituladas() {
                             >Virtual</label>
                         </div>
                     </div>
-                    <Boton classes={'bg-primary-100 mt-auto'} onClick={handleModalTitulada}>Agregar Nueva Titulada</Boton>
+                    <Boton classes={'bg-primary-100 mt-auto p-4'} onClick={handleModalTitulada}>Agregar Nueva Titulada</Boton>
                 </div>
                 <div className='lg:w-2/3 flex-2'>
                     <div className="mb-2 flex justify-between items-center">
@@ -219,13 +219,17 @@ export default function Tituladas() {
                     ) : (
                         (filtros?.length > 0) ? (
                             <div className='flex flex-col gap-4 overflow-y-scroll p-2 pr-4 mt-2 max-h-[42rem]'>
-                                {tituladasFiltradas.map(titulada => (
-                                    <Titulada key={titulada?._id} titulada={titulada} />
-                                ))}
+                                {tituladasFiltradas.length > 0 ? (
+                                    tituladasFiltradas.letituladasFiltradas?.map(titulada => (
+                                        <Titulada key={titulada?._id} titulada={titulada} />
+                                    ))
+                                ): (
+                                    <h3 className="mt-5 text-center font-bold text-3xl">No hay coincidencias</h3>
+                                )}
                             </div>
                         ) : (
                             (tituladas?.length > 0 && filtros.length === 0) ? (
-                                <div className='flex flex-col gap-4 overflow-y-scroll p-2 pr-4 mt-2 max-h-[42rem]'>
+                                <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 overflow-y-scroll p-2 pr-4 mt-2 max-h-[42rem]'>
                                     {tituladas?.map(titulada => (
                                         <Titulada key={titulada?._id} titulada={titulada} />
                                     ))}

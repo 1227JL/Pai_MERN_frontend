@@ -18,14 +18,11 @@ export default function Titulada() {
       
   const params = useParams()
   const { cargando, titulada, obtenerTitulada, eliminarTitulada, handleModalTitulada, handleModalDetallesTitulada, handleModalEliminarTitulada } = useTitulada()
-
   useEffect(() => {
     return ()=>obtenerTitulada(params.ficha)
   }, [])
   
   if(cargando || !titulada.aprendices) return <Spinner>Obteniendo Titulada...</Spinner>
-
-  console.log(titulada)
 
   return (
     <div className={'space-y-4'}>
@@ -37,7 +34,7 @@ export default function Titulada() {
               <EyeIcon onClick={handleModalDetallesTitulada}/>
             </span>
           </Tooltip>
-          <Tooltip content="Editar titulada">
+          <Tooltip color="secondary" content="Editar titulada">
             <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
               <EditIcon onClick={handleModalTitulada} />
             </span>
@@ -56,10 +53,6 @@ export default function Titulada() {
       <div>
         <h1>Competencias</h1>
         <TableCompetencias/>
-      </div>
-      <div>
-        <h1>Transversales</h1>
-        {/* <TableCompetencias/> */}
       </div>
       <ModalTitulada/>
       <ModalAprendiz/>
