@@ -8,7 +8,7 @@ import {
     Input,
     User
 } from '@nextui-org/react'
-import {PROGRAMAS, JORNADAS, MODALIDADES, ESTADOSTITULADAS} from "../components/data";
+import {JORNADAS, MODALIDADES, ESTADOSTITULADAS} from "../components/data";
 import useTitulada from '../hooks/useTitulada'
 import useIntructor from '../hooks/useInstructor'
 import Boton from './Boton'
@@ -23,25 +23,19 @@ export default function ModalTitulada() {
     const { ambientes } = useAmbiente()
 
     const [id, setId] = useState(null)
-    const [programa, setPrograma] = useState('')
     const [ficha, setFicha] = useState('')
-    const [tipo, setTipo] = useState('')
     const [jornada, setJornada] = useState('')
     const [estado, setEstado] = useState('Convocatoria')
     const [modalidad, setModalidad] = useState('')
     const [instructor, setInstructor] = useState({})
     const [ambiente, setAmbiente] = useState({})
-    const [duracion, setDuracion] = useState('')
     const [selectedFile, setSelectedFile] = useState(null);
 
     const inputsTitulada = [
-        {state: programa, stateSet: setPrograma, type: 'text', label: 'Programa Formación', placeholder: 'Programa de Formación'},
         {state: ficha, stateSet: setFicha, type: 'number', label: 'Número Ficha', placeholder: 'Número de Ficha'},
-        {state: duracion, stateSet: setDuracion, type: 'number', label: 'Duración Formación', placeholder: 'Duración en Horas'},
     ]
     
     const selectsTitulada = [
-        {label: 'Tipo rograma', stateSet: setTipo, defaultOption: tipo, options: PROGRAMAS, placeholder: 'Seleccione un tipo de programa'},
         {label: 'Jornada', stateSet: setJornada, defaultOption: jornada, options: JORNADAS, placeholder: 'Seleccione una jornada'},
         {label: 'Modalidad', stateSet: setModalidad, defaultOption: modalidad, options: MODALIDADES, placeholder: 'Seleccione una modalidad'},
     ]
@@ -116,10 +110,7 @@ export default function ModalTitulada() {
     useEffect(() => {
         if (params.ficha && titulada && Object.keys(titulada).length > 0) {
             setId(titulada._id);
-            setPrograma(titulada.programa);
             setFicha(titulada.ficha);
-            setDuracion(titulada.duracion);
-            setTipo(titulada.tipo);
             setJornada(titulada.jornada);
             setModalidad(titulada.modalidad);
             setEstado(titulada.estado)
@@ -131,7 +122,7 @@ export default function ModalTitulada() {
     const handleSubmit = async (e) => {
         e.preventDefault()
 
-        if([programa, ficha, duracion, tipo, jornada, modalidad, instructor, ambiente].includes('') || !id && !selectedFile){
+        if([ficha, jornada, modalidad, instructor, ambiente].includes('') || !id && !selectedFile){
             setAlerta({
                 msg: 'Todos los campos son obligatorios',
                 error: true
@@ -141,14 +132,14 @@ export default function ModalTitulada() {
 
         setAlerta({})
 
-        await submitTitulada({id, programa, ficha, duracion, tipo, jornada, modalidad, instructor, ambiente, estado, file: selectedFile})
+        await submitTitulada({id, ficha, jornada, modalidad, instructor, ambiente, estado, file: selectedFile})
     }
 
     const { msg } = alerta
 
     return (
         <>
-            <Modal size="4xl" classNames={{
+            <Modal size="xl" classNames={{
                 body: "pb-6",
                 base: "m-auto mx-2",
 
@@ -164,7 +155,6 @@ export default function ModalTitulada() {
                                 <form 
                                     onSubmit={handleSubmit}
                                     encType="multipart/form-data"
-                                    className="md:grid md:grid-cols-2 md:gap-x-5"
                                 >
                                     {inputsTitulada.map(input => (
                                         <div key={input.label} className='mb-5'>
@@ -262,7 +252,7 @@ export default function ModalTitulada() {
 
 
                                     {id && (
-                                        <div className="w-full flex flex-col justify-center gap-4 md:col-span-2">
+                                        <div className="w-full flex flex-col justify-center gap-4">
                                             <div className="flex w-full flex-wrap md:flex-nowrap mb-5 gap-4">
                                                 <Select 
                                                     label="Selecciona un estado" 
@@ -285,11 +275,11 @@ export default function ModalTitulada() {
                                         </div>  
                                     )}
 
-                                    <div className="md:col-span-2">
+                                    <div>
                                         <FileUpload onFileSelect={(file) => setSelectedFile(file)} />
                                     </div>
 
-                                    <Boton type="submit" classes={'bg-primary-100 w-full md:col-span-2'}>{ id ? 'Guardar Cambios': 'Crear Titulada'}</Boton>
+                                    <Boton type="submit" classes={'bg-primary-100 w-full'}>{ id ? 'Guardar Cambios': 'Crear Titulada'}</Boton>
                                 </form>
                             </ModalBody>
                         </>

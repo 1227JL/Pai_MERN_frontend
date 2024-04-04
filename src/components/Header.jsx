@@ -17,7 +17,7 @@ import {
 import { useState } from "react";
 import useAuth from "../hooks/useAuth";
 import { ChevronDown } from "./ChevronDown";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link as LinkDom } from "react-router-dom";
 
 export default function Header() {
   const { auth, cerrarSesionAuth } = useAuth();
@@ -49,9 +49,9 @@ export default function Header() {
           className="md:hidden"
         />
         <NavbarBrand>
-          <p className="font-black text-3xl">
+          <LinkDom to={'/inicio'} className="font-black text-3xl text-slate-600">
             Pa<span className="text-primary-100">i</span>
-          </p>
+          </LinkDom>
         </NavbarBrand>
       </NavbarContent>
 
@@ -127,11 +127,6 @@ export default function Header() {
             </DropdownItem>
           </DropdownMenu>
         </Dropdown>
-        <NavbarItem>
-          <Link color="foreground" href="#">
-            Integrations
-          </Link>
-        </NavbarItem>
       </NavbarContent>
       <NavbarContent justify="end">
         <Dropdown>
