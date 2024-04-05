@@ -13,7 +13,7 @@ import useTitulada from "../hooks/useTitulada";
 import { EyeIcon } from "./EyeIcon";
 
 export default function TableCompetencias() {
-  const { titulada } = useTitulada();
+  const { titulada, handleModalDetallesCompetencia } = useTitulada();
 
   const { competencias } = titulada;
 
@@ -38,7 +38,7 @@ export default function TableCompetencias() {
             <TableCell>
               <Tooltip content="Detalles de la competencia">
                 <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-                  <EyeIcon />
+                  <EyeIcon onClick={()=>handleModalDetallesCompetencia(competencia)} />
                 </span>
               </Tooltip>
             </TableCell>

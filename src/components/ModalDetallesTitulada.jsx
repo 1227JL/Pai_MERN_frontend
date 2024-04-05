@@ -71,7 +71,15 @@ export default function ModalDetallesTitulada() {
                   <p>{titulada?.jornada}</p>
                 </div>
                 <div className="md:flex justify-between items-center">
-                  <p className="font-bold">Duración</p>
+                  <p className="font-bold">Duración Etapa Lectiva</p>
+                  <p>{titulada?.duracion_etapa_lectiva}</p>
+                </div>
+                <div className="md:flex justify-between items-center">
+                  <p className="font-bold">Duración Etapa Productiva</p>
+                  <p>{titulada?.duracion_etapa_productiva}</p>
+                </div>
+                <div className="md:flex justify-between items-center">
+                  <p className="font-bold">Duración Total</p>
                   <p>{titulada?.duracion_etapa_lectiva + titulada?.duracion_etapa_productiva}</p>
                 </div>
                 <div className="md:flex justify-between items-center">

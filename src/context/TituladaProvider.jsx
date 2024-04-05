@@ -18,12 +18,14 @@ const TituladaProvider = ({children}) => {
     const [alerta, setAlerta] = useState({})
     const [cargando, setCargando] = useState(false)
     const [buscador, setBuscador] = useState(false)
+    const [competencia, setCompetencia] = useState('')
     const [modalTitulada, setModalTitulada] = useState(false)
     const [modalDetallesTitulada, setModalDetallesTitulada] = useState(false)
     const [modalEliminarTitulada, setModalEliminarTitulada] = useState(false)
     const [modalAprendiz, setModalAprendiz] = useState(false)
     const [modalDetallesAprendiz, setModalDetallesAprendiz] = useState(false)
     const [modalEliminarAprendiz, setModalEliminarAprendiz] = useState(false)
+    const [modalDetallesCompetencia, setModalDetallesCompetencia] = useState(false)
 
     useEffect(() => {
         const obtenerTituladas = async () => {
@@ -207,6 +209,32 @@ const TituladaProvider = ({children}) => {
         }
     }
 
+    const obtenerDataCompetencia = async (competencia) => {
+        try {
+            const token = localStorage.getItem('token')
+
+            if(!token){
+                return
+            }
+
+            const config = {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`
+                }
+            }
+
+            const { data } = await clienteAxios(`/tituladas/${titulada._id}/${competencia._id}`, config)
+            setCompetencia({...competencia, resultados_aprendizaje: data})
+            
+        } catch (error) {
+            setAlerta({
+                msg: error.response.data.msg,
+                error: true
+            })
+        }
+    }
+
     const handleModalTitulada = () => {
         setModalTitulada(!modalTitulada)
         setAlerta({})
@@ -234,35 +262,46 @@ const TituladaProvider = ({children}) => {
         setModalEliminarAprendiz(!modalEliminarAprendiz)
     }
 
+    const handleModalDetallesCompetencia= (competencia) => {
+        setModalDetallesCompetencia(!modalDetallesCompetencia)
+
+        if(competencia !== undefined){
+            obtenerDataCompetencia(competencia)
+        }
+    }
+
     return (
         <TituladaContext.Provider
             value={{
                 cargando,
                 busqueda,
-                setBusqueda,
                 tituladas,
-                setTituladas,
                 titulada,
                 aprendiz,
                 alerta,
-                setAlerta,
                 buscador,
+                competencia,
+                modalTitulada,
+                modalDetallesTitulada,
+                modalEliminarTitulada,
+                modalAprendiz,
+                modalDetallesAprendiz,
+                modalDetallesCompetencia,
+                setBusqueda,
+                setTituladas,
+                setAlerta,
                 setModalAprendiz,
                 handleBuscador,
                 submitTitulada,
                 obtenerTitulada,
                 eliminarTitulada,
-                modalTitulada,
                 handleModalTitulada,
-                modalDetallesTitulada,
                 handleModalDetallesTitulada,
-                modalEliminarTitulada,
                 handleModalEliminarTitulada,
-                modalAprendiz,
                 handleModalAprendiz,
-                modalDetallesAprendiz,
                 handleModalDetallesAprendiz,
-                handleModalEliminarAprendiz
+                handleModalEliminarAprendiz,
+                handleModalDetallesCompetencia
             }}
         >
             {children}
