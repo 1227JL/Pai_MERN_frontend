@@ -22,9 +22,6 @@ const TituladaProvider = ({children}) => {
     const [modalTitulada, setModalTitulada] = useState(false)
     const [modalDetallesTitulada, setModalDetallesTitulada] = useState(false)
     const [modalEliminarTitulada, setModalEliminarTitulada] = useState(false)
-    const [modalAprendiz, setModalAprendiz] = useState(false)
-    const [modalDetallesAprendiz, setModalDetallesAprendiz] = useState(false)
-    const [modalEliminarAprendiz, setModalEliminarAprendiz] = useState(false)
     const [modalDetallesCompetencia, setModalDetallesCompetencia] = useState(false)
 
     useEffect(() => {
@@ -247,20 +244,6 @@ const TituladaProvider = ({children}) => {
     const handleModalEliminarTitulada = () => {
         setModalEliminarTitulada(!modalEliminarTitulada)
     }
-    
-    const handleModalAprendiz = () => {
-        setModalAprendiz(!modalAprendiz)
-        setAlerta({})
-    }
-
-    const handleModalDetallesAprendiz = (aprendiz) => {
-        setAprendiz(aprendiz)
-        setModalDetallesAprendiz(!modalDetallesAprendiz)
-    }
-
-    const handleModalEliminarAprendiz= () => {
-        setModalEliminarAprendiz(!modalEliminarAprendiz)
-    }
 
     const handleModalDetallesCompetencia= (competencia) => {
         setModalDetallesCompetencia(!modalDetallesCompetencia)
@@ -284,13 +267,10 @@ const TituladaProvider = ({children}) => {
                 modalTitulada,
                 modalDetallesTitulada,
                 modalEliminarTitulada,
-                modalAprendiz,
-                modalDetallesAprendiz,
                 modalDetallesCompetencia,
                 setBusqueda,
                 setTituladas,
                 setAlerta,
-                setModalAprendiz,
                 handleBuscador,
                 submitTitulada,
                 obtenerTitulada,
@@ -298,9 +278,6 @@ const TituladaProvider = ({children}) => {
                 handleModalTitulada,
                 handleModalDetallesTitulada,
                 handleModalEliminarTitulada,
-                handleModalAprendiz,
-                handleModalDetallesAprendiz,
-                handleModalEliminarAprendiz,
                 handleModalDetallesCompetencia
             }}
         >

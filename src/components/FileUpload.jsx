@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import Spinner from './Spinner';
 
-const FileUpload = ({ onFileSelect }) => {
+const FileUpload = ({ onFileSelect, title }) => {
   const [isUploading, setIsUploading] = useState(false);
   const [file, setFile] = useState(null);
 
@@ -32,7 +32,7 @@ const FileUpload = ({ onFileSelect }) => {
 
   return (
     <>
-      <p className='px-2 mb-2 text-tiny text-default-500 font-semibold'>Diseño curricular</p>
+      <p className='px-2 mb-2 text-tiny text-default-500 font-semibold'>{title}</p>
       <div className={`border border-default-400 p-3 mb-5 rounded-xl ${isDragActive ? 'bg-default-100 border-default-100' : ''} transition-colors duration-500`}>
         <div {...getRootProps()}>
           <input {...getInputProps()} name="file" /> {/* Add name="file" attribute */}

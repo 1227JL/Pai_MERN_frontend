@@ -27,6 +27,7 @@ import ModalInstructor from "./ModalInstructor";
 import ModalEliminarInstructor from "./ModalEliminarInstructor";
 import ModalDetallesInstructor from "./ModalDetallesInstructor";
 import useTitulada from "../hooks/useTitulada";
+import useAprendiz from "../hooks/useAprendiz";
 
 const statusColorMap = {
   "Etapa Lectiva": "success",
@@ -39,7 +40,8 @@ const INITIAL_VISIBLE_COLUMNS = ["nombre", "estado", "actions"];
 
 export default function TableAprendices() {
 
-  const {titulada, busqueda, setModalAprendiz, handleModalAprendiz, handleModalDetallesAprendiz, handleModalEliminarAprendiz} = useTitulada()
+  const {titulada, busqueda} = useTitulada()
+  const {setModalAprendiz, handleModalAprendiz, handleModalDetallesAprendiz, handleModalEliminarAprendiz} = useAprendiz()
   const [filterValue, setFilterValue] = React.useState("" || busqueda);
   const [selectedKeys, setSelectedKeys] = React.useState(new Set([]));
   const [visibleColumns, setVisibleColumns] = React.useState(new Set(INITIAL_VISIBLE_COLUMNS));

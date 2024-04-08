@@ -1,24 +1,23 @@
-import { useEffect, useState } from "react";
 import { Modal, ModalContent, ModalHeader, ModalBody } from "@nextui-org/react";
 import Alerta from "./Alerta";
 import { Select, SelectItem, Input } from "@nextui-org/react";
 import Boton from "./Boton";
-import useTitulada from "../hooks/useTitulada";
-import { TIPOSIDENTIFICACION } from "./data";
 import { MailIcon } from "./MailIcon";
 import FileUpload from "./FileUpload";
+import useAprendiz from "../hooks/useAprendiz";
+import { useState } from "react";
 
 export default function ModalAprendiz() {
-  const { alerta, setAlerta, modalAprendiz, handleModalAprendiz, submitAprendeiz } =
-    useTitulada();
+  const { modalAprendiz, handleModalAprendiz, submitAprendeiz } =
+    useAprendiz();
 
   const [id, setId] = useState("");
   const [nombres, setNombres] = useState("");
   const [apellidos, setApellidos] = useState("");
   const [identificacion, setIdentificacion] = useState("");
-  const [tipoIdentificacion, setTipoIdentificacion] = useState("");
   const [email, setEmail] = useState("");
   const [telefono, setTelefono] = useState("");
+  const [estado, setEstado] = useState("Matriculado");
 
   const inputsAprendiz = [
     {
@@ -62,16 +61,6 @@ export default function ModalAprendiz() {
     startContent: <MailIcon className="text-xl text-default-400 pointer-events-none flex-shrink-0" />,
   };
 
-  const selectsAprendiz = [
-    {
-      label: "Tipo de identificación",
-      stateSet: setTipoIdentificacion,
-      defaultOption: tipoIdentificacion,
-      options: TIPOSIDENTIFICACION,
-      placeholder: "Seleccione un tipo de identificación",
-    },
-  ];
-
   // useEffect(() => {
   //   if (aprendiz && Object.keys(aprendiz).length > 0) {
   //     setId(aprendiz._id);
@@ -96,28 +85,9 @@ export default function ModalAprendiz() {
   // }, [id, aprendiz]);
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    if ([nombres, identificacion, email, telefono].includes("")) {
-      setAlerta({
-        msg: "Todos los campos son obligatorios",
-        error: true,
-      });
-      return;
-    }
-
-    setAlerta({});
-
-    await submitAprendeiz({
-      id,
-      nombres,
-      identificacion,
-      email,
-      telefono,
-      estado,
-    });
+  
   };
 
-  const { msg } = alerta;
 
   return (
     <>
@@ -137,7 +107,6 @@ export default function ModalAprendiz() {
                 {id ? "Editar" : "Agregar"} Aprendiz
               </ModalHeader>
               <ModalBody>
-                {msg && <Alerta alerta={alerta} />}
 
                 <form onSubmit={handleSubmit}>
                   {inputsAprendiz.map((input) => (
@@ -154,63 +123,9 @@ export default function ModalAprendiz() {
                     </div>
                   ))}
 
-                  {selectsAprendiz.map((select) => {
-                    const selectProps = {
-                      key: select.label,
-                      className: "mb-5",
-                      label: select.label,
-                      onChange: (e) => select.stateSet(e.target.value),
-                      placeholder: select.placeholder,
-                    };
-
-                    if (id) {
-                      selectProps.selectedKeys = [select?.defaultOption];
-                      selectProps.disabledKeys = [select?.defaultOption];
-                      selectProps.defaultSelectedKeys = [select?.defaultOption];
-                    }
-
-                    return (
-                      <Select {...selectProps}>
-                        {select.options.map((option) => (
-                          <SelectItem key={option} value={option}>
-                            {option}
-                          </SelectItem>
-                        ))}
-                      </Select>
-                    );
-                  })}
-
-                  <FileUpload/>
-
-                  {/* {id && (
-                    <div className="w-full flex flex-col justify-center gap-4 md:col-span-2">
-                      <div className="flex w-full flex-wrap md:flex-nowrap mb-5 gap-4">
-                        <Select
-                          label="Selecciona un estado"
-                          color={
-                            estado === "Activo"
-                              ? "success"
-                              : estado === "Inactivo"
-                              ? "danger"
-                              : estado === "Vacaciones"
-                              ? "warning"
-                              : "default"
-                          }
-                          onChange={(e) => setEstado(e.target.value)}
-                          defaultSelectedKeys={[estado]}
-                        >
-                          {ESTADOSINSTRUCTORES.map((estado) => (
-                            <SelectItem key={estado} value={estado}>
-                              {estado}
-                            </SelectItem>
-                          ))}
-                        </Select>
-                      </div>
-                    </div>
-                  )} */}
-
+                  <FileUpload title={'Documento de identidad'}/>
                   <Boton type="submit" classes={"bg-primary-100 w-full"}>
-                    {id ? "Guardar Cambios" : "Registrar Instructor"}
+                    {id ? "Guardar Cambios" : "Registrar Aprendiz"}
                   </Boton>
                 </form>
               </ModalBody>

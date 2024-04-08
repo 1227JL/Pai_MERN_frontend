@@ -276,7 +276,7 @@ export default function ModalTitulada() {
                                     )}
 
                                     <div>
-                                        <FileUpload onFileSelect={(file) => setSelectedFile(file)} />
+                                        <FileUpload onFileSelect={(file) => setSelectedFile(file)} title={'Diseño curricular'} />
                                     </div>
 
                                     <Boton type="submit" classes={'bg-primary-100 w-full'}>{ id ? 'Guardar Cambios': 'Crear Titulada'}</Boton>
