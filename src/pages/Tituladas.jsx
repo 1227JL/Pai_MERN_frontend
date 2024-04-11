@@ -24,10 +24,10 @@ export default function Tituladas() {
           if (!titulada) {
             return false; // Evitar errores si titulada es null o undefined.
           }
-      
+
           return lowerCaseFilters.every((filtro) => {
             return (
-                quitarTildes(titulada.tipo.toLowerCase()).includes(filtro) ||
+                quitarTildes(titulada.titulo.toLowerCase()).includes(filtro) ||
                 quitarTildes(titulada.estado.toLowerCase()).includes(filtro) ||
               titulada.jornada.toLowerCase().includes(filtro) ||
               quitarTildes(titulada.modalidad.toLowerCase()).includes(filtro)
@@ -218,9 +218,9 @@ export default function Tituladas() {
                         </div>
                     ) : (
                         (filtros?.length > 0) ? (
-                            <div className='flex flex-col gap-4 overflow-y-scroll p-2 pr-4 mt-2 max-h-[42rem]'>
+                            <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 overflow-y-scroll p-2 pr-4 mt-2 max-h-[42rem]'>
                                 {tituladasFiltradas.length > 0 ? (
-                                    tituladasFiltradas.letituladasFiltradas?.map(titulada => (
+                                    tituladasFiltradas?.map(titulada => (
                                         <Titulada key={titulada?._id} titulada={titulada} />
                                     ))
                                 ): (

@@ -122,11 +122,19 @@ export default function ModalTitulada() {
     const handleSubmit = async (e) => {
         e.preventDefault()
 
-        if([ficha, jornada, modalidad, instructor, ambiente].includes('') || !id && !selectedFile){
+        if([ficha, jornada, modalidad, instructor].includes('') || !id && !selectedFile){
             setAlerta({
                 msg: 'Todos los campos son obligatorios',
                 error: true
             })
+            return
+        }
+
+        if(modalidad !== 'Virtual' && !ambiente){
+            setAlerta({
+                msg: 'Se requiere un ambiente de formación para la formación presencial',
+                error: true
+            }) 
             return
         }
 

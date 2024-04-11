@@ -268,6 +268,7 @@ const TituladaProvider = ({children}) => {
                 modalDetallesTitulada,
                 modalEliminarTitulada,
                 modalDetallesCompetencia,
+                setTitulada,
                 setBusqueda,
                 setTituladas,
                 setAlerta,

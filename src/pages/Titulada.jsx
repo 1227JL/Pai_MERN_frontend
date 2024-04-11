@@ -14,6 +14,8 @@ import ModalAprendiz from "../components/ModalAprendiz"
 import ModalDetallesAprendiz from "../components/ModalDetallesAprendiz"
 import TableCompetencias from "../components/TableCompetencias"
 import ModalDetallesCompetencia from "../components/ModalDetallesCompetencia"
+import ModalEliminarAprendiz from "../components/ModalEliminarAprendiz"
+import useAprendiz from "../hooks/useAprendiz"
 
 export default function Titulada() {
       
@@ -22,6 +24,8 @@ export default function Titulada() {
   useEffect(() => {
     return ()=>obtenerTitulada(params.ficha)
   }, [])
+
+  const { aprendiz, eliminarAprendiz } = useAprendiz()
 
   
   if(cargando || !titulada.aprendices) return <Spinner>Obteniendo Titulada...</Spinner>
@@ -59,6 +63,7 @@ export default function Titulada() {
       <ModalTitulada/>
       <ModalAprendiz/>
       <ModalDetallesAprendiz/>
+      <ModalEliminarAprendiz title={aprendiz?.nombre} onClick={()=>eliminarAprendiz(aprendiz?._id)}/>
       <ModalDetallesTitulada/>
       <ModalDetallesCompetencia/>
       <ModalEliminarTitulada title={'Titulada'} onClick={()=>eliminarTitulada(titulada?._id)}/>
