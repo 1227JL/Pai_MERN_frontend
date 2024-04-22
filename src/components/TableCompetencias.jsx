@@ -11,6 +11,7 @@ import {
 } from "@nextui-org/react";
 import useTitulada from "../hooks/useTitulada";
 import { EyeIcon } from "./EyeIcon";
+import { Link } from "react-router-dom";
 
 export default function TableCompetencias() {
   const { titulada, handleModalDetallesCompetencia } = useTitulada();
@@ -37,9 +38,9 @@ export default function TableCompetencias() {
             </TableCell>
             <TableCell>
               <Tooltip content="Detalles de la competencia">
-                <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-                  <EyeIcon onClick={()=>handleModalDetallesCompetencia(competencia)} />
-                </span>
+                <Link to={`?competencia=${competencia._id}`} className="text-lg text-default-400 cursor-pointer active:opacity-50">
+                  <EyeIcon/>
+                </Link>
               </Tooltip>
             </TableCell>
           </TableRow>

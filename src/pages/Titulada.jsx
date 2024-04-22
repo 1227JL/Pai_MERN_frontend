@@ -1,5 +1,5 @@
 import { useEffect } from "react"
-import { useParams } from "react-router-dom"
+import { useParams, useSearchParams } from "react-router-dom"
 import TableAprendices from "../components/TableAprendices"
 import useTitulada from "../hooks/useTitulada"
 import Spinner from "../components/Spinner"
@@ -20,14 +20,13 @@ import useAprendiz from "../hooks/useAprendiz"
 export default function Titulada() {
       
   const params = useParams()
-  const { cargando, titulada, obtenerTitulada, eliminarTitulada, handleModalTitulada, handleModalDetallesTitulada, handleModalEliminarTitulada } = useTitulada()
+  const { cargando, titulada, obtenerTitulada, eliminarTitulada, handleModalTitulada, handleModalDetallesTitulada, handleModalEliminarTitulada, handleModalDetallesCompetencia } = useTitulada()
+  const { aprendiz, eliminarAprendiz } = useAprendiz()
+  
   useEffect(() => {
     return ()=>obtenerTitulada(params.ficha)
   }, [])
 
-  const { aprendiz, eliminarAprendiz } = useAprendiz()
-
-  
   if(cargando || !titulada.aprendices) return <Spinner>Obteniendo Titulada...</Spinner>
 
   return (

@@ -16,6 +16,7 @@ import Instructores from "./pages/Instructores";
 import Titulada from "./pages/Titulada";
 import Ambientes from "./pages/Ambientes";
 import { AprendizProvider } from "./context/AprendizProvider";
+import Aprendiz from "./pages/Aprendiz";
 
 function App() {
   return (
@@ -50,6 +51,7 @@ function App() {
                   <Route path="/consultar" element={<RutaProtegida />}>
                     <Route path="tituladas" element={<Tituladas />} />
                     <Route path="tituladas/:ficha" element={<Titulada />} />
+                    <Route path="tituladas/:ficha/aprendiz/:id" element={<Aprendiz />} />
                     <Route path="instructores" element={<Instructores />} />
                     <Route path="ambientes" element={<Ambientes />} />
                   </Route>

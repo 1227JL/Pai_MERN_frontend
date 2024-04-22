@@ -16,3 +16,20 @@ export function agregarDominioSena(email) {
     return email + '@soy.sena.edu.co';
   }
 }
+
+export function formatCurrentDate() {
+  // Obtiene la fecha actual
+  const now = new Date();
+
+  // Obtiene el año, mes y día de la fecha
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1; // getMonth() retorna mes del 0 (enero) al 11 (diciembre), por eso se suma 1
+  const day = now.getDate();
+
+  // Formatea el mes y el día para asegurar el formato de dos dígitos
+  const formattedMonth = month < 10 ? `0${month}` : month;
+  const formattedDay = day < 10 ? `0${day}` : day;
+
+  // Combina las partes en el formato deseado
+  return `${year}-${formattedMonth}-${formattedDay}`;
+}

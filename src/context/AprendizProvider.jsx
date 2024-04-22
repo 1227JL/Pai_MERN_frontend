@@ -1,17 +1,19 @@
 import { createContext, useState } from "react";
 import useTitulada from "../hooks/useTitulada";
 import clienteAxios from "../../config/clienteAxios";
+import { useNavigate } from "react-router-dom";
 
 const AprendizContext = createContext();
 
-const AprendizProvider = ({children}) => {
-  const [cargando, setCargando] = useState(false)
-  const [aprendiz, setAprendiz] = useState({})
+const AprendizProvider = ({ children }) => {
+  const navigate = useNavigate()
+  const [cargando, setCargando] = useState(false);
+  const [aprendiz, setAprendiz] = useState({});
   const [alerta, setAlerta] = useState({});
   const [modalAprendiz, setModalAprendiz] = useState(false);
   const [modalDetallesAprendiz, setModalDetallesAprendiz] = useState(false);
   const [modalEliminarAprendiz, setModalEliminarAprendiz] = useState(false);
-  const { titulada, setTitulada } = useTitulada()
+  const { titulada, setTitulada } = useTitulada();
 
   const submitAprendiz = async (aprendiz) => {
     if (aprendiz?.id) {
@@ -37,8 +39,12 @@ const AprendizProvider = ({children}) => {
         },
       };
 
-      const { data } = await clienteAxios.post(`/aprendices/${titulada._id}`, aprendiz, config);
-      setTitulada({...titulada, aprendices: [...titulada.aprendices, data]})
+      const { data } = await clienteAxios.post(
+        `/aprendices/${titulada._id}`,
+        aprendiz,
+        config
+      );
+      setTitulada({ ...titulada, aprendices: [...titulada.aprendices, data] });
 
       setAlerta({
         msg: "Aprendiz Registrado Exitosamente",
@@ -50,7 +56,7 @@ const AprendizProvider = ({children}) => {
         setModalAprendiz(false);
       }, 2000);
     } catch (error) {
-      console.log(error)
+      console.log(error);
       setAlerta({
         msg: error.response.data.msg,
         error: true,
@@ -78,8 +84,10 @@ const AprendizProvider = ({children}) => {
 
       const { data } = await clienteAxios.delete(`/aprendices/${id}`, config);
 
-      const aprendicesActualizado = titulada.aprendices.filter(aprendizState => aprendizState._id != id)
-      setTitulada({...titulada, aprendices: aprendicesActualizado})
+      const aprendicesActualizado = titulada.aprendices.filter(
+        (aprendizState) => aprendizState._id != id
+      );
+      setTitulada({ ...titulada, aprendices: aprendicesActualizado });
 
       setAlerta({
         msg: data.msg,
@@ -91,7 +99,7 @@ const AprendizProvider = ({children}) => {
         setModalEliminarAprendiz(false);
       }, 2000);
     } catch (error) {
-      console.log(error)
+      console.log(error);
       setAlerta({
         msg: error.response.data.msg,
         error: true,
@@ -99,7 +107,32 @@ const AprendizProvider = ({children}) => {
     } finally {
       setCargando(false);
     }
-  }
+  };
+
+  const obtenerAprendiz = async (id) => {
+    setCargando(true);
+    try {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        return;
+      }
+
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      const { data } = await clienteAxios(`/aprendices/${id}`, config);
+      setAprendiz(data);
+    } catch (error) {
+      navigate(`/consultar/tituladas/${titulada.ficha}`);
+    } finally {
+      setCargando(false);
+    }
+  };
 
   const handleModalAprendiz = () => {
     setModalAprendiz(!modalAprendiz);
@@ -113,7 +146,7 @@ const AprendizProvider = ({children}) => {
 
   const handleModalEliminarAprendiz = (id) => {
     setModalEliminarAprendiz(!modalEliminarAprendiz);
-    setAprendiz(id)
+    setAprendiz(id);
   };
 
   return (
@@ -131,10 +164,11 @@ const AprendizProvider = ({children}) => {
         handleModalDetallesAprendiz,
         handleModalEliminarAprendiz,
         submitAprendiz,
-        eliminarAprendiz
+        eliminarAprendiz,
+        obtenerAprendiz
       }}
     >
-        {children}
+      {children}
     </AprendizContext.Provider>
   );
 };
