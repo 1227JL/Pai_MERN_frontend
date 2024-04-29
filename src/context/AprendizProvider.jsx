@@ -1,7 +1,7 @@
 import { createContext, useState } from "react";
 import useTitulada from "../hooks/useTitulada";
 import clienteAxios from "../../config/clienteAxios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const AprendizContext = createContext();
 
@@ -10,10 +10,12 @@ const AprendizProvider = ({ children }) => {
   const [cargando, setCargando] = useState(false);
   const [aprendiz, setAprendiz] = useState({});
   const [alerta, setAlerta] = useState({});
+  const [ingreso, setIngreso] = useState({})
   const [modalAprendiz, setModalAprendiz] = useState(false);
   const [modalDetallesAprendiz, setModalDetallesAprendiz] = useState(false);
-  const [modalEliminarAprendiz, setModalEliminarAprendiz] = useState(false);
+  const [modalEditarAprendiz, setModalEditarAprendiz] = useState(false);
   const { titulada, setTitulada } = useTitulada();
+  const [modalEliminarAprendiz, setModalEliminarAprendiz] = useState(false);
 
   const submitAprendiz = async (aprendiz) => {
     if (aprendiz?.id) {
@@ -134,6 +136,54 @@ const AprendizProvider = ({ children }) => {
     }
   };
 
+  const obtenerIngresosAprendiz = async (date) => {
+    setCargando(true);  // Asegúrate de tener esta función de estado definida en tu componente
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        setCargando(false);  // Desactivar estado de carga si no hay token
+        return;
+      }
+  
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }; 
+      // Asumiendo que quieres enviar 'date' como parámetro de consulta
+      const {data} = await clienteAxios.get(`/ingresos/${aprendiz?._id}/${date}`, config);
+      setIngreso(data);  // La respuesta de axios está en `data`
+    } catch (error) {
+      console.error('Error al obtener ingresos:', error);
+    } finally {
+      setCargando(false);  // Desactivar estado de carga una vez finalizada la solicitud
+    }
+  };
+
+  const obtenerTituladasAprendiz = async () => {
+    setCargando(true);  // Asegúrate de tener esta función de estado definida en tu componente
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        setCargando(false);  // Desactivar estado de carga si no hay token
+        return;
+      }
+  
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }; 
+      // Asumiendo que quieres enviar 'date' como parámetro de consulta
+      const {data} = await clienteAxios.get(`/aprendices/${aprendiz?._id}/tituladas`, config);
+      console.log(data)
+    } catch (error) {
+      console.error('Error al obtener ingresos:', error);
+    } finally {
+      setCargando(false);  // Desactivar estado de carga una vez finalizada la solicitud
+    }
+  }
+  
   const handleModalAprendiz = () => {
     setModalAprendiz(!modalAprendiz);
     setAlerta({});
@@ -143,6 +193,12 @@ const AprendizProvider = ({ children }) => {
     setAprendiz(aprendiz);
     setModalDetallesAprendiz(!modalDetallesAprendiz);
   };
+
+  const handleModalEditarAprendiz = () => {
+    console.log('Editando')
+    navigate(`?Edit`)
+    setModalAprendiz(!modalAprendiz)
+  }
 
   const handleModalEliminarAprendiz = (id) => {
     setModalEliminarAprendiz(!modalEliminarAprendiz);
@@ -155,6 +211,8 @@ const AprendizProvider = ({ children }) => {
         alerta,
         cargando,
         aprendiz,
+        ingreso,
+        setIngreso,
         modalAprendiz,
         modalDetallesAprendiz,
         modalEliminarAprendiz,
@@ -162,10 +220,13 @@ const AprendizProvider = ({ children }) => {
         setModalAprendiz,
         handleModalAprendiz,
         handleModalDetallesAprendiz,
+        handleModalEditarAprendiz,
         handleModalEliminarAprendiz,
         submitAprendiz,
         eliminarAprendiz,
-        obtenerAprendiz
+        obtenerAprendiz,
+        obtenerIngresosAprendiz,
+        obtenerTituladasAprendiz
       }}
     >
       {children}
