@@ -6,11 +6,11 @@ import {
   Link,
   User,
 } from "@nextui-org/react";
-import useTitulada from "../hooks/useTitulada";
+import useAprendiz from "../hooks/useAprendiz";
 
 export default function ModalDetallesAprendiz() {
   const { aprendiz, modalDetallesAprendiz, handleModalDetallesAprendiz } =
-    useTitulada();
+    useAprendiz();
 
   return (
     <>

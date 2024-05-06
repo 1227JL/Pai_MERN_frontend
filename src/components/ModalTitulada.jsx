@@ -122,7 +122,7 @@ export default function ModalTitulada() {
     const handleSubmit = async (e) => {
         e.preventDefault()
 
-        if([ficha, jornada, modalidad, instructor, ambiente].includes('') || !id && !selectedFile){
+        if([ficha, jornada, modalidad, instructor].includes('') || !id && !selectedFile){
             setAlerta({
                 msg: 'Todos los campos son obligatorios',
                 error: true
@@ -130,9 +130,19 @@ export default function ModalTitulada() {
             return
         }
 
+        if(modalidad !== 'Virtual' && !ambiente){
+            setAlerta({
+                msg: 'Se requiere un ambiente de formación para la formación presencial',
+                error: true
+            }) 
+            return
+        }
+
         setAlerta({})
 
         await submitTitulada({id, ficha, jornada, modalidad, instructor, ambiente, estado, file: selectedFile})
+
+        setFicha('')
     }
 
     const { msg } = alerta
@@ -276,7 +286,7 @@ export default function ModalTitulada() {
                                     )}
 
                                     <div>
-                                        <FileUpload onFileSelect={(file) => setSelectedFile(file)} />
+                                        <FileUpload onFileSelect={(file) => setSelectedFile(file)} title={'Diseño curricular'} />
                                     </div>
 
                                     <Boton type="submit" classes={'bg-primary-100 w-full'}>{ id ? 'Guardar Cambios': 'Crear Titulada'}</Boton>

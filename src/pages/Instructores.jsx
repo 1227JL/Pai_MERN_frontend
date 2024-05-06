@@ -5,6 +5,7 @@ import Spinner from "../components/Spinner";
 export default function Instructores() {
   const { cargando } = useInstructor();
 
+
   if (cargando) return <Spinner>Obteniendo Instructores...</Spinner>;
 
   return (

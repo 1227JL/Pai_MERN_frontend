@@ -13,7 +13,7 @@ export default function Titulada({ titulada }) {
         </p>
         <p className="text-black-300 font-semibold md:col-span-01">{titulada?.ficha}</p>
 
-        <p className="text-black-300 font-semibold">{titulada?.tipo}</p>
+        <p className="text-black-300 font-semibold">{titulada?.titulo}</p>
         <p className="text-slate-600 font-semibold">
           Jornada: {titulada?.jornada}
         </p>

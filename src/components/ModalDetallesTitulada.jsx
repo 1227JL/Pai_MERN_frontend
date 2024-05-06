@@ -1,13 +1,11 @@
 import useTitulada from "../hooks/useTitulada";
 import { Link, User } from "@nextui-org/react";
-import { Modal, ModalContent, ModalHeader, ModalBody } from "@nextui-org/react";
+import { Modal, ModalContent, ModalHeader, ModalBody, Button } from "@nextui-org/react";
 import { useNavigate } from "react-router-dom";
-import useInstructor from "../hooks/useInstructor";
 
 export default function ModalDetallesTitulada() {
-  const { titulada, modalDetallesTitulada, handleModalDetallesTitulada } =
+  const { titulada, obtenerDiseño, modalDetallesTitulada, handleModalDetallesTitulada } =
     useTitulada();
-  const { setBusqueda } = useInstructor();
   const navigate = useNavigate();
 
   if (!titulada.instructores) return;
@@ -44,14 +42,13 @@ export default function ModalDetallesTitulada() {
                     className="cursor-pointer"
                     color="secondary"
                     onClick={() => {
-                      navigate("/consultar/instructores");
-                      setBusqueda(titulada?.instructores[0]?.nombre);
+                      navigate(`/consultar/instructores?nombre=${titulada?.instructores[0]?.instructor?.nombre}`);
                     }}
                   >
                     <User
-                      name={titulada?.instructores[0]?.nombre}
+                      name={titulada?.instructores[0]?.instructor?.nombre}
                       className="mt-2"
-                      description={titulada?.instructores[0]?.email}
+                      description={titulada?.instructores[0]?.instructor?.email}
                       avatarProps={{
                         src: titulada?.instructores[0]?.imagen,
                       }}
@@ -80,23 +77,25 @@ export default function ModalDetallesTitulada() {
                 </div>
                 <div className="md:flex justify-between items-center">
                   <p className="font-bold">Duración Total</p>
-                  <p>{titulada?.duracion_etapa_lectiva + titulada?.duracion_etapa_productiva}</p>
+                  <p>
+                    {titulada?.duracion_etapa_lectiva +
+                      titulada?.duracion_etapa_productiva}
+                  </p>
                 </div>
                 <div className="md:flex justify-between items-center">
                   <p className="font-bold">Cantidad de Aprendices</p>
                   <p>{titulada?.aprendices?.length || 25}</p>
                 </div>
                 <div className="md:flex justify-between items-center">
-                  <p className="font-bold">Archivo Adjunto</p>
-                  <Link
-                    isExternal
-                    isBlock
-                    showAnchorIcon
-                    href={`http://localhost:4000/uploads/disenosCurriculares/${titulada?.archivoAdjunto}`}
-                    color="secondary"
-                  >
-                    Ver Diseño Curricular
-                  </Link>
+                  <p className="font-bold">Creada por</p>
+                  <User
+                    name={titulada?.creador?.nombre}
+                    className="mt-2"
+                    description={titulada?.creador?.email}
+                    avatarProps={{
+                      src: titulada?.creador?.imagen,
+                    }}
+                  />
                 </div>
                 <div className="md:flex justify-between items-center">
                   <p className="font-bold mb-2">Estado de Formación</p>
@@ -132,16 +131,14 @@ export default function ModalDetallesTitulada() {
                     </p>
                   </div>
                 </div>
-                <div className="md:flex justify-between items-center">
-                  <p className="font-bold">Creada por</p>
-                  <User
-                    name={titulada?.creador?.nombre}
-                    className="mt-2"
-                    description={titulada?.creador?.email}
-                    avatarProps={{
-                      src: titulada?.creador?.imagen,
-                    }}
-                  />
+                <div className="flex">
+                  <Button
+                  className="w-full"
+                    onPress={obtenerDiseño}
+                    color="secondary"
+                  >
+                    Ver diseño curricular
+                  </Button>
                 </div>
               </ModalBody>
             </>

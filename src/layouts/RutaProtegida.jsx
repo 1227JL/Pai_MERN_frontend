@@ -1,12 +1,11 @@
 import { Outlet, Navigate } from "react-router-dom"
 import useAuth from "../hooks/useAuth"
 import Header from "../components/Header"
-import Spinner from "../components/Spinner"
 
 export default function RutaProtegida() {
     const { auth, cargando } = useAuth()
     
-    if(cargando) return <div className="mt-56"><Spinner>Autenticando...</Spinner></div>
+    if(cargando) return 
     return (
         <>
             {auth?._id ? (

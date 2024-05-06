@@ -82,7 +82,7 @@ const columns = [
 const columnsAprendiz = [
   {name: "NOMBRE", uid: "nombre", sortable: true},
   {name: "ESTADO", uid: "estado", sortable: true},
-  {name: "ACTIONS", uid: "actions"},
+  {name: "VER", uid: "ver"},
 ];
 
 const columnsAmbiente = [

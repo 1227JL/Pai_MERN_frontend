@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import {
   Table,
@@ -17,16 +17,17 @@ import {
   User,
   Pagination,
 } from "@nextui-org/react";
-import {PlusIcon} from "./PlusIcon";
-import {VerticalDotsIcon} from "./VerticalDotsIcon";
-import {ChevronDownIcon} from "./ChevronDownIcon";
-import {columns, statusOptions, contratoOptions} from "./data";
+import { PlusIcon } from "./PlusIcon";
+import { VerticalDotsIcon } from "./VerticalDotsIcon";
+import { ChevronDownIcon } from "./ChevronDownIcon";
+import { columns, statusOptions, contratoOptions } from "./data";
 import { SearchIcon } from "./SerchIcon";
 import { capitalize, quitarTildes } from "../helpers/Utils";
 import useInstructor from "../hooks/useInstructor";
 import ModalInstructor from "./ModalInstructor";
 import ModalEliminarInstructor from "./ModalEliminarInstructor";
 import ModalDetallesInstructor from "./ModalDetallesInstructor";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const statusColorMap = {
   Activo: "success",
@@ -34,14 +35,54 @@ const statusColorMap = {
   Vacaciones: "warning",
 };
 
-const INITIAL_VISIBLE_COLUMNS = ["nombre", "contrato", "area", "estado", "actions"];
+const INITIAL_VISIBLE_COLUMNS = [
+  "nombre",
+  "contrato",
+  "area",
+  "estado",
+  "actions",
+];
 
 export default function TableInstructores() {
+  const {
+    instructores,
+    busqueda,
+    setModalInstructor,
+    handleModalInstructor,
+    handleModalDetallesInstructor,
+    handleModalEliminarInstructor,
+  } = useInstructor();
 
-  const { instructores, busqueda, setModalInstructor, handleModalInstructor, handleModalDetallesInstructor, handleModalEliminarInstructor } = useInstructor()
+  const navigate = useNavigate();
   const [filterValue, setFilterValue] = React.useState("" || busqueda);
+  function useQuery() {
+    return new URLSearchParams(useLocation().search);
+  }
+
+  const query = useQuery();
+  const instructorSearch = query.get("nombre");
+
+  useEffect(() => {
+    if (instructorSearch) {
+      setFilterValue(instructorSearch);
+    }
+  }, [instructorSearch]);
+
+  useEffect(() => {
+    // Verificar si filterValue está vacío y actuar en consecuencia
+    if (filterValue) {
+      // Si filterValue no está vacío, añadirlo a la URL
+      navigate(`/consultar/instructores?name=${filterValue}`);
+    } else {
+      // Si filterValue está vacío, navegar sin parámetros
+      navigate("/consultar/instructores");
+    }
+  }, [filterValue, navigate]);
+
   const [selectedKeys, setSelectedKeys] = React.useState(new Set([]));
-  const [visibleColumns, setVisibleColumns] = React.useState(new Set(INITIAL_VISIBLE_COLUMNS));
+  const [visibleColumns, setVisibleColumns] = React.useState(
+    new Set(INITIAL_VISIBLE_COLUMNS)
+  );
   const [statusFilter, setStatusFilter] = React.useState("all");
   const [contratoFilter, setContratoFilter] = React.useState("all");
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -56,25 +97,41 @@ export default function TableInstructores() {
   const headerColumns = React.useMemo(() => {
     if (visibleColumns === "all") return columns;
 
-    return columns.filter((column) => Array.from(visibleColumns).includes(column.uid));
+    return columns.filter((column) =>
+      Array.from(visibleColumns).includes(column.uid)
+    );
   }, [visibleColumns]);
 
   const filteredItems = React.useMemo(() => {
     let filteredUsers = [...instructores];
 
     if (hasSearchFilter) {
-      filteredUsers = filteredUsers.filter((user) =>
-        quitarTildes(user.nombre).toLowerCase().includes(quitarTildes(filterValue).toLowerCase()) || quitarTildes(user.email).toLowerCase().includes(filterValue.toLowerCase())
+      filteredUsers = filteredUsers.filter(
+        (user) =>
+          quitarTildes(user.nombre)
+            .toLowerCase()
+            .includes(quitarTildes(filterValue).toLowerCase()) ||
+          quitarTildes(user.email)
+            .toLowerCase()
+            .includes(filterValue.toLowerCase())
       );
     }
-    if (statusFilter !== "all" && Array.from(statusFilter).length !== statusOptions.length) {
+    if (
+      statusFilter !== "all" &&
+      Array.from(statusFilter).length !== statusOptions.length
+    ) {
       filteredUsers = filteredUsers.filter((user) =>
-        Array.from(statusFilter).includes((user.estado).toLowerCase()),
+        Array.from(statusFilter).includes(user.estado.toLowerCase())
       );
     }
-    if (contratoFilter !== "all" && Array.from(contratoFilter).length !== contratoOptions.length) {
+    if (
+      contratoFilter !== "all" &&
+      Array.from(contratoFilter).length !== contratoOptions.length
+    ) {
       filteredUsers = filteredUsers.filter((user) =>
-        Array.from(contratoFilter).includes(quitarTildes(user.contrato).toLowerCase()),
+        Array.from(contratoFilter).includes(
+          quitarTildes(user.contrato).toLowerCase()
+        )
       );
     }
 
@@ -107,7 +164,7 @@ export default function TableInstructores() {
       case "nombre":
         return (
           <User
-            avatarProps={{radius: "full", src: instructor.avatar}}
+            avatarProps={{ radius: "full", src: instructor.avatar }}
             description={instructor.email}
             name={cellValue}
           />
@@ -115,7 +172,9 @@ export default function TableInstructores() {
       case "contrato":
         return (
           <div className="flex flex-col">
-            <p className="text-bold text-small capitalize">{instructor.contrato}</p>
+            <p className="text-bold text-small capitalize">
+              {instructor.contrato}
+            </p>
           </div>
         );
       case "area":
@@ -126,7 +185,12 @@ export default function TableInstructores() {
         );
       case "estado":
         return (
-          <Chip className="capitalize" color={statusColorMap[instructor.estado]} size="sm" variant="flat">
+          <Chip
+            className="capitalize"
+            color={statusColorMap[instructor.estado]}
+            size="sm"
+            variant="flat"
+          >
             {cellValue}
           </Chip>
         );
@@ -140,9 +204,19 @@ export default function TableInstructores() {
                 </Button>
               </DropdownTrigger>
               <DropdownMenu aria-labelledby="opciones-label">
-                <DropdownItem onClick={()=>handleModalDetallesInstructor(instructor)}>View</DropdownItem>
-                <DropdownItem onClick={()=>handleModalInstructor(instructor)}>Edit</DropdownItem>
-                <DropdownItem onClick={()=>handleModalEliminarInstructor(instructor)}>Delete</DropdownItem>
+                <DropdownItem
+                  onClick={() => handleModalDetallesInstructor(instructor)}
+                >
+                  View
+                </DropdownItem>
+                <DropdownItem onClick={() => handleModalInstructor(instructor)}>
+                  Edit
+                </DropdownItem>
+                <DropdownItem
+                  onClick={() => handleModalEliminarInstructor(instructor)}
+                >
+                  Delete
+                </DropdownItem>
               </DropdownMenu>
             </Dropdown>
           </div>
@@ -178,10 +252,10 @@ export default function TableInstructores() {
     }
   }, []);
 
-  const onClear = React.useCallback(()=>{
-    setFilterValue("")
-    setPage(1)
-  },[])
+  const onClear = React.useCallback(() => {
+    setFilterValue("");
+    setPage(1);
+  }, []);
 
   const topContent = React.useMemo(() => {
     return (
@@ -200,7 +274,10 @@ export default function TableInstructores() {
             <div className="flex gap-3">
               <Dropdown>
                 <DropdownTrigger className="hidden md:flex">
-                  <Button endContent={<ChevronDownIcon className="text-small" />} variant="flat">
+                  <Button
+                    endContent={<ChevronDownIcon className="text-small" />}
+                    variant="flat"
+                  >
                     Contrato
                   </Button>
                 </DropdownTrigger>
@@ -221,7 +298,10 @@ export default function TableInstructores() {
               </Dropdown>
               <Dropdown>
                 <DropdownTrigger className="hidden sm:flex">
-                  <Button endContent={<ChevronDownIcon className="text-small" />} variant="flat">
+                  <Button
+                    endContent={<ChevronDownIcon className="text-small" />}
+                    variant="flat"
+                  >
                     Estado
                   </Button>
                 </DropdownTrigger>
@@ -242,7 +322,10 @@ export default function TableInstructores() {
               </Dropdown>
               <Dropdown>
                 <DropdownTrigger className="hidden sm:flex">
-                  <Button endContent={<ChevronDownIcon className="text-small" />} variant="flat">
+                  <Button
+                    endContent={<ChevronDownIcon className="text-small" />}
+                    variant="flat"
+                  >
                     Columnas
                   </Button>
                 </DropdownTrigger>
@@ -261,13 +344,21 @@ export default function TableInstructores() {
                   ))}
                 </DropdownMenu>
               </Dropdown>
-              <Button onClick={()=>{setModalInstructor(true)}} className="bg-primary-100 text-white" endContent={<PlusIcon />}>
+              <Button
+                onClick={() => {
+                  setModalInstructor(true);
+                }}
+                className="bg-primary-100 text-white"
+                endContent={<PlusIcon />}
+              >
                 Agregar
               </Button>
             </div>
           </div>
           <div className="flex justify-between items-center">
-            <span className="text-default-400 text-small">Total {instructores.length} Instructores</span>
+            <span className="text-default-400 text-small">
+              Total {instructores.length} Instructores
+            </span>
             <label className="flex items-center text-default-400 text-small">
               Instructores por página:
               <select
@@ -282,9 +373,9 @@ export default function TableInstructores() {
             </label>
           </div>
         </div>
-        <ModalInstructor/>
-        <ModalDetallesInstructor/>
-        <ModalEliminarInstructor/>
+        <ModalInstructor />
+        <ModalDetallesInstructor />
+        <ModalEliminarInstructor />
       </>
     );
   }, [
@@ -311,10 +402,20 @@ export default function TableInstructores() {
           onChange={setPage}
         />
         <div className="hidden sm:flex w-[30%] justify-end gap-2">
-          <Button isDisabled={pages === 1} size="sm" variant="flat" onPress={onPreviousPage}>
+          <Button
+            isDisabled={pages === 1}
+            size="sm"
+            variant="flat"
+            onPress={onPreviousPage}
+          >
             Previous
           </Button>
-          <Button isDisabled={pages === 1} size="sm" variant="flat" onPress={onNextPage}>
+          <Button
+            isDisabled={pages === 1}
+            size="sm"
+            variant="flat"
+            onPress={onNextPage}
+          >
             Next
           </Button>
         </div>
@@ -334,7 +435,7 @@ export default function TableInstructores() {
         wrapper: "max-h-[382px]",
       }}
       selectedKeys={selectedKeys}
-      selectionMode='none'
+      selectionMode="none"
       sortDescriptor={sortDescriptor}
       topContent={topContent}
       topContentPlacement="outside"
@@ -352,10 +453,15 @@ export default function TableInstructores() {
           </TableColumn>
         )}
       </TableHeader>
-      <TableBody emptyContent={"Instructores no encontrados"} items={sortedItems}>
+      <TableBody
+        emptyContent={"Instructores no encontrados"}
+        items={sortedItems}
+      >
         {(instructor) => (
           <TableRow key={instructor._id}>
-            {(columnKey) => <TableCell>{renderCell(instructor, columnKey)}</TableCell>}
+            {(columnKey) => (
+              <TableCell>{renderCell(instructor, columnKey)}</TableCell>
+            )}
           </TableRow>
         )}
       </TableBody>

@@ -16,33 +16,41 @@ import {
   Chip,
   User,
   Pagination,
+  Tooltip,
 } from "@nextui-org/react";
-import {PlusIcon} from "./PlusIcon";
-import {VerticalDotsIcon} from "./VerticalDotsIcon";
-import {ChevronDownIcon} from "./ChevronDownIcon";
-import {columnsAprendiz, ESTADOSAPRENDIZ} from "./data";
+import { PlusIcon } from "./PlusIcon";
+import { ChevronDownIcon } from "./ChevronDownIcon";
+import { columnsAprendiz, ESTADOSAPRENDIZ } from "./data";
 import { SearchIcon } from "./SerchIcon";
 import { capitalize, quitarTildes } from "../helpers/Utils";
 import ModalInstructor from "./ModalInstructor";
 import ModalEliminarInstructor from "./ModalEliminarInstructor";
 import ModalDetallesInstructor from "./ModalDetallesInstructor";
 import useTitulada from "../hooks/useTitulada";
+import useAprendiz from "../hooks/useAprendiz";
+import { useNavigate } from "react-router-dom";
+import { EyeIcon } from "./EyeIcon";
 
 const statusColorMap = {
   "Etapa Lectiva": "success",
   "Formación Finalizada": "danger",
-  "Decersión": "danger",
+  Decersión: "danger",
   "Etapa Productiva": "warning",
 };
 
-const INITIAL_VISIBLE_COLUMNS = ["nombre", "estado", "actions"];
+const INITIAL_VISIBLE_COLUMNS = ["nombre", "estado", "ver"];
 
 export default function TableAprendices() {
-
-  const {titulada, busqueda, setModalAprendiz, handleModalAprendiz, handleModalDetallesAprendiz, handleModalEliminarAprendiz} = useTitulada()
+  const navigate = useNavigate();
+  const { titulada, busqueda } = useTitulada();
+  const {
+    setModalAprendiz,
+  } = useAprendiz();
   const [filterValue, setFilterValue] = React.useState("" || busqueda);
   const [selectedKeys, setSelectedKeys] = React.useState(new Set([]));
-  const [visibleColumns, setVisibleColumns] = React.useState(new Set(INITIAL_VISIBLE_COLUMNS));
+  const [visibleColumns, setVisibleColumns] = React.useState(
+    new Set(INITIAL_VISIBLE_COLUMNS)
+  );
   const [statusFilter, setStatusFilter] = React.useState("all");
   const [contratoFilter, setContratoFilter] = React.useState("all");
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -57,27 +65,33 @@ export default function TableAprendices() {
   const headerColumns = React.useMemo(() => {
     if (visibleColumns === "all") return columnsAprendiz;
 
-    return columnsAprendiz.filter((column) => Array.from(visibleColumns).includes(column.uid));
+    return columnsAprendiz.filter((column) =>
+      Array.from(visibleColumns).includes(column.uid)
+    );
   }, [visibleColumns]);
 
   const filteredItems = React.useMemo(() => {
     let filteredUsers = [...titulada.aprendices];
 
     if (hasSearchFilter) {
-      filteredUsers = filteredUsers.filter((user) =>
-        quitarTildes(user.nombre).toLowerCase().includes(quitarTildes(filterValue).toLowerCase()) || quitarTildes(user.email).toLowerCase().includes(filterValue.toLowerCase())
+      filteredUsers = filteredUsers.filter(
+        (user) =>
+          quitarTildes(user.nombre)
+            .toLowerCase()
+            .includes(quitarTildes(filterValue).toLowerCase()) ||
+          quitarTildes(user.email)
+            .toLowerCase()
+            .includes(filterValue.toLowerCase())
       );
     }
-    if (statusFilter !== "all" && Array.from(statusFilter).length !== ESTADOSAPRENDIZ.length) {
+    if (
+      statusFilter !== "all" &&
+      Array.from(statusFilter).length !== ESTADOSAPRENDIZ.length
+    ) {
       filteredUsers = filteredUsers.filter((user) =>
-        Array.from(statusFilter).includes((user.estado).toLowerCase()),
+        Array.from(statusFilter).includes(user.estado.toLowerCase())
       );
     }
-    // if (contratoFilter !== "all" && Array.from(contratoFilter).length !== contratoOptions.length) {
-    //   filteredUsers = filteredUsers.filter((user) =>
-    //     Array.from(contratoFilter).includes(quitarTildes(user.contrato).toLowerCase()),
-    //   );
-    // }
 
     return filteredUsers;
   }, [titulada.aprendices, filterValue, statusFilter, contratoFilter]);
@@ -108,32 +122,34 @@ export default function TableAprendices() {
       case "nombre":
         return (
           <User
-            avatarProps={{radius: "full", src: aprendiz.avatar}}
+            avatarProps={{ radius: "full", src: aprendiz.avatar }}
             description={aprendiz.email}
             name={cellValue}
           />
         );
       case "estado":
         return (
-          <Chip className="capitalize" color={statusColorMap[aprendiz.estado]} size="sm" variant="flat">
+          <Chip
+            className="capitalize"
+            color={statusColorMap[aprendiz.estado]}
+            size="sm"
+            variant="flat"
+          >
             {cellValue}
           </Chip>
         );
-      case "actions":
+      case "ver":
         return (
           <div className="relative flex items-center gap-2">
-            <Dropdown>
-              <DropdownTrigger aria-label="Opciones">
-                <Button isIconOnly size="sm" variant="light">
-                  <VerticalDotsIcon className="text-default-300" />
-                </Button>
-              </DropdownTrigger>
-              <DropdownMenu aria-labelledby="opciones-label">
-                <DropdownItem onClick={()=>handleModalDetallesAprendiz(aprendiz)}>View</DropdownItem>
-                <DropdownItem onClick={()=>handleModalAprendiz(aprendiz)}>Edit</DropdownItem>
-                <DropdownItem onClick={()=>handleModalEliminarAprendiz(aprendiz)}>Delete</DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
+            <Tooltip content="Detalles del Aprendiz">
+              <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
+                <EyeIcon
+                  onClick={() => {
+                    navigate(`aprendiz/${aprendiz?.documento}`)
+                  }}
+                />
+              </span>
+            </Tooltip>
           </div>
         );
       default:
@@ -167,10 +183,10 @@ export default function TableAprendices() {
     }
   }, []);
 
-  const onClear = React.useCallback(()=>{
-    setFilterValue("")
-    setPage(1)
-  },[])
+  const onClear = React.useCallback(() => {
+    setFilterValue("");
+    setPage(1);
+  }, []);
 
   const topContent = React.useMemo(() => {
     return (
@@ -187,30 +203,12 @@ export default function TableAprendices() {
               onValueChange={onSearchChange}
             />
             <div className="flex gap-3">
-              {/* <Dropdown>
-                <DropdownTrigger className="hidden md:flex">
-                  <Button endContent={<ChevronDownIcon className="text-small" />} variant="flat">
-                    Contrato
-                  </Button>
-                </DropdownTrigger>
-                <DropdownMenu
-                  disallowEmptySelection
-                  aria-label="Table Columns"
-                  closeOnSelect={false}
-                  selectedKeys={contratoFilter}
-                  selectionMode="multiple"
-                  onSelectionChange={setContratoFilter}
-                >
-                  {contratoOptions.map((contrato) => (
-                    <DropdownItem key={contrato.uid} className="capitalize">
-                      {capitalize(contrato.name)}
-                    </DropdownItem>
-                  ))}
-                </DropdownMenu>
-              </Dropdown> */}
               <Dropdown>
                 <DropdownTrigger className="hidden sm:flex">
-                  <Button endContent={<ChevronDownIcon className="text-small" />} variant="flat">
+                  <Button
+                    endContent={<ChevronDownIcon className="text-small" />}
+                    variant="flat"
+                  >
                     Estado
                   </Button>
                 </DropdownTrigger>
@@ -231,7 +229,10 @@ export default function TableAprendices() {
               </Dropdown>
               <Dropdown>
                 <DropdownTrigger className="hidden sm:flex">
-                  <Button endContent={<ChevronDownIcon className="text-small" />} variant="flat">
+                  <Button
+                    endContent={<ChevronDownIcon className="text-small" />}
+                    variant="flat"
+                  >
                     Columnas
                   </Button>
                 </DropdownTrigger>
@@ -250,13 +251,21 @@ export default function TableAprendices() {
                   ))}
                 </DropdownMenu>
               </Dropdown>
-              <Button onClick={()=>{setModalAprendiz(true)}} className="bg-primary-100 text-white" endContent={<PlusIcon />}>
+              <Button
+                onClick={() => {
+                  setModalAprendiz(true);
+                }}
+                className="bg-primary-100 text-white"
+                endContent={<PlusIcon />}
+              >
                 Agregar
               </Button>
             </div>
           </div>
           <div className="flex justify-between items-center">
-            <span className="text-default-400 text-small">Total {titulada.aprendices.length} Aprendices</span>
+            <span className="text-default-400 text-small">
+              Total {titulada.aprendices.length} Aprendices
+            </span>
             <label className="flex items-center text-default-400 text-small">
               Aprendices por página:
               <select
@@ -271,9 +280,9 @@ export default function TableAprendices() {
             </label>
           </div>
         </div>
-        <ModalInstructor/>
-        <ModalDetallesInstructor/>
-        <ModalEliminarInstructor/>
+        <ModalInstructor />
+        <ModalDetallesInstructor />
+        <ModalEliminarInstructor />
       </>
     );
   }, [
@@ -300,21 +309,37 @@ export default function TableAprendices() {
           onChange={setPage}
         />
         <div className="hidden sm:flex w-[30%] justify-end gap-2">
-          <Button isDisabled={pages === 1} size="sm" variant="flat" onPress={onPreviousPage}>
+          <Button
+            isDisabled={pages === 1}
+            size="sm"
+            variant="flat"
+            onPress={onPreviousPage}
+          >
             Previous
           </Button>
-          <Button isDisabled={pages === 1} size="sm" variant="flat" onPress={onNextPage}>
+          <Button
+            isDisabled={pages === 1}
+            size="sm"
+            variant="flat"
+            onPress={onNextPage}
+          >
             Next
           </Button>
         </div>
       </div>
     );
-  }, [selectedKeys, items.length, page, pages, hasSearchFilter, titulada.aprendices]);
+  }, [
+    selectedKeys,
+    items.length,
+    page,
+    pages,
+    hasSearchFilter,
+    titulada.aprendices,
+  ]);
 
   return (
     <Table
       aria-label="Example table with custom cells, pagination and sorting"
-      // isHeaderSticky
       showSelectionCheckboxes={false}
       isStriped={true}
       bottomContent={bottomContent}
@@ -323,7 +348,7 @@ export default function TableAprendices() {
         wrapper: "max-h-[382px]",
       }}
       selectedKeys={selectedKeys}
-      selectionMode='none'
+      selectionMode="none"
       sortDescriptor={sortDescriptor}
       topContent={topContent}
       topContentPlacement="outside"
@@ -334,17 +359,20 @@ export default function TableAprendices() {
         {(column) => (
           <TableColumn
             key={column.uid}
-            align={column.uid === "actions" ? "center" : "start"}
+            align={column.uid === "ver" ? "center" : "start"}
             allowsSorting={column.sortable}
+            className={column.uid == 'estado' && "max-sm:hidden"}
           >
             {column.name}
           </TableColumn>
         )}
       </TableHeader>
       <TableBody emptyContent={"Aprendices no encontrados"} items={sortedItems}>
-        {(instructor) => (
-          <TableRow key={instructor._id}>
-            {(columnKey) => <TableCell>{renderCell(instructor, columnKey)}</TableCell>}
+        {(aprendiz) => (
+          <TableRow key={aprendiz._id}>
+            {(columnKey) => (
+              <TableCell className={columnKey == 'estado' && "max-sm:hidden"}>{renderCell(aprendiz, columnKey)}</TableCell>
+            )}
           </TableRow>
         )}
       </TableBody>
