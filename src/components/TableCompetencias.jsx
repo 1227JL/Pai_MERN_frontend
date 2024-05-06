@@ -14,7 +14,7 @@ import { EyeIcon } from "./EyeIcon";
 import { Link } from "react-router-dom";
 
 export default function TableCompetencias() {
-  const { titulada, handleModalDetallesCompetencia } = useTitulada();
+  const { titulada } = useTitulada();
 
   const { competencias } = titulada;
 
@@ -22,8 +22,8 @@ export default function TableCompetencias() {
     <Table isStriped aria-label="Example static collection table">
       <TableHeader>
         <TableColumn>NOMBRE</TableColumn>
-        <TableColumn>DURACIÓN MÁXIMA</TableColumn>
-        <TableColumn>CÓDIGO NORMA</TableColumn>
+        <TableColumn className="max-sm:hidden">DURACIÓN MÁXIMA</TableColumn>
+        <TableColumn className="max-sm:hidden">CÓDIGO NORMA</TableColumn>
         <TableColumn>ESTADO</TableColumn>
         <TableColumn>VER</TableColumn>
       </TableHeader>
@@ -31,8 +31,8 @@ export default function TableCompetencias() {
         {competencias?.map((competencia) => (
           <TableRow key={competencia?._id}>
             <TableCell className="uppercase">{competencia?.descripcion_general}</TableCell>
-            <TableCell>{`${competencia?.duracion_maxima} horas`}</TableCell>
-            <TableCell>{competencia?.codigo_norma}</TableCell>
+            <TableCell className="max-sm:hidden">{`${competencia?.duracion_maxima} horas`}</TableCell>
+            <TableCell className="max-sm:hidden">{competencia?.codigo_norma}</TableCell>
             <TableCell>
               <Chip>{competencia?.estado}</Chip>
             </TableCell>

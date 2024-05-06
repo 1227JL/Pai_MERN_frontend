@@ -34,7 +34,6 @@ export function formatCurrentDate() {
   return `${year}-${formattedMonth}-${formattedDay}`;
 }
 
-
 export function formatTime(isoString) {
   const date = new Date(isoString);
   let hours = date.getHours();
@@ -46,3 +45,11 @@ export function formatTime(isoString) {
 
   return `${hours}:${minutes} ${ampm}`;
 }
+
+export const formatStrings = (name, id) => {
+  // Convertir todo a minúsculas y reemplazar espacios y caracteres especiales con guiones.
+  const formattedName = name.toLowerCase().replace(/[\s]+/g, '-').replace(/[^\w-]+/g, '');
+  
+  // Devolver el nombre formateado unido con el ID usando un guion bajo.
+  return `${formattedName}_${id}`;
+};

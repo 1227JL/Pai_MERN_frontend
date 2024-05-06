@@ -10,6 +10,7 @@ import {
   Calendar,
   CardBody,
   Divider,
+  Button,
 } from "@nextui-org/react";
 import { EditIcon } from "../components/EditIcon";
 import { parseDate } from "@internationalized/date";
@@ -18,6 +19,7 @@ import Spinner from "../components/Spinner";
 import { formatCurrentDate, formatTime } from "../helpers/utils";
 import ModalAprendiz from "../components/ModalAprendiz";
 import { useLocation } from 'react-router-dom';
+import TableTituladasAsociadasAprendiz from "../components/TableTituladasAsociadasAprendiz";
 
 
 export default function Aprendiz() {
@@ -25,9 +27,9 @@ export default function Aprendiz() {
     cargando,
     aprendiz,
     ingreso,
-    setIngreso,
     obtenerAprendiz,
     obtenerIngresosAprendiz,
+    obtenerDocumento,
     handleModalEditarAprendiz,
     obtenerTituladasAprendiz
   } = useAprendiz();
@@ -67,7 +69,6 @@ export default function Aprendiz() {
   useEffect(() => {
     if (aprendiz && aprendiz._id && tab == 'ingresos') {
       // Asegúrate de que el aprendiz y su _id estén definidos
-      console.log('as')
       const obtenerIngresos = async () => {
         await obtenerIngresosAprendiz(date);
       };
@@ -78,8 +79,7 @@ export default function Aprendiz() {
 
   
   useEffect(() => {
-    if (Object.values(aprendiz).length > 0 && tab == 'programas') {
-      console.log('first')
+    if (Object.keys(aprendiz).length > 0 && tab == 'programas') {
       // Asegúrate de que el aprendiz y su _id estén definidos
       const obtenerTituladas = async () => {
         await obtenerTituladasAprendiz();
@@ -89,50 +89,56 @@ export default function Aprendiz() {
     }
   }, [aprendiz]);
 
-  if (cargando && Object.values(aprendiz).length == 0)
-    return <Spinner>Obteniendo Aprendiz...</Spinner>;
+  if (Object.keys(aprendiz).length == 0) return <Spinner>Obteniendo Aprendiz...</Spinner>;
 
   return (
     <>
-      <div className="lg:w-1/2 mx-auto space-y-5">
-        <Card className="p-5 flex flex-col gap-5">
-          <div className="flex flex-col items-center text-center sm:text-start sm:items-start sm:flex-row gap-5">
-            <div className="max-sm:order-2">
-              <Image
-                width={150}
-                height={150}
-                alt="NextUI hero Image with delay"
-                src={"/notPhoto.svg"}
-              />
-            </div>
-            <div className="max-sm:order-3">
-              <h1 className="mb-0 text-base">{aprendiz?.nombre}</h1>
-              <p className="text-foreground-400">
-                <span className="text-foreground-500 font-semibold">ID: </span>
-                {aprendiz?.documento}
-              </p>
-              <p className="text-foreground-400">
-                <span className="text-foreground-500 font-semibold">
-                  EMAIL:{" "}
-                </span>
-                {aprendiz?.email}
-              </p>
-              <p className="text-foreground-400">
-                <span className="text-foreground-500 font-semibold">CEL: </span>
-                {aprendiz?.telefono}
-              </p>
-              <p className="text-foreground-400">
-                <span className="text-foreground-500 font-semibold">RH: </span>
-                {aprendiz?.rh}
-              </p>
-              <Chip className="mt-2 rounded-none">{aprendiz?.estado}</Chip>
+      <div className="md:w-1/2 lg:w-2/3 mx-auto space-y-5">
+        <Card className="xl:w-3/5 mx-auto p-5 flex flex-col gap-5">
+          <div className="flex gap-5">
+            <div className="flex max-lg:flex-col items-center max-lg:text-center gap-4 justify-around w-full">
+                <Image
+                  width={150}
+                  height={150}
+                  alt="NextUI hero Image with delay"
+                  src={aprendiz.imagen || "/notPhoto.svg"}
+                />
+              <div>
+                <h1 className="mb-0 text-base">{aprendiz?.nombre}</h1>
+                <p className="text-foreground-400">
+                  <span className="text-foreground-500 font-semibold">ID: </span>
+                  {aprendiz?.documento}
+                </p>
+                <p className="text-foreground-400">
+                  <span className="text-foreground-500 font-semibold">
+                    EMAIL:{" "}
+                  </span>
+                  {aprendiz?.email}
+                </p>
+                <p className="text-foreground-400">
+                  <span className="text-foreground-500 font-semibold">CEL: </span>
+                  {aprendiz?.telefono}
+                </p>
+                <p className="text-foreground-400">
+                  <span className="text-foreground-500 font-semibold">RH: </span>
+                  {aprendiz?.rh}
+                </p>
+                <div className="flex max-lg:items-center flex-col gap-3">
+                  <Chip className="mt-2 rounded-none">{aprendiz?.estado}</Chip>
+                  <Button
+                    onClick={obtenerDocumento}
+                    color="secondary"
+                  >
+                    Ver identificación
+                  </Button>
+                </div>
+              </div>
             </div>
             <Tooltip
-              className="flex max-sm:order-1"
               color="secondary"
               content="Editar aprendiz"
             >
-              <span className="ml-auto text-lg text-default-400 cursor-pointer active:opacity-50">
+              <span className="ml-auto text-lg text-default-400 absolute right-5">
                 <EditIcon />
               </span>
             </Tooltip>
@@ -142,8 +148,9 @@ export default function Aprendiz() {
           <Tabs onSelectionChange={key=>handleTabSelected(key)} aria-label="Options">
             <Tab key="programas" title="Programas">
               <Card>
-                <CardBody>
+                <CardBody className="space-y-3">
                   <h2 className="font-bold text-start">Programas de Formación Asociados</h2>
+                  <TableTituladasAsociadasAprendiz/>
                 </CardBody>
               </Card>
             </Tab>

@@ -2,6 +2,7 @@ import { useState, createContext, useEffect } from "react";
 import useAuth from "../hooks/useAuth";
 import clienteAxios from "../../config/clienteAxios";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { formatStrings } from "../helpers/utils";
 
 const TituladaContext = createContext();
 
@@ -248,6 +249,28 @@ const TituladaProvider = ({ children }) => {
     }
   };
 
+  const obtenerDiseño = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.error("No token found");
+        return;
+      }
+  
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      const { data } = await clienteAxios(`/tituladas/file-access/${formatStrings(titulada.programa, titulada.ficha)}/${titulada.archivoAdjunto}`, config)
+      window.open(data, '_blank')
+    } catch (error) {
+      console.log(error)
+    }finally{
+    }
+  }
+
   const handleModalTitulada = () => {
     setModalTitulada(!modalTitulada);
     setAlerta({});
@@ -291,13 +314,14 @@ const TituladaProvider = ({ children }) => {
         setTituladas,
         setAlerta,
         handleBuscador,
-        submitTitulada,
-        obtenerTitulada,
-        eliminarTitulada,
         handleModalTitulada,
         handleModalDetallesTitulada,
         handleModalEliminarTitulada,
         handleModalDetallesCompetencia,
+        submitTitulada,
+        obtenerTitulada,
+        eliminarTitulada,
+        obtenerDiseño,
       }}
     >
       {children}

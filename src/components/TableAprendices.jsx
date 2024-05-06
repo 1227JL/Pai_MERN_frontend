@@ -361,16 +361,17 @@ export default function TableAprendices() {
             key={column.uid}
             align={column.uid === "ver" ? "center" : "start"}
             allowsSorting={column.sortable}
+            className={column.uid == 'estado' && "max-sm:hidden"}
           >
             {column.name}
           </TableColumn>
         )}
       </TableHeader>
       <TableBody emptyContent={"Aprendices no encontrados"} items={sortedItems}>
-        {(instructor) => (
-          <TableRow key={instructor._id}>
+        {(aprendiz) => (
+          <TableRow key={aprendiz._id}>
             {(columnKey) => (
-              <TableCell>{renderCell(instructor, columnKey)}</TableCell>
+              <TableCell className={columnKey == 'estado' && "max-sm:hidden"}>{renderCell(aprendiz, columnKey)}</TableCell>
             )}
           </TableRow>
         )}

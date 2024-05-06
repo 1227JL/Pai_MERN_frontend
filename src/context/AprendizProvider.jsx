@@ -2,15 +2,17 @@ import { createContext, useState } from "react";
 import useTitulada from "../hooks/useTitulada";
 import clienteAxios from "../../config/clienteAxios";
 import { useNavigate, useParams } from "react-router-dom";
+import { formatStrings } from "../helpers/utils";
 
 const AprendizContext = createContext();
 
 const AprendizProvider = ({ children }) => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [cargando, setCargando] = useState(false);
   const [aprendiz, setAprendiz] = useState({});
   const [alerta, setAlerta] = useState({});
-  const [ingreso, setIngreso] = useState({})
+  const [ingreso, setIngreso] = useState({});
+  const [tituladas, setTituladas] = useState([]);
   const [modalAprendiz, setModalAprendiz] = useState(false);
   const [modalDetallesAprendiz, setModalDetallesAprendiz] = useState(false);
   const [modalEditarAprendiz, setModalEditarAprendiz] = useState(false);
@@ -137,53 +139,81 @@ const AprendizProvider = ({ children }) => {
   };
 
   const obtenerIngresosAprendiz = async (date) => {
-    setCargando(true);  // Asegúrate de tener esta función de estado definida en tu componente
+    setCargando(true); // Asegúrate de tener esta función de estado definida en tu componente
     try {
       const token = localStorage.getItem("token");
       if (!token) {
-        setCargando(false);  // Desactivar estado de carga si no hay token
+        setCargando(false); // Desactivar estado de carga si no hay token
         return;
       }
-  
+
       const config = {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      }; 
+      };
       // Asumiendo que quieres enviar 'date' como parámetro de consulta
-      const {data} = await clienteAxios.get(`/ingresos/${aprendiz?._id}/${date}`, config);
-      setIngreso(data);  // La respuesta de axios está en `data`
+      const { data } = await clienteAxios.get(
+        `/ingresos/${aprendiz?._id}/${date}`,
+        config
+      );
+      setIngreso(data); // La respuesta de axios está en `data`
     } catch (error) {
-      console.error('Error al obtener ingresos:', error);
+      console.error("Error al obtener ingresos:", error);
     } finally {
-      setCargando(false);  // Desactivar estado de carga una vez finalizada la solicitud
+      setCargando(false); // Desactivar estado de carga una vez finalizada la solicitud
     }
   };
 
   const obtenerTituladasAprendiz = async () => {
-    setCargando(true);  // Asegúrate de tener esta función de estado definida en tu componente
+    setCargando(true); // Asegúrate de tener esta función de estado definida en tu componente
     try {
       const token = localStorage.getItem("token");
       if (!token) {
-        setCargando(false);  // Desactivar estado de carga si no hay token
+        setCargando(false); // Desactivar estado de carga si no hay token
         return;
       }
-  
+
       const config = {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      }; 
+      };
+
       // Asumiendo que quieres enviar 'date' como parámetro de consulta
-      const {data} = await clienteAxios.get(`/aprendices/${aprendiz?._id}/tituladas`, config);
-      console.log(data)
+      const { data } = await clienteAxios.get(
+        `/aprendices/${aprendiz?._id}/tituladas`,
+        config
+      );
+      setTituladas(data);
     } catch (error) {
-      console.error('Error al obtener ingresos:', error);
+      console.error("Error al obtener programas:", error);
     } finally {
-      setCargando(false);  // Desactivar estado de carga una vez finalizada la solicitud
+      setCargando(false); // Desactivar estado de carga una vez finalizada la solicitud
     }
-  }
-  
+  };
+
+  const obtenerDocumento = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        setCargando(false); // Desactivar estado de carga si no hay token
+        return;
+      }
+
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      const { data } = await clienteAxios(`/aprendices/file-access/${formatStrings(aprendiz?.nombre, aprendiz?.documento)}/${aprendiz?.documentoAdjunto}`, config)
+      window.open(data, '_blank')
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleModalAprendiz = () => {
     setModalAprendiz(!modalAprendiz);
     setAlerta({});
@@ -195,10 +225,10 @@ const AprendizProvider = ({ children }) => {
   };
 
   const handleModalEditarAprendiz = () => {
-    console.log('Editando')
-    navigate(`?Edit`)
-    setModalAprendiz(!modalAprendiz)
-  }
+    console.log("Editando");
+    navigate(`?Edit`);
+    setModalAprendiz(!modalAprendiz);
+  };
 
   const handleModalEliminarAprendiz = (id) => {
     setModalEliminarAprendiz(!modalEliminarAprendiz);
@@ -212,6 +242,7 @@ const AprendizProvider = ({ children }) => {
         cargando,
         aprendiz,
         ingreso,
+        tituladas,
         setIngreso,
         modalAprendiz,
         modalDetallesAprendiz,
@@ -226,7 +257,8 @@ const AprendizProvider = ({ children }) => {
         eliminarAprendiz,
         obtenerAprendiz,
         obtenerIngresosAprendiz,
-        obtenerTituladasAprendiz
+        obtenerTituladasAprendiz,
+        obtenerDocumento
       }}
     >
       {children}

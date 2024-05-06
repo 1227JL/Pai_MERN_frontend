@@ -141,6 +141,8 @@ export default function ModalTitulada() {
         setAlerta({})
 
         await submitTitulada({id, ficha, jornada, modalidad, instructor, ambiente, estado, file: selectedFile})
+
+        setFicha('')
     }
 
     const { msg } = alerta
