@@ -8,7 +8,8 @@ export default function ModalDetallesTitulada() {
     useTitulada();
   const navigate = useNavigate();
 
-  if (!titulada.instructores) return;
+  if (!titulada) return;
+  console.log(titulada)
   return (
     <>
       <Modal

@@ -15,8 +15,9 @@ const TituladaProvider = ({ children }) => {
 
   const [tituladas, setTituladas] = useState([]);
   const [titulada, setTitulada] = useState({});
-  const [aprendiz, setAprendiz] = useState({});
   const [busqueda, setBusqueda] = useState("");
+  const [aprendices, setAprendices] = useState([]);
+  const [instructores, setInstructores] = useState([]);
   const [alerta, setAlerta] = useState({});
   const [cargando, setCargando] = useState(false);
   const [buscador, setBuscador] = useState(false);
@@ -230,18 +231,21 @@ const TituladaProvider = ({ children }) => {
         console.error("No token found");
         return;
       }
-  
+
       const config = {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
       };
-  
-      const {data} = await clienteAxios.get(`/tituladas/${titulada._id}/${competencia}`, config);
+
+      const { data } = await clienteAxios.get(
+        `/tituladas/${titulada._id}/${competencia}`,
+        config
+      );
       setCompetencia(data);
     } catch (error) {
-      console.error('Error fetching competencia data:', error);
+      console.error("Error fetching competencia data:", error);
       setAlerta({
         msg: error.response?.data.msg || "Error fetching data",
         error: true,
@@ -256,20 +260,75 @@ const TituladaProvider = ({ children }) => {
         console.error("No token found");
         return;
       }
-  
+
       const config = {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       };
 
-      const { data } = await clienteAxios(`/tituladas/file-access/${formatStrings(titulada.programa, titulada.ficha)}/${titulada.archivoAdjunto}`, config)
-      window.open(data, '_blank')
+      const { data } = await clienteAxios(
+        `/tituladas/file-access/${formatStrings(
+          titulada.programa,
+          titulada.ficha
+        )}/${titulada.archivoAdjunto}`,
+        config
+      );
+      window.open(data, "_blank");
     } catch (error) {
-      console.log(error)
-    }finally{
+      console.log(error);
+    } finally {
     }
-  }
+  };
+
+  const obtenerAprendicesTitulada = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.error("No token found");
+        return;
+      }
+
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      const { data } = await clienteAxios(
+        `/tituladas/${titulada?._id}/aprendices`,
+        config
+      );
+      setAprendices(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const obtenerInstructoresTitulada = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.error("No token found");
+        return;
+      }
+
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      const { data } = await clienteAxios(
+        `/tituladas/${titulada?._id}/instructores`,
+        config
+      );
+      console.log(data)
+      setInstructores(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleModalTitulada = () => {
     setModalTitulada(!modalTitulada);
@@ -286,8 +345,8 @@ const TituladaProvider = ({ children }) => {
 
   const handleModalDetallesCompetencia = (competencia) => {
     // Alternar el estado del modal
-    setModalDetallesCompetencia(prev => !prev);
-  
+    setModalDetallesCompetencia((prev) => !prev);
+
     // Si competencia está definida, obtener los datos de la competencia
     if (competencia) {
       obtenerDataCompetencia(competencia);
@@ -301,7 +360,7 @@ const TituladaProvider = ({ children }) => {
         busqueda,
         tituladas,
         titulada,
-        aprendiz,
+        aprendices,
         alerta,
         buscador,
         competencia,
@@ -322,6 +381,8 @@ const TituladaProvider = ({ children }) => {
         obtenerTitulada,
         eliminarTitulada,
         obtenerDiseño,
+        obtenerAprendicesTitulada,
+        obtenerInstructoresTitulada
       }}
     >
       {children}
