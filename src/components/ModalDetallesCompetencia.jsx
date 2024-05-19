@@ -20,6 +20,7 @@ export default function ModalDetallesCompetencia() {
     modalDetallesCompetencia,
     handleModalDetallesCompetencia,
   } = useTitulada();
+  
   return (
     <>
       <Modal

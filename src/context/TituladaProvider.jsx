@@ -1,7 +1,7 @@
 import { useState, createContext, useEffect } from "react";
 import useAuth from "../hooks/useAuth";
 import clienteAxios from "../../config/clienteAxios";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { formatStrings } from "../helpers/utils";
 
 const TituladaContext = createContext();
@@ -15,8 +15,10 @@ const TituladaProvider = ({ children }) => {
 
   const [tituladas, setTituladas] = useState([]);
   const [titulada, setTitulada] = useState({});
-  const [aprendiz, setAprendiz] = useState({});
   const [busqueda, setBusqueda] = useState("");
+  const [aprendices, setAprendices] = useState([]);
+  const [instructores, setInstructores] = useState([]);
+  const [competencias, setCompetencias] = useState([]);
   const [alerta, setAlerta] = useState({});
   const [cargando, setCargando] = useState(false);
   const [buscador, setBuscador] = useState(false);
@@ -60,7 +62,7 @@ const TituladaProvider = ({ children }) => {
     if (titulada._id && competenciaId) {
       handleModalDetallesCompetencia(competenciaId);
     }
-  }, [titulada, competenciaId]); // Agrega competenciaId a las dependencias
+  }, [titulada]); // Agrega competenciaId a las dependencias
 
   const handleBuscador = () => {
     setBuscador(!buscador);
@@ -230,18 +232,22 @@ const TituladaProvider = ({ children }) => {
         console.error("No token found");
         return;
       }
-  
+
       const config = {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
       };
-  
-      const {data} = await clienteAxios.get(`/tituladas/${titulada._id}/${competencia}`, config);
+
+      const { data } = await clienteAxios.get(
+        `/tituladas/${titulada._id}/${competencia}`,
+        config
+      );
+      console.log(data)
       setCompetencia(data);
     } catch (error) {
-      console.error('Error fetching competencia data:', error);
+      console.error("Error fetching competencia data:", error);
       setAlerta({
         msg: error.response?.data.msg || "Error fetching data",
         error: true,
@@ -256,18 +262,98 @@ const TituladaProvider = ({ children }) => {
         console.error("No token found");
         return;
       }
-  
+
       const config = {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       };
 
-      const { data } = await clienteAxios(`/tituladas/file-access/${formatStrings(titulada.programa, titulada.ficha)}/${titulada.archivoAdjunto}`, config)
-      window.open(data, '_blank')
+      const { data } = await clienteAxios(
+        `/tituladas/file-access/${formatStrings(
+          titulada.programa,
+          titulada.ficha
+        )}/${titulada.archivoAdjunto}`,
+        config
+      );
+      window.open(data, "_blank");
+    } catch (error) {
+      console.log(error);
+    } finally {
+    }
+  };
+
+  const obtenerAprendicesTitulada = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.error("No token found");
+        return;
+      }
+
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      const { data } = await clienteAxios(
+        `/tituladas/${titulada?._id}/aprendices`,
+        config
+      );
+      setAprendices(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const obtenerInstructoresTitulada = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.error("No token found");
+        return;
+      }
+
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      const { data } = await clienteAxios(
+        `/tituladas/${titulada?._id}/instructores`,
+        config
+      );
+      setInstructores(data)
+      setInstructores(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const obtenerCompetenciasTitulada = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.error("No token found");
+        return;
+      }
+
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      const { data } = await clienteAxios(
+        `/tituladas/${titulada?._id}/competencias`,
+        config
+      );
+
+      setCompetencias(data)
     } catch (error) {
       console.log(error)
-    }finally{
     }
   }
 
@@ -286,10 +372,11 @@ const TituladaProvider = ({ children }) => {
 
   const handleModalDetallesCompetencia = (competencia) => {
     // Alternar el estado del modal
-    setModalDetallesCompetencia(prev => !prev);
-  
+    setModalDetallesCompetencia(!modalDetallesCompetencia);
+
     // Si competencia está definida, obtener los datos de la competencia
     if (competencia) {
+      console.log('first')
       obtenerDataCompetencia(competencia);
     }
   };
@@ -301,7 +388,9 @@ const TituladaProvider = ({ children }) => {
         busqueda,
         tituladas,
         titulada,
-        aprendiz,
+        aprendices,
+        instructores,
+        competencias,
         alerta,
         buscador,
         competencia,
@@ -322,6 +411,9 @@ const TituladaProvider = ({ children }) => {
         obtenerTitulada,
         eliminarTitulada,
         obtenerDiseño,
+        obtenerAprendicesTitulada,
+        obtenerInstructoresTitulada,
+        obtenerCompetenciasTitulada
       }}
     >
       {children}

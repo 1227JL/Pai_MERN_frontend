@@ -12,11 +12,12 @@ import {
 import useTitulada from "../hooks/useTitulada";
 import { EyeIcon } from "./EyeIcon";
 import { Link } from "react-router-dom";
+import Spinner from "./Spinner";
 
 export default function TableCompetencias() {
-  const { titulada } = useTitulada();
+  const { competencias } = useTitulada();
 
-  const { competencias } = titulada;
+  if(competencias.length == 0) return <Spinner>Obteniendo competencias...</Spinner>
 
   return (
     <Table isStriped aria-label="Example static collection table">

@@ -40,9 +40,10 @@ const statusColorMap = {
 
 const INITIAL_VISIBLE_COLUMNS = ["nombre", "estado", "ver"];
 
-export default function TableAprendices() {
+export default function TableAprendices({aprendices}) {
   const navigate = useNavigate();
-  const { titulada, busqueda } = useTitulada();
+  const { busqueda } = useTitulada();
+ 
   const {
     setModalAprendiz,
   } = useAprendiz();
@@ -52,7 +53,6 @@ export default function TableAprendices() {
     new Set(INITIAL_VISIBLE_COLUMNS)
   );
   const [statusFilter, setStatusFilter] = React.useState("all");
-  const [contratoFilter, setContratoFilter] = React.useState("all");
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [sortDescriptor, setSortDescriptor] = React.useState({
     column: "nombre",
@@ -71,7 +71,7 @@ export default function TableAprendices() {
   }, [visibleColumns]);
 
   const filteredItems = React.useMemo(() => {
-    let filteredUsers = [...titulada.aprendices];
+    let filteredUsers = [...aprendices];
 
     if (hasSearchFilter) {
       filteredUsers = filteredUsers.filter(
@@ -94,7 +94,7 @@ export default function TableAprendices() {
     }
 
     return filteredUsers;
-  }, [titulada.aprendices, filterValue, statusFilter, contratoFilter]);
+  }, [aprendices, filterValue, statusFilter]);
 
   const pages = Math.ceil(filteredItems.length / rowsPerPage);
 
@@ -196,7 +196,7 @@ export default function TableAprendices() {
             <Input
               isClearable
               className="w-full sm:max-w-[44%]"
-              placeholder="Search by name..."
+              placeholder="Buscar por el nombre"
               startContent={<SearchIcon />}
               value={filterValue}
               onClear={() => onClear()}
@@ -264,7 +264,7 @@ export default function TableAprendices() {
           </div>
           <div className="flex justify-between items-center">
             <span className="text-default-400 text-small">
-              Total {titulada.aprendices.length} Aprendices
+              Total {aprendices.length} Aprendices
             </span>
             <label className="flex items-center text-default-400 text-small">
               Aprendices por página:
@@ -288,10 +288,9 @@ export default function TableAprendices() {
   }, [
     filterValue,
     statusFilter,
-    contratoFilter,
     visibleColumns,
     onRowsPerPageChange,
-    titulada.aprendices,
+    aprendices,
     onSearchChange,
     hasSearchFilter,
   ]);
@@ -334,7 +333,7 @@ export default function TableAprendices() {
     page,
     pages,
     hasSearchFilter,
-    titulada.aprendices,
+    aprendices,
   ]);
 
   return (

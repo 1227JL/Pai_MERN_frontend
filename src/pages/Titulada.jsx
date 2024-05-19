@@ -1,60 +1,94 @@
 import { useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import TableAprendices from "../components/TableAprendices";
 import useTitulada from "../hooks/useTitulada";
 import Spinner from "../components/Spinner";
 import ModalTitulada from "../components/ModalTitulada";
-import ModalDetallesTitulada from "../components/ModalDetallesTitulada";
 import { EditIcon } from "../components/EditIcon";
 import { DeleteIcon } from "../components/DeleteIcon";
 import { Tab, Tabs, Tooltip } from "@nextui-org/react";
 import { EyeIcon } from "../components/EyeIcon";
 import ModalEliminarTitulada from "../components/ModalEliminarTitulada";
 import ModalAprendiz from "../components/ModalAprendiz";
-import ModalDetallesAprendiz from "../components/ModalDetallesAprendiz";
 import TableCompetencias from "../components/TableCompetencias";
 import ModalDetallesCompetencia from "../components/ModalDetallesCompetencia";
 import ModalEliminarAprendiz from "../components/ModalEliminarAprendiz";
-import useAprendiz from "../hooks/useAprendiz";
+import ModalDetallesTitulada from "../components/ModalDetallesTitulada";
+import TableInstructoresAsociadasTitulada from "../components/TableInstructoresAsociados";
 
 export default function Titulada() {
   const params = useParams();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const {
-    cargando,
     titulada,
+    aprendices,
     obtenerTitulada,
-    eliminarTitulada,
     handleModalTitulada,
     handleModalDetallesTitulada,
     handleModalEliminarTitulada,
+    obtenerAprendicesTitulada,
+    obtenerInstructoresTitulada,
+    obtenerCompetenciasTitulada
   } = useTitulada();
-  const { aprendiz, eliminarAprendiz } = useAprendiz();
 
-  useEffect(() => {
-    return () => obtenerTitulada(params.ficha);
-  }, []);
-
-  const handleTabSelected = async (key) => {
-    navigate(`?tab=${key}`)
-
-    if(key == 'aprendices'){
-      console.log('aprendices')
-    }
-
-    if(key == 'instructores'){
-      console.log('Instructores')
-    }
+  function useQuery() {
+    return new URLSearchParams(useLocation().search);
   }
 
-  if (cargando || !titulada.aprendices)
-    return <Spinner>Obteniendo Titulada...</Spinner>;
+  const query = useQuery();
+  const tab = query.get("tab");
+
+  useEffect(() => {
+    obtenerTitulada(params.ficha);
+  }, [params, obtenerTitulada]);
+
+  const handleTabSelected = async (key) => {
+    navigate(`?tab=${key}`);
+
+    switch (key) {
+      case 'aprendices':
+        await obtenerAprendicesTitulada(titulada._id);
+        break;
+      case 'instructores':
+        await obtenerInstructoresTitulada(titulada._id);
+        break;
+      case 'competencias':
+        await obtenerCompetenciasTitulada(titulada._id);
+        break;
+      default:
+        break;
+    }
+  };
+
+  useEffect(() => {
+    if (Object.keys(titulada).length > 0) {
+      switch (tab) {
+        case 'aprendices':
+          obtenerAprendicesTitulada(titulada._id);
+          break;
+        case 'instructores':
+          obtenerInstructoresTitulada(titulada._id);
+          break;
+        case 'competencias':
+          obtenerCompetenciasTitulada(titulada._id);
+          break;
+        default:
+          break;
+      }
+    }
+  }, [titulada, tab, obtenerAprendicesTitulada, obtenerInstructoresTitulada, obtenerCompetenciasTitulada]);
+
+  if (Object.keys(titulada).length == 0) return <Spinner>Obteniendo Titulada...</Spinner>;
 
   return (
-    <div className={"flex flex-col max-sm:justify-center max-sm:items-center space-y-4"}>
+    <div
+      className={
+        "flex flex-col max-sm:justify-center max-sm:items-center space-y-4"
+      }
+    >
       <div className="flex flex-col lg:flex-row gap-2 justify-between items-center">
         <h1 className=" text-xl md:text-3xl text-center uppercase">
-          {titulada.programa} ({titulada.ficha})
+          {Object.values(titulada).length > 0 ? `${titulada?.programa} (${titulada?.ficha})` : ""}
         </h1>
         <div className="flex gap-5 items-center ml-auto">
           <Tooltip content="Detalles de la Titulada">
@@ -74,13 +108,23 @@ export default function Titulada() {
           </Tooltip>
         </div>
       </div>
-      <Tabs className="max-sm:*:flex-wrap max-sm:mx-auto" aria-label="Options"  onSelectionChange={key=>handleTabSelected(key)}>
+      <Tabs
+        className="max-sm:*:flex-wrap max-sm:mx-auto"
+        aria-label="Options"
+        defaultSelectedKey={tab}
+        onSelectionChange={(key) => handleTabSelected(key)}
+      >
         <Tab key="aprendices" title="Aprendices">
           <h1>Aprendices</h1>
-          <TableAprendices />
+          {aprendices.length == 0 ? (
+            <Spinner>Obteniendo aprendices...</Spinner>
+          ) : (
+            <TableAprendices aprendices={aprendices} />
+          )}
         </Tab>
         <Tab key="instructores" title="Instructores">
           <h1>Instructores</h1>
+          <TableInstructoresAsociadasTitulada/>
         </Tab>
         <Tab key="competencias" title="Competencias">
           <h1>Competencias</h1>
@@ -90,19 +134,10 @@ export default function Titulada() {
           <h1>Transversales</h1>
         </Tab>
       </Tabs>
-      <ModalTitulada />
       <ModalAprendiz />
-      <ModalDetallesAprendiz />
-      <ModalEliminarAprendiz
-        title={aprendiz?.nombre}
-        onClick={() => eliminarAprendiz(aprendiz?._id)}
-      />
       <ModalDetallesTitulada />
       <ModalDetallesCompetencia />
-      <ModalEliminarTitulada
-        title={"Titulada"}
-        onClick={() => eliminarTitulada(titulada?._id)}
-      />
+      <ModalEliminarTitulada/> 
     </div>
   );
 }
