@@ -40,10 +40,10 @@ const statusColorMap = {
 
 const INITIAL_VISIBLE_COLUMNS = ["nombre", "estado", "ver"];
 
-export default function TableAprendices() {
+export default function TableAprendices({aprendices}) {
   const navigate = useNavigate();
-  const { cargando, aprendices, busqueda } = useTitulada();
-
+  const { busqueda } = useTitulada();
+ 
   const {
     setModalAprendiz,
   } = useAprendiz();
@@ -53,7 +53,6 @@ export default function TableAprendices() {
     new Set(INITIAL_VISIBLE_COLUMNS)
   );
   const [statusFilter, setStatusFilter] = React.useState("all");
-  const [contratoFilter, setContratoFilter] = React.useState("all");
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [sortDescriptor, setSortDescriptor] = React.useState({
     column: "nombre",
@@ -95,7 +94,7 @@ export default function TableAprendices() {
     }
 
     return filteredUsers;
-  }, [aprendices, filterValue, statusFilter, contratoFilter]);
+  }, [aprendices, filterValue, statusFilter]);
 
   const pages = Math.ceil(filteredItems.length / rowsPerPage);
 
@@ -289,7 +288,6 @@ export default function TableAprendices() {
   }, [
     filterValue,
     statusFilter,
-    contratoFilter,
     visibleColumns,
     onRowsPerPageChange,
     aprendices,

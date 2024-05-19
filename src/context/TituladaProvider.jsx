@@ -1,7 +1,7 @@
 import { useState, createContext, useEffect } from "react";
 import useAuth from "../hooks/useAuth";
 import clienteAxios from "../../config/clienteAxios";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { formatStrings } from "../helpers/utils";
 
 const TituladaContext = createContext();
@@ -18,6 +18,7 @@ const TituladaProvider = ({ children }) => {
   const [busqueda, setBusqueda] = useState("");
   const [aprendices, setAprendices] = useState([]);
   const [instructores, setInstructores] = useState([]);
+  const [competencias, setCompetencias] = useState([]);
   const [alerta, setAlerta] = useState({});
   const [cargando, setCargando] = useState(false);
   const [buscador, setBuscador] = useState(false);
@@ -61,7 +62,7 @@ const TituladaProvider = ({ children }) => {
     if (titulada._id && competenciaId) {
       handleModalDetallesCompetencia(competenciaId);
     }
-  }, [titulada, competenciaId]); // Agrega competenciaId a las dependencias
+  }, [titulada]); // Agrega competenciaId a las dependencias
 
   const handleBuscador = () => {
     setBuscador(!buscador);
@@ -243,6 +244,7 @@ const TituladaProvider = ({ children }) => {
         `/tituladas/${titulada._id}/${competencia}`,
         config
       );
+      console.log(data)
       setCompetencia(data);
     } catch (error) {
       console.error("Error fetching competencia data:", error);
@@ -323,12 +325,37 @@ const TituladaProvider = ({ children }) => {
         `/tituladas/${titulada?._id}/instructores`,
         config
       );
-      console.log(data)
+      setInstructores(data)
       setInstructores(data);
     } catch (error) {
       console.log(error);
     }
   };
+
+  const obtenerCompetenciasTitulada = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.error("No token found");
+        return;
+      }
+
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      const { data } = await clienteAxios(
+        `/tituladas/${titulada?._id}/competencias`,
+        config
+      );
+
+      setCompetencias(data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   const handleModalTitulada = () => {
     setModalTitulada(!modalTitulada);
@@ -345,10 +372,11 @@ const TituladaProvider = ({ children }) => {
 
   const handleModalDetallesCompetencia = (competencia) => {
     // Alternar el estado del modal
-    setModalDetallesCompetencia((prev) => !prev);
+    setModalDetallesCompetencia(!modalDetallesCompetencia);
 
     // Si competencia está definida, obtener los datos de la competencia
     if (competencia) {
+      console.log('first')
       obtenerDataCompetencia(competencia);
     }
   };
@@ -361,6 +389,8 @@ const TituladaProvider = ({ children }) => {
         tituladas,
         titulada,
         aprendices,
+        instructores,
+        competencias,
         alerta,
         buscador,
         competencia,
@@ -382,7 +412,8 @@ const TituladaProvider = ({ children }) => {
         eliminarTitulada,
         obtenerDiseño,
         obtenerAprendicesTitulada,
-        obtenerInstructoresTitulada
+        obtenerInstructoresTitulada,
+        obtenerCompetenciasTitulada
       }}
     >
       {children}

@@ -54,7 +54,6 @@ export default function Aprendiz() {
     }
 
     if(key == 'programas'){
-      console.log('aposas')
       await obtenerTituladasAprendiz(aprendiz._id);
     }
   }

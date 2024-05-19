@@ -13,22 +13,23 @@ import ModalAprendiz from "../components/ModalAprendiz";
 import TableCompetencias from "../components/TableCompetencias";
 import ModalDetallesCompetencia from "../components/ModalDetallesCompetencia";
 import ModalEliminarAprendiz from "../components/ModalEliminarAprendiz";
-import useAprendiz from "../hooks/useAprendiz";
 import ModalDetallesTitulada from "../components/ModalDetallesTitulada";
+import TableInstructoresAsociadasTitulada from "../components/TableInstructoresAsociados";
 
 export default function Titulada() {
   const params = useParams();
   const navigate = useNavigate();
   const {
     titulada,
+    aprendices,
     obtenerTitulada,
     handleModalTitulada,
     handleModalDetallesTitulada,
     handleModalEliminarTitulada,
     obtenerAprendicesTitulada,
-    obtenerInstructoresTitulada
+    obtenerInstructoresTitulada,
+    obtenerCompetenciasTitulada
   } = useTitulada();
-  const { aprendiz, eliminarAprendiz } = useAprendiz();
 
   function useQuery() {
     return new URLSearchParams(useLocation().search);
@@ -38,31 +39,44 @@ export default function Titulada() {
   const tab = query.get("tab");
 
   useEffect(() => {
-    return () => obtenerTitulada(params.ficha);
-  }, [params]);
+    obtenerTitulada(params.ficha);
+  }, [params, obtenerTitulada]);
 
   const handleTabSelected = async (key) => {
-    navigate(`?tab=${key}`)
+    navigate(`?tab=${key}`);
 
-    if(key == 'programas'){
-      await obtenerAprendicesTitulada(titulada._id);
+    switch (key) {
+      case 'aprendices':
+        await obtenerAprendicesTitulada(titulada._id);
+        break;
+      case 'instructores':
+        await obtenerInstructoresTitulada(titulada._id);
+        break;
+      case 'competencias':
+        await obtenerCompetenciasTitulada(titulada._id);
+        break;
+      default:
+        break;
     }
-
-    if(key == 'instructores'){
-      await obtenerInstructoresTitulada(titulada._id);
-    }
-  }
+  };
 
   useEffect(() => {
-    if (Object.keys(titulada).length > 0 && tab == 'aprendices') {
-      // Asegúrate de que el aprendiz y su _id estén definidos
-      const obtenerAprendices = async () => {
-        await obtenerAprendicesTitulada();
-      };
-
-      obtenerAprendices();
+    if (Object.keys(titulada).length > 0) {
+      switch (tab) {
+        case 'aprendices':
+          obtenerAprendicesTitulada(titulada._id);
+          break;
+        case 'instructores':
+          obtenerInstructoresTitulada(titulada._id);
+          break;
+        case 'competencias':
+          obtenerCompetenciasTitulada(titulada._id);
+          break;
+        default:
+          break;
+      }
     }
-  }, [titulada]);
+  }, [titulada, tab, obtenerAprendicesTitulada, obtenerInstructoresTitulada, obtenerCompetenciasTitulada]);
 
   if (Object.keys(titulada).length == 0) return <Spinner>Obteniendo Titulada...</Spinner>;
 
@@ -97,37 +111,33 @@ export default function Titulada() {
       <Tabs
         className="max-sm:*:flex-wrap max-sm:mx-auto"
         aria-label="Options"
-        onSelectionChange={(key) => {
-          handleTabSelected(key);
-        }}
+        defaultSelectedKey={tab}
+        onSelectionChange={(key) => handleTabSelected(key)}
       >
         <Tab key="aprendices" title="Aprendices">
           <h1>Aprendices</h1>
-          <TableAprendices />
+          {aprendices.length == 0 ? (
+            <Spinner>Obteniendo aprendices...</Spinner>
+          ) : (
+            <TableAprendices aprendices={aprendices} />
+          )}
         </Tab>
         <Tab key="instructores" title="Instructores">
           <h1>Instructores</h1>
+          <TableInstructoresAsociadasTitulada/>
         </Tab>
         <Tab key="competencias" title="Competencias">
           <h1>Competencias</h1>
-          {/* <TableCompetencias /> */}
+          <TableCompetencias />
         </Tab>
         <Tab key="transversales" title="Transversales">
           <h1>Transversales</h1>
         </Tab>
       </Tabs>
-      {/* <ModalTitulada /> */}
       <ModalAprendiz />
-      <ModalEliminarAprendiz
-        title={aprendiz?.nombre}
-        onClick={() => eliminarAprendiz(aprendiz?._id)}
-      />
       <ModalDetallesTitulada />
-      {/* <ModalDetallesCompetencia /> */}
-      {/* <ModalEliminarTitulada
-        title={"Titulada"}
-        onClick={() => eliminarTitulada(titulada?._id)}
-      />  */}
+      <ModalDetallesCompetencia />
+      <ModalEliminarTitulada/> 
     </div>
   );
 }

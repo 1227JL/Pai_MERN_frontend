@@ -2,9 +2,9 @@ import { Fragment } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import useTitulada from '../hooks/useTitulada'
 
-const ModalEliminarTitulada = ({title, onClick}) => {
+const ModalEliminarTitulada = () => {
     
-    const { modalEliminarTitulada, handleModalEliminarTitulada } = useTitulada()
+    const { modalEliminarTitulada, handleModalEliminarTitulada, eliminarTitulada } = useTitulada()
     return (
         <Transition.Root show={ modalEliminarTitulada } as={Fragment}>
             <Dialog as="div" className="fixed z-50 inset-0 overflow-y-auto" onClose={ handleModalEliminarTitulada }>
@@ -62,7 +62,7 @@ const ModalEliminarTitulada = ({title, onClick}) => {
                                 </div>
                                 <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
                                     <Dialog.Title as="h3" className="text-lg leading-6 font-bold text-gray-900">
-                                        Eliminar {title} 
+                                        Eliminar Titulada
                                     </Dialog.Title>
                                     <div className="mt-2">
                                         <p className="text-sm text-gray-500">Una vez eliminado no se podra recuperar</p>
@@ -73,9 +73,9 @@ const ModalEliminarTitulada = ({title, onClick}) => {
                                 <button
                                     type="button"
                                     className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
-                                    onClick={onClick}
+                                    onClick={eliminarTitulada}
                                 >
-                                    Eliminar
+                                    Eliminar 
                                 </button>
                                 <button
                                     type="button"
