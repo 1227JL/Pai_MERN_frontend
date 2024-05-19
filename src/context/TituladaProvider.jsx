@@ -1,15 +1,13 @@
 import { useState, createContext, useEffect } from "react";
 import useAuth from "../hooks/useAuth";
 import clienteAxios from "../../config/clienteAxios";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { formatStrings } from "../helpers/utils";
 
 const TituladaContext = createContext();
 
 const TituladaProvider = ({ children }) => {
   const { auth } = useAuth();
-  const [searchParams] = useSearchParams(); // Hook para capturar parámetros de consulta
-  const competenciaId = searchParams.get("competencia"); // Obtén el valor del parámetro de consulta aprendizId
 
   const navigate = useNavigate();
 
@@ -56,13 +54,6 @@ const TituladaProvider = ({ children }) => {
     };
     return () => obtenerTituladas();
   }, [auth]);
-
-  useEffect(() => {
-    // Verifica que ambos, titulada._id y competenciaId, tengan valores definidos
-    if (titulada._id && competenciaId) {
-      handleModalDetallesCompetencia(competenciaId);
-    }
-  }, [titulada]); // Agrega competenciaId a las dependencias
 
   const handleBuscador = () => {
     setBuscador(!buscador);
@@ -376,7 +367,6 @@ const TituladaProvider = ({ children }) => {
 
     // Si competencia está definida, obtener los datos de la competencia
     if (competencia) {
-      console.log('first')
       obtenerDataCompetencia(competencia);
     }
   };

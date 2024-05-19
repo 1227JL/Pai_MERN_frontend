@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import TableAprendices from "../components/TableAprendices";
 import useTitulada from "../hooks/useTitulada";
 import Spinner from "../components/Spinner";
@@ -19,12 +19,16 @@ import TableInstructoresAsociadasTitulada from "../components/TableInstructoresA
 export default function Titulada() {
   const params = useParams();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams(); // Hook para capturar parámetros de consulta
+  const competenciaId = searchParams.get("competencia"); // Obtén el valor del parámetro de consulta aprendizId
+
   const {
     titulada,
     aprendices,
     obtenerTitulada,
     handleModalTitulada,
     handleModalDetallesTitulada,
+    handleModalDetallesCompetencia,
     handleModalEliminarTitulada,
     obtenerAprendicesTitulada,
     obtenerInstructoresTitulada,
@@ -40,8 +44,15 @@ export default function Titulada() {
 
   useEffect(() => {
     obtenerTitulada(params.ficha);
-  }, [params, obtenerTitulada]);
+  }, [params]);
 
+  useEffect(() => {
+    // Verifica que ambos, titulada._id y competenciaId, tengan valores definidos
+    if (titulada._id && competenciaId) {
+      handleModalDetallesCompetencia(competenciaId);
+    }
+  }, [titulada]); // Agrega competenciaId a las dependencias
+  
   const handleTabSelected = async (key) => {
     navigate(`?tab=${key}`);
 
